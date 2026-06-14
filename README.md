@@ -219,16 +219,7 @@ asyncnodes/
 
 # Getting Started
 
-## Prerequisites
 
-Install:
-
-* Node.js 22+
-* PostgreSQL
-* Redis
-* Docker
-
----
 
 ## Clone Repository
 
