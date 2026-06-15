@@ -1,0 +1,24 @@
+services:
+  web:
+    build: 
+      context: ../app/web
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../app/web:/app/web
+      - /app/web/node_modules
+    environment:
+      WATCHPACK_POLLING: "true"
+
+  server:
+    build: 
+      context: ../app/server
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../app/server:/app/server
+      - /app/server/node_modules
+    environment:
+      PORT: 8080
