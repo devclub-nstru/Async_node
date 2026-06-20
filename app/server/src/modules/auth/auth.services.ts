@@ -27,6 +27,14 @@ export const createUser = async (name: string, email: string, password: string) 
   
 }
 
+export const signOutUser = async (userId: number) => {
+    try {
+        await db.update(users).set({ refreshToken: null }).where(eq(users.id, userId));
+    } catch (err) {
+        return err;
+    }
+};
+
 export const signInUser = async(email:string,password:string)=>{
     try{
         const user = await getUserByEmail(email);
@@ -50,4 +58,5 @@ export const signInUser = async(email:string,password:string)=>{
         return err
     }
 }
+
 

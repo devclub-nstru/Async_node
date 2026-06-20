@@ -1,3 +1,13 @@
+import type { TokenPayload } from "../utils/tokens.ts";
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: TokenPayload;
+        }
+    }
+}
+
 export type thttpResponse = {
     success:boolean,
     status:number,

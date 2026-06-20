@@ -15,7 +15,35 @@ const options: swaggerJsdoc.Options = {
             },
         ],
         components: {
+            securitySchemes: {
+                cookieAuth: {
+                    type: "apiKey",
+                    in: "cookie",
+                    name: "accessToken",
+                },
+            },
             schemas: {
+                Workflow: {
+                    type: "object",
+                    properties: {
+                        id: { type: "integer", example: 1 },
+                        userId: { type: "integer", example: 42 },
+                        name: { type: "string", example: "My Workflow" },
+                        description: { type: "string", example: "Automates data processing" },
+                        graphJson: { type: "object", nullable: true },
+                        status: { type: "string", enum: ["draft", "active", "completed"], example: "draft" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                    },
+                },
+                CreateWorkflowRequest: {
+                    type: "object",
+                    required: ["name", "description"],
+                    properties: {
+                        name: { type: "string", example: "My Workflow" },
+                        description: { type: "string", example: "Automates data processing" },
+                    },
+                },
                 SignupRequest: {
                     type: "object",
                     required: ["username", "email", "password"],

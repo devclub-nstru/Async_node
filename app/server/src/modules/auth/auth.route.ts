@@ -1,4 +1,4 @@
-import {creatUserController ,signInUserController}from "./auth.controller.ts";
+import {creatUserController, signInUserController, signOutUserController} from "./auth.controller.ts";
 import router from "express";
 
 
@@ -79,4 +79,27 @@ authRouter.post("/signup", creatUserController)
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 authRouter.post("/signin", signInUserController)
+
+/**
+ * @openapi
+ * /api/v1/auth/signout:
+ *   post:
+ *     tags:
+ *       - Auth
+ *     summary: Sign out the current user
+ *     responses:
+ *       200:
+ *         description: Signed out successfully (cookies cleared)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+authRouter.post("/signout", signOutUserController)
 

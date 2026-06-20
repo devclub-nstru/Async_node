@@ -2,9 +2,10 @@ import app from "./app.ts";
 import { config } from "./config/config.ts";
 import { httpResponse } from "./utils/httpResponse.ts";
 import { SUCCESS_MESSAGES } from "./constants/messages.ts";
+import logger from "./utils/logger.ts";
 
 app.listen(config.port, () => {
-    console.log(`Server is running on port ${config.port}`);
+    logger.info(`Server is running on port ${config.port}`);
 });
 
 

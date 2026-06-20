@@ -8,7 +8,7 @@ export const workflows = pgTable("workflows", {
     userId: integer("user_id").notNull().references(() => users.id),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
-    graphJson: jsonb("graph_json").notNull(),
+    graphJson: jsonb("graph_json"),
     status: workflowStatus("status").notNull().default("draft"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
