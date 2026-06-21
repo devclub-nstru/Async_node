@@ -13,4 +13,5 @@ export const config = {
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET as string,
     accessTokenExpiry: process.env.ACCESS_TOKEN_EXPIRY || "15m",
     refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY || "7d",
+
 }
