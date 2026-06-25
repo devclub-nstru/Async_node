@@ -3,9 +3,15 @@
 import { motion } from "motion/react";
 
 const LINKS = {
-  Product:   ["Features","Integrations","Pricing","Documentation","Changelog"],
-  Resources: ["Blog","Guides","Community","Templates","API Reference"],
-  Company:   ["About","Careers","Contact","Press","Legal"],
+  Product: [
+    "Features",
+    "Integrations",
+    "Pricing",
+    "Documentation",
+    "Changelog",
+  ],
+  Resources: ["Blog", "Guides", "Community", "Templates", "API Reference"],
+  Company: ["About", "Careers", "Contact", "Press", "Legal"],
 };
 
 export function Footer() {
@@ -20,25 +26,30 @@ export function Footer() {
                 <div className="h-[2px] w-[14px] bg-[rgba(217,119,6,0.4)] rounded-[1px]" />
                 <div className="h-[2px] w-[8px] bg-[rgba(217,119,6,0.2)] rounded-[1px]" />
               </div>
-              <span className="font-display text-[1.02rem] font-bold text-[#FAFAFA]">AsyncNode</span>
+              <span className="font-display text-[1.02rem] font-bold text-[#FAFAFA]">
+                AsyncNode
+              </span>
             </div>
             <p className="font-body font-light text-[0.82rem] leading-[1.7] text-[rgba(255,255,255,0.2)] max-w-[250px] mb-5">
-              Visual workflow automation for teams that move fast. Build, deploy, and monitor AI-powered pipelines at production scale.
+              Visual workflow automation for teams that move fast. Build,
+              deploy, and monitor AI-powered pipelines at production scale.
             </p>
           </div>
 
-          {Object.entries(LINKS).map(([cat,links])=>(
+          {Object.entries(LINKS).map(([cat, links]) => (
             <div key={cat}>
-              <div className="font-display font-semibold text-[0.78rem] tracking-[0.06em] text-[rgba(255,255,255,0.5)] uppercase mb-4">{cat}</div>
+              <div className="font-display font-semibold text-[0.78rem] tracking-[0.06em] text-[rgba(255,255,255,0.5)] uppercase mb-4">
+                {cat}
+              </div>
               <ul className="space-y-2.5">
-                {links.map(link=>(
+                {links.map((link) => (
                   <li key={link}>
                     <a
-                        href="#"
-                        className="font-body font-light text-[0.8rem] text-[rgba(255,255,255,0.18)] hover:text-[rgba(255,255,255,0.6)] transition-colors duration-200"
-                        >
-                        {link}
-                    </a>    
+                      href="#"
+                      className="font-body font-light text-[0.8rem] text-[rgba(255,255,255,0.18)] hover:text-[rgba(255,255,255,0.6)] transition-colors duration-200"
+                    >
+                      {link}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -53,7 +64,7 @@ export function Footer() {
               transition={{ duration: 2.5, repeat: Infinity }}
               className="w-[5px] h-[5px] rounded-full bg-[#22C55E]"
             />
-           <span className="font-mono text-[0.6rem] tracking-[0.06em] text-[rgba(255,255,255,0.14)]">
+            <span className="font-mono text-[0.6rem] tracking-[0.06em] text-[rgba(255,255,255,0.14)]">
               All systems nominal
             </span>
           </div>
