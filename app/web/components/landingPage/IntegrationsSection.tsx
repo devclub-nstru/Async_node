@@ -45,6 +45,7 @@ const logos = integrations.map((item) => (
       background: "rgba(255, 255, 255, 0.04)",
       borderColor: "rgba(255,255,255,0.06)",
       backdropFilter: "blur(24px)",
+      fontFamily: "Inter, sans-serif",
     }}
   >
     <img
@@ -218,7 +219,7 @@ export function IntegrationsSection() {
                     color: "#FAFAFA",
                     fontSize: "18px",
                     fontWeight: 700,
-                    fontFamily: "var(--font-body)",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >
                   {item.name}
