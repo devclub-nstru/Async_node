@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Syne, Space_Grotesk } from "next/font/google";
 import { LenisProvider } from "@/components/providers/lenis-provider";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const syne = Syne({
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className="min-h-full bg-[#0B0B0C] text-[#FAFAFA]">
         <LenisProvider />
         {children}
+        <Toaster position="bottom-right" richColors />
       </body>
     </html>
   );

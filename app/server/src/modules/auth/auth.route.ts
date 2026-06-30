@@ -1,5 +1,6 @@
-import {creatUserController, signInUserController, signOutUserController} from "./auth.controller.ts";
+import {creatUserController, signInUserController, signOutUserController, sendVerificationCodeController, verifyEmailController, refreshAccessTokenController} from "./auth.controller.ts";
 import router from "express";
+import { authenticate } from "../../middlewares/auth.middleware.ts";
 
 
 export const authRouter = router.Router();
@@ -102,4 +103,8 @@ authRouter.post("/signin", signInUserController)
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 authRouter.post("/signout", signOutUserController)
+
+authRouter.post("/token/refresh", refreshAccessTokenController)
+authRouter.post("/verify/send", authenticate, sendVerificationCodeController)
+authRouter.post("/verify/confirm", authenticate, verifyEmailController)
 

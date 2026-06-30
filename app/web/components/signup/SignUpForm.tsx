@@ -1,9 +1,13 @@
 "use client"
-
+import axios from "axios"
+import { useRouter } from "next/navigation"
+import { config } from "@/config/config"
 import { useState } from "react"
+import { toast } from "sonner"
 import Link from "next/link"
 import { Eye, EyeOff, Shield, Mail, Check, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+
 
 /* ── shared input class ──────────────────────────────────────────────── */
 const inputCls = cn(
@@ -130,15 +134,44 @@ const FOOTER_LINKS = [
 
 /* ── main form ───────────────────────────────────────────────────────── */
 export default function SignUpForm() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
-  const [password, setPassword]         = useState("")
-  const [termsChecked, setTermsChecked] = useState(true)
-  const [updatesChecked, setUpdatesChecked] = useState(false)
-  const [showInvite, setShowInvite]     = useState(false)
+  const [form, setForm] = useState({ username: "", email: "", password: "", confirmPassword: "" })
+  const [passwordError, setPasswordError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+    if (name === "confirmPassword" || name === "password") setPasswordError("")
+  }
+
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (form.password !== form.confirmPassword) {
+      setPasswordError("Passwords do not match")
+      return
+    }
+    setLoading(true)
+    try {
+      await axios.post(`${config.backend_URI}/v1/auth/signup`, {
+        username: form.username,
+        email: form.email,
+        password: form.password,
+      })
+      router.push("/signin")
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message ?? "Something went wrong. Please try again."
+        : "Something went wrong. Please try again."
+      toast.error(message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <form className="w-full">
-
+    <form className="w-full" onSubmit={handleSubmit}>
       {/* divider */}
       <div className="mb-7 flex items-center gap-4">
         <div className="h-px flex-1 bg-white/[0.06]" />
@@ -151,26 +184,31 @@ export default function SignUpForm() {
       {/* fields */}
       <div className="flex flex-col gap-5">
 
-        {/* full name */}
-        <Field label="Full Name">
+        {/* username */}
+        <Field label="Username">
           <input
             type="text"
-            placeholder="Alex Rivera"
-            autoComplete="name"
+            name="username"
+            placeholder="johndoe"
+            autoComplete="username"
+            value={form.username}
+            onChange={handleChange}
             className={inputCls}
           />
         </Field>
 
-        {/* work email */}
+        {/* email */}
         <Field label="Email">
           <div className="relative">
             <input
               type="email"
+              name="email"
               placeholder="you@company.com"
               autoComplete="email"
-              className={cn(inputCls, "pr-10 border-green-500/35")}
+              value={form.email}
+              onChange={handleChange}
+              className={cn(inputCls, "pr-10 placeholder:tracking-[0.15em]")}
             />
-            <Check size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500" />
           </div>
         </Field>
 
@@ -180,10 +218,11 @@ export default function SignUpForm() {
             <input
               id="signup-password"
               type={showPassword ? "text" : "password"}
+              name="password"
               placeholder="••••••••••"
               autoComplete="new-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={form.password}
+              onChange={handleChange}
               className={cn(inputCls, "pr-11 placeholder:tracking-[0.15em]")}
             />
             <button
@@ -195,119 +234,40 @@ export default function SignUpForm() {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          {password.length > 0 && <PasswordStrength password={password} />}
+          {form.password.length > 0 && <PasswordStrength password={form.password} />}
         </Field>
 
         {/* confirm password */}
         <Field label="Confirm Password">
           <input
             type="password"
+            name="confirmPassword"
             placeholder="••••••••••"
             autoComplete="new-password"
-            className={cn(inputCls, "border-red-500/50")}
+            value={form.confirmPassword}
+            onChange={handleChange}
+            className={cn(inputCls, "placeholder:tracking-[0.15em]", passwordError && "border-red-500 focus:border-red-500 focus:ring-red-500/20")}
           />
-          <p className="mt-1.5 text-[12px] text-red-500">
-            Passwords don't match
-          </p>
+          {passwordError && (
+            <p className="mt-1.5 text-[12px] text-red-500">{passwordError}</p>
+          )}
         </Field>
       </div>
 
-      {/* checkboxes */}
-      <div className="mt-6 flex flex-col gap-3.5">
 
-        {/* terms */}
-        <label className="flex cursor-pointer items-start gap-2.5">
-          <button
-            type="button"
-            role="checkbox"
-            aria-checked={termsChecked}
-            onClick={() => setTermsChecked((v) => !v)}
-            className={cn(
-              "mt-[1px] flex size-4 shrink-0 items-center justify-center rounded-[3px] border transition-colors",
-              termsChecked
-                ? "bg-amber-600 border-amber-600"
-                : "bg-transparent border-white/[0.15]",
-            )}
-          >
-            {termsChecked && (
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                <polyline points="2,6 5,9 10,3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            )}
-          </button>
-          <span className="text-[13px] leading-relaxed text-white/60">
-            I agree to the{" "}
-            <Link href="/terms" className="text-amber-600 hover:underline">Terms of Service</Link>
-            {" "}and{" "}
-            <Link href="/privacy" className="text-amber-600 hover:underline">Privacy Policy</Link>
-          </span>
-        </label>
 
-        {/* updates */}
-        <label className="flex cursor-pointer items-start gap-2.5">
-          <button
-            type="button"
-            role="checkbox"
-            aria-checked={updatesChecked}
-            onClick={() => setUpdatesChecked((v) => !v)}
-            className="mt-[1px] size-4 shrink-0 rounded-[3px] border border-white/[0.15] bg-transparent transition-colors"
-          />
-          <span className="text-[13px] leading-relaxed text-white/45">
-            Send me product updates and workflow tips (optional)
-          </span>
-        </label>
 
-        {/* invite code */}
-        <div>
-          <button
-            type="button"
-            onClick={() => setShowInvite((v) => !v)}
-            className="text-[12px] text-zinc-400 hover:text-zinc-300 transition-colors"
-          >
-            + Have an invite code?
-          </button>
-          {showInvite && (
-            <input
-              type="text"
-              placeholder="Enter invite code"
-              className={cn(inputCls, "mt-2")}
-            />
-          )}
-        </div>
-      </div>
+      
+      
 
       {/* CTA */}
-      <button type="submit" className="signup-cta mt-6">
-        Create Workspace
+      <button type="submit" disabled={loading} className="signup-cta mt-6 disabled:opacity-50 disabled:cursor-not-allowed">
+        {loading ? "Creating…" : "Create Workspace"}
       </button>
 
-      {/* magic link */}
-      <button
-        type="button"
-        className={cn(
-          "mt-4 flex w-full items-center justify-center gap-2.5 rounded-md px-6 py-[11px]",
-          "text-[13px] font-medium text-amber-600",
-          "bg-amber-600/[0.07] border border-amber-600/[0.22]",
-          "transition-colors hover:bg-amber-600/10",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600/40",
-        )}
-      >
-        <Mail size={15} />
-        Sign up with Magic Link instead
-      </button>
+    
 
-      {/* trust badges */}
-      <div className="mt-6 flex flex-wrap justify-between rounded-md border border-white/[0.04] bg-white/[0.02] px-4 py-3">
-        {TRUST_BADGES.map(({ label, icon }) => (
-          <div key={label} className="flex items-center gap-1.5 px-2 py-1 text-amber-600">
-            {icon}
-            <span className="font-mono text-[10px] uppercase tracking-[0.07em] text-zinc-600 whitespace-nowrap">
-              {label}
-            </span>
-          </div>
-        ))}
-      </div>
-
+    
       {/* footer */}
       <div className="mt-6 border-t border-white/[0.04] pt-5 pb-2">
         <p className="mb-3 text-center text-[13px] text-white/45">

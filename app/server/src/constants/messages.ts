@@ -19,6 +19,10 @@ export const ERROR_MESSAGES = {
 
     // Server
     INTERNAL_SERVER_ERROR: "Internal Server Error",
+
+    //verification code
+    VERIFICATION_CODE_EXPIRED: "Verification code has expired",
+    INVALID_VERIFICATION_CODE: "Invalid verification code",
 } as const;
 
 export const SUCCESS_MESSAGES = {

@@ -5,6 +5,7 @@ export type TokenPayload = {
     userId: number;
     email: string;
     name:string;
+    isVerified?:boolean;
 };
 
 export const generateAccessToken = (payload: TokenPayload): string => {

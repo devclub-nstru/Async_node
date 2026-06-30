@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
@@ -8,6 +8,8 @@ import { swaggerSpec } from "./config/swagger.ts";
 import { workflowRouter } from "./modules/workflows/workflow.route.ts";
 import {authenticate} from "./middlewares/auth.middleware.ts";
 import cookieParser from "cookie-parser"; // Import cookie-parser
+import {client} from "./config/redis.ts"; // Import the Redis client
+
 const app = express();
 
 app.use(cors());
@@ -28,6 +30,7 @@ app.get("/api/docs.json", (_req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/workflows', authenticate, workflowRouter);
+
 
 
 

@@ -64,14 +64,6 @@ export default function SignInForm() {
 
       {/* remember / forgot */}
       <div className="mb-6 flex items-center justify-between">
-        <label className="flex cursor-pointer items-center gap-2">
-          <input type="checkbox" className="sr-only peer" />
-          <div
-            className="size-4 shrink-0 rounded-[3px] border border-white/[0.18] bg-white/[0.04] peer-checked:bg-amber-600 transition-colors"
-            aria-hidden="true"
-          />
-          <span className="text-[13px] text-white/55">Remember me</span>
-        </label>
         <Link href="/forgot-password" className="text-[13px] text-amber-600 hover:underline">
           Forgot password?
         </Link>
@@ -82,20 +74,7 @@ export default function SignInForm() {
         Continue
       </button>
 
-      {/* magic link */}
-      <button
-        type="button"
-        className={cn(
-          "flex w-full items-center justify-center gap-2.5 rounded-md px-6 py-[11px]",
-          "text-[13px] font-medium text-amber-600",
-          "bg-amber-600/[0.07] border border-amber-600/[0.22]",
-          "transition-colors hover:bg-amber-600/10",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-600/40",
-        )}
-      >
-        <Mail size={15} />
-        Send Magic Link instead
-      </button>
+     
     </form>
   )
 }

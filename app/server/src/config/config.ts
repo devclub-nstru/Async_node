@@ -14,4 +14,11 @@ export const config = {
     accessTokenExpiry: process.env.ACCESS_TOKEN_EXPIRY || "15m",
     refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY || "7d",
 
+    //smtp
+    smtpHost: process.env.SMTP_HOST as string,
+    smtpPort: process.env.SMTP_PORT as string,
+    smtpUser: process.env.SMTP_USER as string,
+    smtpPass: process.env.SMTP_PASS as string,
+    smtpSecure: process.env.SMTP_SECURE === "true",
+
 }

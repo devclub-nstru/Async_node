@@ -8,6 +8,7 @@ export async function executeOpenAINode(
   credentials: {
     apiKey: string;
   }
+  
 ) {
   return runOpenAI({
     apiKey: credentials.apiKey,

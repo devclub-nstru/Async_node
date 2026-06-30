@@ -5,7 +5,6 @@ import { ERROR_MESSAGES } from "../constants/messages.ts";
 
 export const authenticate = (req: Request, _res: Response, next: NextFunction) => {
     const token = req.cookies?.accessToken as string | undefined;
-    console.log("Token from cookies:", token);
     if (!token) {
         return httpError(next, req, 401, ERROR_MESSAGES.UNAUTHORIZED);
     }
