@@ -1,6 +1,7 @@
 import {creatUserController, signInUserController, signOutUserController, sendVerificationCodeController, verifyEmailController, refreshAccessTokenController} from "./auth.controller.ts";
 import router from "express";
 import { authenticate } from "../../middlewares/auth.middleware.ts";
+import {getMeController} from "./auth.controller.ts";
 
 
 export const authRouter = router.Router();
@@ -108,3 +109,4 @@ authRouter.post("/token/refresh", refreshAccessTokenController)
 authRouter.post("/verify/send", authenticate, sendVerificationCodeController)
 authRouter.post("/verify/confirm", authenticate, verifyEmailController)
 
+authRouter.get("/me", authenticate, getMeController)

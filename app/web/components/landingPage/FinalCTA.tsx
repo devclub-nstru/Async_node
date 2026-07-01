@@ -2,9 +2,12 @@
 
 import { motion } from "motion/react";
 import { ArrowRight, Play, Workflow, Shield, Clock } from "lucide-react";
+import {useRouter} from "next/navigation";
 
 export function FinalCTA() {
+  const router = useRouter();
   return (
+
     <section className="relative overflow-hidden py-32 sm:py-40 bg-[rgba(217,119,6,0.04)] border-t border-[rgba(217,119,6,0.1)] border-b border-[rgba(217,119,6,0.06)]">
       <div
         className="absolute inset-0 bg-[length:80px_80px] bg-[image:linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] rotate-[3deg] scale-110
@@ -48,7 +51,7 @@ export function FinalCTA() {
                 backgroundColor: "#F59E0B",
               }}
               whileTap={{ scale: 0.97 }}
-              href="#"
+              href="/signup"
               className="w-full sm:w-auto justify-center"
               style={{
                 display: "inline-flex",
@@ -78,6 +81,7 @@ export function FinalCTA() {
                     "linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)",
                   pointerEvents: "none",
                 }}
+         
               />
               Start Building Free
               <span style={{ fontSize: 16 }}>→</span>

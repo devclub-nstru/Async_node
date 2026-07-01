@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
+import {useRouter} from "next/navigation";
 
 /* ─── Layout constants ───────────────────────────────────────────────────── */
 const NW = 148,
@@ -236,6 +237,7 @@ function SvgNode({
 /* ─── Section ─────────────────────────────────────────────────────────────── */
 export function HeroSection() {
   const [tick, setTick] = useState(0);
+  const router = useRouter();
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 1800);
     return () => clearInterval(id);
@@ -359,7 +361,7 @@ export function HeroSection() {
                   "0 10px 30px -5px rgba(217, 119, 6, 0.4), 0 8px 12px -6px rgba(217, 119, 6, 0.4)",
               }}
               whileTap={{ scale: 0.97 }}
-              href="#"
+              href="/signup"
               className="w-full sm:w-auto justify-center"
               style={{
                 display: "inline-flex",

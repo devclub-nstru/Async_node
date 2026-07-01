@@ -1,10 +1,11 @@
 "use client"
 import axios from "axios"
+import api from "@/lib/api"
 import { useRouter } from "next/navigation"
-import { config } from "@/config/config"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import Link from "next/link"
+import {useMe} from "@/hooks/useMe"
 import { Eye, EyeOff, Shield, Mail, Check, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -134,18 +135,28 @@ const FOOTER_LINKS = [
 
 /* ── main form ───────────────────────────────────────────────────────── */
 export default function SignUpForm() {
+
+  const {user,loading:meLoading,route} = useMe()
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({ username: "", email: "", password: "", confirmPassword: "" })
   const [passwordError, setPasswordError] = useState("")
   const [loading, setLoading] = useState(false)
 
+  useEffect(()=>{
+    if(user){
+      router.push("/dashboard")
+    }
+  },[user])
+
+  //handle input change
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target
     setForm((prev) => ({ ...prev, [name]: value }))
     if (name === "confirmPassword" || name === "password") setPasswordError("")
   }
 
+  //handle submit.
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     if (form.password !== form.confirmPassword) {
@@ -154,11 +165,15 @@ export default function SignUpForm() {
     }
     setLoading(true)
     try {
-      await axios.post(`${config.backend_URI}/v1/auth/signup`, {
+
+
+      await api.post("/v1/auth/signup", {
         username: form.username,
         email: form.email,
         password: form.password,
       })
+
+
       router.push("/signin")
     } catch (error) {
       const message = axios.isAxiosError(error)

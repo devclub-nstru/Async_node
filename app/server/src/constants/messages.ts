@@ -2,7 +2,7 @@ export const ERROR_MESSAGES = {
     // Auth
     USER_ALREADY_EXISTS: "User already exists",
     USER_NOT_FOUND: "User not found",
-    INVALID_PASSWORD: "Invalid password",
+    INVALID_PASSWORD: "Username or password is incorrect",
 
     // Validation
     USERNAME_EMAIL_PASSWORD_REQUIRED: "Username, email and password are required",

@@ -1,16 +1,29 @@
 "use client"
 
-import { useRef, useState, useCallback } from "react"
+import { useRef, useState, useCallback, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import api from "@/lib/api"
+import axios from "axios"
+import {useMe} from "@/hooks/useMe"
 
 const CODE_LENGTH = 6
 
 export default function VerifyCard({ userId }: { userId: string }) {
+  const router = useRouter()
   const [digits, setDigits] = useState<string[]>(Array(CODE_LENGTH).fill(""))
   const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [loadings, setLoading] = useState(false)
   const inputs = useRef<(HTMLInputElement | null)[]>([])
 
   const focus = (i: number) => inputs.current[i]?.focus()
+
+  const {user, loading,route}  = useMe()
+
+  useEffect(()=>{
+    if(user?.isVerified){
+      router.push("/dashboard")
+    }
+  },[user])
 
   const handleChange = useCallback(
     (i: number, val: string) => {
@@ -50,9 +63,18 @@ export default function VerifyCard({ userId }: { userId: string }) {
       return
     }
     setLoading(true)
-    // TODO: call verification API with userId + code
-    await new Promise(r => setTimeout(r, 800))
-    setLoading(false)
+    setError("")
+    try {
+      await api.post("/v1/auth/verify/confirm", { email: userId, code })
+      router.push("/dashboard")
+    } catch (err) {
+      const message = axios.isAxiosError(err)
+        ? err.response?.data?.message ?? "Invalid or expired code. Please try again."
+        : "Something went wrong. Please try again."
+      setError(message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const filled = digits.every(d => d !== "")
@@ -118,10 +140,10 @@ export default function VerifyCard({ userId }: { userId: string }) {
 
         <button
           type="submit"
-          disabled={!filled || loading}
+          disabled={!filled || loadings}
           className="verify-cta disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {loading ? "Verifying…" : "Verify email"}
+          {loadings ? "Verifying…" : "Verify email"}
         </button>
       </form>
 

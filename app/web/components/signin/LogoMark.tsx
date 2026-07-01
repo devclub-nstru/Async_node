@@ -6,9 +6,12 @@ export default function LogoMark() {
         <div className="h-[3px] w-[18px] rounded-full bg-amber-800/75" />
         <div className="h-[3px] w-3 rounded-full bg-amber-900/45" />
       </div>
-      <span className="font-display font-bold text-[21px] tracking-tight text-[#f0eee9] leading-none">
-        AsyncNode
-      </span>
+      <a href="/">
+        <span className="font-display font-bold text-[21px] tracking-tight text-[#f0eee9] leading-none"
+        >
+          AsyncNode
+        </span>
+      </a>
     </div>
   )
 }

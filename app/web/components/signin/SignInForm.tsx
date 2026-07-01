@@ -1,9 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Eye, EyeOff, Shield, Mail } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { cn } from "@/lib/utils"
+import axios from "axios"
+import api from "@/lib/api"
+import { toast } from "sonner"
+import { useMe } from "@/hooks/useMe"
+import { sendVerificationEmail } from "@/lib/sendVerification"
 
 const inputCls = cn(
   "w-full rounded px-4 py-3 text-sm text-[#f0eee9]",
@@ -14,10 +20,59 @@ const inputCls = cn(
 )
 
 export default function SignInForm() {
+  const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
+  const [form, setForm] = useState({ email: "", password: "" })
+  const [loading, setLoading] = useState(false)
+
+  const {user,loading: meLoading,route} = useMe();
+
+  useEffect(()=>{
+    if(user){
+      router.push("/dashboard");
+    }
+  },[user])
+
+  //handle form change
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
+
+  //handle submit form
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setLoading(true)
+
+    try {
+
+      const res = await api.post("/v1/auth/signin", {
+        email: form.email,
+        password: form.password,
+      })
+      console.log("res", res)
+      if(res.data.data.isVerified === false){
+          
+          await sendVerificationEmail(form.email)
+          router.push(`/verification/${form.email}`)
+      }else{
+        router.push("/dashboard")
+      }
+   
+
+      
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message ?? "Something went wrong. Please try again."
+        : "Something went wrong. Please try again."
+      toast.error(message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       {/* email */}
       <div className="mb-4">
         <label
@@ -28,9 +83,12 @@ export default function SignInForm() {
         </label>
         <input
           id="email"
+          name="email"
           type="email"
           placeholder="you@company.com"
           autoComplete="email"
+          value={form.email}
+          onChange={handleChange}
           className={inputCls}
         />
       </div>
@@ -46,9 +104,12 @@ export default function SignInForm() {
         <div className="relative">
           <input
             id="password"
+            name="password"
             type={showPassword ? "text" : "password"}
             placeholder="••••••••••••"
             autoComplete="current-password"
+            value={form.password}
+            onChange={handleChange}
             className={cn(inputCls, "pr-11 placeholder:tracking-[0.2em]")}
           />
           <button
@@ -62,7 +123,7 @@ export default function SignInForm() {
         </div>
       </div>
 
-      {/* remember / forgot */}
+      {/* forgot */}
       <div className="mb-6 flex items-center justify-between">
         <Link href="/forgot-password" className="text-[13px] text-amber-600 hover:underline">
           Forgot password?
@@ -70,11 +131,9 @@ export default function SignInForm() {
       </div>
 
       {/* primary CTA */}
-      <button type="submit" className="signin-cta mb-4">
-        Continue
+      <button type="submit" disabled={loading} className="signin-cta mb-4 disabled:opacity-50 disabled:cursor-not-allowed">
+        {loading ? "Signing in…" : "Continue"}
       </button>
-
-     
     </form>
   )
 }

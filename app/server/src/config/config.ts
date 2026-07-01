@@ -21,4 +21,9 @@ export const config = {
     smtpPass: process.env.SMTP_PASS as string,
     smtpSecure: process.env.SMTP_SECURE === "true",
 
+    //redis
+    redisUrl: process.env.REDIS_URL as string,
+
+    //env
+    isProduction: process.env.NODE_ENV === "production",
 }

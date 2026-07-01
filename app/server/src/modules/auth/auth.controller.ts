@@ -4,6 +4,13 @@ import {createUser, emailVerified, signInUser, signOutUser, verifyEmail, refresh
 import type { Request, Response, NextFunction } from 'express';
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from '../../constants/messages.ts';
 import { verifyRefreshToken } from '../../utils/tokens.ts';
+import { config } from '../../config/config.ts';
+
+const cookieBase = {
+    httpOnly: true,
+    secure: config.isProduction,
+    sameSite: (config.isProduction ? "strict" : "lax") as "strict" | "lax",
+};
 
 
 export const creatUserController = async (req: Request, res: Response,next:NextFunction) => {
@@ -64,27 +71,17 @@ export const signInUserController = async (req: Request, res: Response,next:Next
             return httpError(next, req, 401, result.message);
         }
 
-        const tokens = result as { accessToken: string; refreshToken: string };
+        const tokens = result as { accessToken: string; refreshToken: string; isVerified: boolean };
 
-        res.cookie("accessToken", tokens.accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 15 * 60 * 1000,
-        });
-
-        res.cookie("refreshToken", tokens.refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        res.cookie("accessToken", tokens.accessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", tokens.refreshToken, { ...cookieBase, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
         return httpResponse(
             res,
             req,
             200,
             SUCCESS_MESSAGES.USER_SIGNED_IN,
+            {isVerified: tokens.isVerified}
         );
 
     }catch(err:Error | unknown){
@@ -112,8 +109,8 @@ export const signOutUserController = async (req: Request, res: Response, next: N
             }
         }
 
-        res.clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "strict" });
-        res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "strict" });
+        res.clearCookie("accessToken", cookieBase);
+        res.clearCookie("refreshToken", cookieBase);
 
         return httpResponse(res, req, 200, SUCCESS_MESSAGES.USER_SIGNED_OUT);
     } catch (err: Error | unknown) {
@@ -172,12 +169,7 @@ export const refreshAccessTokenController = async (req: Request, res: Response, 
 
         const { accessToken } = result as { accessToken: string };
 
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "strict",
-            maxAge: 15 * 60 * 1000,
-        });
+        res.cookie("accessToken", accessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
 
         return httpResponse(res, req, 200, SUCCESS_MESSAGES.USER_SIGNED_IN);
     } catch (err: Error | unknown) {
@@ -206,6 +198,9 @@ export const verifyEmailController = async (req: Request, res: Response, next: N
             return httpError(next, req, 400, result.message);
         }
 
+        const { accessToken } = result as { accessToken: string };
+        res.cookie("accessToken", accessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
+
         return httpResponse(res, req, 200, "Email verified successfully");
 
     } catch (err: Error | unknown) {
@@ -220,3 +215,22 @@ export const verifyEmailController = async (req: Request, res: Response, next: N
     }
 }
 
+export const getMeController = async(req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const user = req.user;
+        if(!user){
+            return httpError(next, req, 401, ERROR_MESSAGES.UNAUTHORIZED);
+        }
+
+        return httpResponse(res, req, 200, "User retrieved successfully", {user});
+    }catch(err:Error | unknown){
+        return httpError(
+            next,
+            req,
+            500,
+            ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+            null,
+            { error: err instanceof Error ? err.message : String(err) }
+        );
+    }
+}

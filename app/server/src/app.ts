@@ -12,7 +12,10 @@ import {client} from "./config/redis.ts"; // Import the Redis client
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+}));
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json());
 app.use(cookieParser()); // Add this line to parse cookies

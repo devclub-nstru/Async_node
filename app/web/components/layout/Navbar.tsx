@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Workflow, Menu, X } from "lucide-react";
+import {useRouter} from "next/navigation";
 
 const NAV_LINKS = ["Features","Integrations","AI","Enterprise","Docs","Pricing"];
 
 export function Navbar() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -94,6 +96,8 @@ export function Navbar() {
               (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.65)';
               (e.target as HTMLElement).style.backgroundColor = 'transparent';
             }}
+
+            onClick={() => { router.push("/signin") }}
           >
             Sign in
           </a>
@@ -117,6 +121,7 @@ export function Navbar() {
               fontWeight: 500,
               letterSpacing: '0.02em',
             }}
+            onClick={() => { router.push("/signup") }}
           >
              Get Started Free
             <span style={{ fontSize: 12 }}>→</span>

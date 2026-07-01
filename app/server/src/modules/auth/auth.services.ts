@@ -44,7 +44,7 @@ export const signInUser = async(email:string,password:string)=>{
     try{
         const user = await getUserByEmail(email);
         if(user === null){
-            return new Error(ERROR_MESSAGES.USER_NOT_FOUND);
+            return new Error(ERROR_MESSAGES.INVALID_PASSWORD);
         }
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -58,9 +58,9 @@ export const signInUser = async(email:string,password:string)=>{
         const refreshToken = generateRefreshToken({userId: user.id, email, name:user.name});
     
         await db.update(users).set({ refreshToken }).where(eq(users.id, user.id));
+        const isVerified = user.isVerified;
 
-
-        return {accessToken, refreshToken} as { accessToken: string; refreshToken: string };
+        return {accessToken, refreshToken, isVerified} as { accessToken: string; refreshToken: string; isVerified: boolean };
     }catch(err){
         return err
     }
@@ -114,10 +114,10 @@ export const emailVerified = async(email:string,code:string)=>{
 
         await db.update(users).set({isVerified:true}).where(eq(users.id,user.id));
         await client.del(`email_verificationcode:${email}`);
-        return true;
+
+        const accessToken = generateAccessToken({ userId: user.id, email: user.email, name: user.name, isVerified: true });
+        return { accessToken };
     }catch(err){
         return err;
     }
 }
-
-
