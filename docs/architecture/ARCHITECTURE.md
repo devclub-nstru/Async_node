@@ -41,7 +41,7 @@ The frontend never executes workflows. It only manages workflow definitions and 
 **Technology**
 
 * Node.js
-* Express/Fastify
+* Express
 * TypeScript
 
 **Responsibilities**
