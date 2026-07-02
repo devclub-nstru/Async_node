@@ -21,3 +21,13 @@ export const getWorkflowById = async (workflowId: number) => {
     }
 
 }
+
+export const deleteWorkflowById = async (workflowId: number) => {
+    try{
+        const result = await db.delete(workflows).where(eq(workflows.id, workflowId)).returning();
+        return result[0]
+    }catch(err){
+        return err
+    }
+
+}

@@ -1,5 +1,5 @@
 import router from "express";
-import { createWorkflowController, getUserWorkflowsController, getWorkflowController } from "./workflow.controller.ts";
+import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController } from "./workflow.controller.ts";
 
 export const workflowRouter = router.Router();
 
@@ -143,3 +143,64 @@ workflowRouter.get("/workflows/:workflowId", getWorkflowController);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 workflowRouter.post("/workflows", createWorkflowController);
+
+/**
+ * @openapi
+ * /api/v1/workflows/workflows/{workflowId}:
+ *   delete:
+ *     tags:
+ *       - Workflows
+ *     summary: Delete a workflow by ID
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: workflowId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Numeric ID of the workflow
+ *     responses:
+ *       200:
+ *         description: Workflow deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Workflow'
+ *       400:
+ *         description: Invalid workflow ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Workflow not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+workflowRouter.delete("/workflows/:workflowId", deleteWorkflowController);

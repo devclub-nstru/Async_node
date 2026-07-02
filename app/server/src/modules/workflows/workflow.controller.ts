@@ -1,4 +1,4 @@
-import { createWorkflow, getUserWorkflows, getWorkflow } from "./workflow.services.ts";
+import { createWorkflow, deleteWorkflow, getUserWorkflows, getWorkflow } from "./workflow.services.ts";
 import {httpResponse} from "../../utils/httpResponse.ts";
 import {httpError} from "../../utils/httpError.ts";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages.ts";
@@ -67,6 +67,39 @@ export const createWorkflowController = async (req: Request, res: Response, next
         }
 
         httpResponse(res, req, 201, SUCCESS_MESSAGES.WORKFLOW_CREATED, workflow);
+    } catch (error) {
+        httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+    }
+}
+
+export const deleteWorkflowController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            httpError(next, req, 401, ERROR_MESSAGES.UNAUTHORIZED);
+            return;
+        }
+
+        const workflowId = parseInt(req.params.workflowId as string, 10);
+
+        if (isNaN(workflowId)) {
+            httpError(next, req, 400, ERROR_MESSAGES.WORKFLOW_INVALID_ID);
+            return;
+        }
+
+        const workflow = await deleteWorkflow(workflowId, userId);
+
+        if (workflow instanceof Error) {
+            if (workflow.message === ERROR_MESSAGES.WORKFLOW_NOT_FOUND) {
+                httpError(next, req, 404, workflow.message);
+                return;
+            }
+            httpError(next, req, 403, ERROR_MESSAGES.WORKFLOW_FORBIDDEN);
+            return;
+        }
+
+        httpResponse(res, req, 200, SUCCESS_MESSAGES.WORKFLOW_DELETED, workflow);
     } catch (error) {
         httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
     }

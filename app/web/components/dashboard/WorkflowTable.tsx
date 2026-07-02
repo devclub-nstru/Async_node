@@ -1,18 +1,52 @@
-import { Workflow, MoreHorizontal } from "lucide-react"
+"use client"
+
+import { useState } from "react"
+import { DropdownMenu } from "radix-ui"
+import { Workflow, MoreHorizontal, Trash2, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 import StatusPill from "./StatusPill"
 import type { WorkflowItem } from "./types"
+import { deleteWorkflow } from "@/services/workflows/deleteWorkflows"
 
-const COLUMNS = ["Name", "Status", "Runs", "Last run", ""]
+const COLUMNS = ["Name", "Status", "Updated", ""]
 
 interface WorkflowTableProps {
   workflows: WorkflowItem[]
+  loading?: boolean
+  onDeleted?: (workflowId: number) => void
 }
 
-function WorkflowRow({ wf, index }: { wf: WorkflowItem; index: number }) {
+function timeAgo(iso: string) {
+  const diffMs = Date.now() - new Date(iso).getTime()
+  const minutes = Math.floor(diffMs / 60000)
+  if (minutes < 1) return "just now"
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  return `${days}d ago`
+}
+
+function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number; onDeleted?: (workflowId: number) => void }) {
+  const [deleting, setDeleting] = useState(false)
+
+  async function handleDelete() {
+    if (deleting) return
+    setDeleting(true)
+    try {
+      await deleteWorkflow(wf.id)
+      toast.success(`"${wf.name}" deleted`)
+      onDeleted?.(wf.id)
+    } catch {
+      toast.error("Failed to delete workflow. Please try again.")
+      setDeleting(false)
+    }
+  }
+
   return (
     <div
-      className="grid grid-cols-[1fr_120px_80px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0 transition-colors hover:bg-white/[0.03] cursor-pointer"
-      style={{ animationDelay: `${140 + index * 30}ms` }}
+      className="grid grid-cols-[1fr_120px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0 transition-colors hover:bg-white/[0.03] cursor-pointer"
+      style={{ animationDelay: `${140 + index * 30}ms`, opacity: deleting ? 0.5 : 1 }}
     >
       <div className="min-w-0">
         <p className="truncate text-[14px] font-medium text-[#f0eee9]">{wf.name}</p>
@@ -21,13 +55,51 @@ function WorkflowRow({ wf, index }: { wf: WorkflowItem; index: number }) {
 
       <StatusPill status={wf.status} />
 
-      <span className="text-[13px] text-white/50">{wf.runs}</span>
+      <span className="text-[12px] text-white/35">{timeAgo(wf.updatedAt)}</span>
 
-      <span className="text-[12px] text-white/35">{wf.lastRun}</span>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>
+          <button
+            disabled={deleting}
+            className="flex items-center justify-center rounded p-1 text-white/25 transition-colors hover:bg-white/10 hover:text-white/60 disabled:pointer-events-none"
+          >
+            {deleting ? <Loader2 size={14} className="animate-spin" /> : <MoreHorizontal size={14} />}
+          </button>
+        </DropdownMenu.Trigger>
 
-      <button className="flex items-center justify-center rounded p-1 text-white/25 transition-colors hover:bg-white/10 hover:text-white/60">
-        <MoreHorizontal size={14} />
-      </button>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            align="end"
+            sideOffset={4}
+            className="z-50 min-w-[140px] rounded-lg border border-white/[0.08] bg-[#0a0a0d] p-1 shadow-2xl outline-none"
+          >
+            <DropdownMenu.Item
+              onSelect={handleDelete}
+              className="flex cursor-pointer items-center gap-2 rounded px-2.5 py-2 text-[13px] text-red-400 outline-none transition-colors hover:bg-red-500/10 data-highlighted:bg-red-500/10"
+            >
+              <Trash2 size={13} />
+              Delete
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+    </div>
+  )
+}
+
+function WorkflowRowSkeleton({ index }: { index: number }) {
+  return (
+    <div
+      className="grid grid-cols-[1fr_120px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0"
+      style={{ animationDelay: `${140 + index * 30}ms` }}
+    >
+      <div className="min-w-0 space-y-2">
+        <div className="h-3.5 w-2/3 animate-pulse rounded bg-white/[0.06]" />
+        <div className="h-3 w-1/2 animate-pulse rounded bg-white/[0.04]" />
+      </div>
+      <div className="h-5 w-16 animate-pulse rounded-full bg-white/[0.06]" />
+      <div className="h-3 w-14 animate-pulse rounded bg-white/[0.04]" />
+      <div className="h-4 w-4 animate-pulse rounded bg-white/[0.04]" />
     </div>
   )
 }
@@ -41,22 +113,24 @@ function EmptyState() {
   )
 }
 
-export default function WorkflowTable({ workflows }: WorkflowTableProps) {
+export default function WorkflowTable({ workflows, loading, onDeleted }: WorkflowTableProps) {
   return (
     <div
       className="dash-enter mb-6 overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm"
       style={{ animationDelay: "140ms" }}
     >
-      <div className="grid grid-cols-[1fr_120px_80px_100px_40px] gap-4 border-b border-white/[0.05] px-5 py-3">
+      <div className="grid grid-cols-[1fr_120px_100px_40px] gap-4 border-b border-white/[0.05] px-5 py-3">
         {COLUMNS.map((h) => (
           <span key={h} className="text-[11px] font-medium uppercase tracking-[0.06em] text-white/25">{h}</span>
         ))}
       </div>
 
-      {workflows.length === 0 ? (
+      {loading ? (
+        Array.from({ length: 5 }, (_, i) => <WorkflowRowSkeleton key={i} index={i} />)
+      ) : workflows.length === 0 ? (
         <EmptyState />
       ) : (
-        workflows.map((wf, i) => <WorkflowRow key={wf.id} wf={wf} index={i} />)
+        workflows.map((wf, i) => <WorkflowRow key={wf.id} wf={wf} index={i} onDeleted={onDeleted} />)
       )}
     </div>
   )

@@ -9,7 +9,7 @@ import axios from "axios"
 import api from "@/lib/api"
 import { toast } from "sonner"
 import { useMe } from "@/hooks/useMe"
-import { sendVerificationEmail } from "@/lib/sendVerification"
+import { sendVerificationEmail } from "@/services/auth/sendVerification"
 
 const inputCls = cn(
   "w-full rounded px-4 py-3 text-sm text-[#f0eee9]",

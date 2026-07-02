@@ -16,6 +16,7 @@ export const ERROR_MESSAGES = {
     WORKFLOW_NOT_FOUND: "Workflow not found",
     WORKFLOW_MISSING_FIELDS: "Name and description are required",
     WORKFLOW_INVALID_ID: "Invalid workflow ID",
+    WORKFLOW_FORBIDDEN: "You do not have permission to delete this workflow",
 
     // Server
     INTERNAL_SERVER_ERROR: "Internal Server Error",
@@ -35,4 +36,5 @@ export const SUCCESS_MESSAGES = {
     WORKFLOWS_RETRIEVED: "Workflows retrieved successfully",
     WORKFLOW_RETRIEVED: "Workflow retrieved successfully",
     WORKFLOW_CREATED: "Workflow created successfully",
+    WORKFLOW_DELETED: "Workflow deleted successfully",
 } as const;

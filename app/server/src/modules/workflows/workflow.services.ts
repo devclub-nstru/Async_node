@@ -1,6 +1,6 @@
 import { db } from "../../config/db.ts";
 import { workflows } from "../../db/schemas/workflow.schema.ts";
-import {getWorkflowById, getWorkflowsByUserId} from "./workflow.repo.ts";
+import {deleteWorkflowById, getWorkflowById, getWorkflowsByUserId} from "./workflow.repo.ts";
 
 
 export const createWorkflow = async (userId: number, name: string, description: string) => {
@@ -39,6 +39,25 @@ export const getWorkflow = async (workflowId:number)=>{
             return new Error("Workflow not found")
         }
 
+        return result
+    }catch(err){
+        return err
+    }
+}
+
+export const deleteWorkflow = async (workflowId:number, userId:number)=>{
+    try{
+        const workflow = await getWorkflowById(workflowId) as typeof workflows.$inferSelect | undefined;
+
+        if(!workflow) {
+            return new Error("Workflow not found")
+        }
+
+        if(workflow.userId !== userId) {
+            return new Error("Forbidden")
+        }
+
+        const result = await deleteWorkflowById(workflowId)
         return result
     }catch(err){
         return err
