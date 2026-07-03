@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { DropdownMenu } from "radix-ui"
 import { Workflow, MoreHorizontal, Trash2, Loader2 } from "lucide-react"
 import { toast } from "sonner"
@@ -29,6 +30,7 @@ function timeAgo(iso: string) {
 
 function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number; onDeleted?: (workflowId: number) => void }) {
   const [deleting, setDeleting] = useState(false)
+  const router = useRouter()
 
   async function handleDelete() {
     if (deleting) return
@@ -45,6 +47,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
 
   return (
     <div
+      onClick={() => router.push(`/builder/${wf.id}`)}
       className="grid grid-cols-[1fr_120px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0 transition-colors hover:bg-white/[0.03] cursor-pointer"
       style={{ animationDelay: `${140 + index * 30}ms`, opacity: deleting ? 0.5 : 1 }}
     >
@@ -61,6 +64,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
         <DropdownMenu.Trigger asChild>
           <button
             disabled={deleting}
+            onClick={(e) => e.stopPropagation()}
             className="flex items-center justify-center rounded p-1 text-white/25 transition-colors hover:bg-white/10 hover:text-white/60 disabled:pointer-events-none"
           >
             {deleting ? <Loader2 size={14} className="animate-spin" /> : <MoreHorizontal size={14} />}
@@ -71,6 +75,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
           <DropdownMenu.Content
             align="end"
             sideOffset={4}
+            onClick={(e) => e.stopPropagation()}
             className="z-50 min-w-[140px] rounded-lg border border-white/[0.08] bg-[#0a0a0d] p-1 shadow-2xl outline-none"
           >
             <DropdownMenu.Item

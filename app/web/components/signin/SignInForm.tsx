@@ -124,11 +124,11 @@ export default function SignInForm() {
       </div>
 
       {/* forgot */}
-      <div className="mb-6 flex items-center justify-between">
+      {/* <div className="mb-6 flex items-center justify-between">
         <Link href="/forgot-password" className="text-[13px] text-amber-600 hover:underline">
           Forgot password?
         </Link>
-      </div>
+      </div> */}
 
       {/* primary CTA */}
       <button type="submit" disabled={loading} className="signin-cta mb-4 disabled:opacity-50 disabled:cursor-not-allowed">
