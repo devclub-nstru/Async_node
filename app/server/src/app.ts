@@ -17,7 +17,7 @@ app.use(cors({
     credentials: true,
 }));
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser()); // Add this line to parse cookies
 app.use(express.urlencoded({ extended: true }));
 

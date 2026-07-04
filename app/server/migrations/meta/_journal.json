@@ -36,6 +36,13 @@
       "when": 1782797527578,
       "tag": "0004_futuristic_khan",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783152660991,
+      "tag": "0005_bumpy_silhouette",
+      "breakpoints": true
     }
   ]
 }

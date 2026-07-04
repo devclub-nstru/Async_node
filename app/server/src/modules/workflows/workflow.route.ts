@@ -1,5 +1,5 @@
 import router from "express";
-import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController } from "./workflow.controller.ts";
+import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController, updateWorkflowGraphController } from "./workflow.controller.ts";
 
 export const workflowRouter = router.Router();
 
@@ -204,3 +204,82 @@ workflowRouter.post("/workflows", createWorkflowController);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 workflowRouter.delete("/workflows/:workflowId", deleteWorkflowController);
+
+/**
+ * @openapi
+ * /api/v1/workflows/workflows/{workflowId}:
+ *   put:
+ *     tags:
+ *       - Workflows
+ *     summary: Save a workflow's graph (nodes and edges), syncing triggers and integrations
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: workflowId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Numeric ID of the workflow
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               graphJson:
+ *                 type: object
+ *                 properties:
+ *                   nodes:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                   edges:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *     responses:
+ *       200:
+ *         description: Workflow saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       $ref: '#/components/schemas/Workflow'
+ *       400:
+ *         description: Invalid workflow ID or graph payload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Workflow not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+workflowRouter.put("/workflows/:workflowId", updateWorkflowGraphController);

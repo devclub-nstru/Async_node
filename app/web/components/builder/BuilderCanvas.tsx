@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useRef, useState, type DragEvent } from "react"
+import { useCallback, useEffect, useRef, useState, type DragEvent } from "react"
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -25,6 +25,14 @@ function nextNodeId() {
   return `node-${nodeIdCounter}`
 }
 
+function bumpNodeIdCounter(existingNodes: Node[]) {
+  const maxExisting = existingNodes.reduce((max, node) => {
+    const match = /^node-(\d+)$/.exec(node.id)
+    return match ? Math.max(max, Number(match[1])) : max
+  }, 0)
+  nodeIdCounter = Math.max(nodeIdCounter, maxExisting)
+}
+
 function labelForType(type: BuilderNodeCategory) {
   return NODE_DEFS.find((n) => n.type === type)?.label ?? type
 }
@@ -35,23 +43,34 @@ const NODE_TYPES = { workflow: WorkflowNode }
 
 export interface BuilderCanvasHandle {
   updateNodeData: (nodeId: string, data: Record<string, unknown>) => void
+  getGraph: () => { nodes: Node[]; edges: Edge[] }
 }
 
 interface BuilderCanvasProps {
   onSelectNode: (node: Node | null) => void
   canvasRef: React.MutableRefObject<BuilderCanvasHandle | null>
+  initialGraph?: { nodes: Node[]; edges: Edge[] } | null
 }
 
-export default function BuilderCanvas({ onSelectNode, canvasRef }: BuilderCanvasProps) {
+export default function BuilderCanvas({ onSelectNode, canvasRef, initialGraph }: BuilderCanvasProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
+  useEffect(() => {
+    if (!initialGraph) return
+    setNodes(initialGraph.nodes)
+    setEdges(initialGraph.edges)
+    bumpNodeIdCounter(initialGraph.nodes)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialGraph])
+
   canvasRef.current = {
     updateNodeData: (nodeId, data) => {
       setNodes((nds) => nds.map((n) => (n.id === nodeId ? { ...n, data } : n)))
     },
+    getGraph: () => ({ nodes, edges }),
   }
 
   const onNodeClick: NodeMouseHandler = useCallback(

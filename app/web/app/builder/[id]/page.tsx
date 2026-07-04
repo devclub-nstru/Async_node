@@ -1,14 +1,17 @@
 "use client";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
 import {notFound} from "next/navigation";
-import type {Node} from "reactflow";
+import axios from "axios";
+import {toast} from "sonner";
+import type {Edge, Node} from "reactflow";
 import {useMe} from "@/hooks/useMe";
 import {useWorkflow} from "@/hooks/useWorkflow";
 import BuilderTopbar from "@/components/builder/BuilderTopbar";
 import NodeSidebar from "@/components/builder/NodeSidebar";
 import BuilderCanvas, {type BuilderCanvasHandle} from "@/components/builder/BuilderCanvas";
 import NodeConfigPanel from "@/components/builder/NodeConfigPanel";
+import api from "@/lib/api";
 export default function builder() {
     const { user,loading,route } = useMe()
     const params = useParams<{ id: string }>()
@@ -19,9 +22,28 @@ export default function builder() {
 
     const router = useRouter()
 
-    function handleSave() {
+    const initialGraph = useMemo(() => {
+        const graph = workflow?.graphJson as { nodes?: Node[]; edges?: Edge[] } | null | undefined
+        if (!graph || !Array.isArray(graph.nodes) || !Array.isArray(graph.edges)) return null
+        return { nodes: graph.nodes, edges: graph.edges }
+    }, [workflow])
+
+    async function handleSave() {
+        const graph = canvasRef.current?.getGraph()
+        if (!graph) return
+
         setSaving(true)
-        setTimeout(() => setSaving(false), 600)
+        try {
+            const response = await api.put(`/v1/workflows/workflows/${params.id}`, { graphJson: graph })
+            toast.success(response.data?.message ?? "Workflow saved successfully")
+        } catch (err) {
+            const message = axios.isAxiosError(err)
+                ? err.response?.data?.message ?? "Failed to save workflow"
+                : "Failed to save workflow"
+            toast.error(message)
+        } finally {
+            setSaving(false)
+        }
     }
 
     function handleNodeDataChange(nodeId: string, data: Record<string, unknown>) {
@@ -54,7 +76,7 @@ export default function builder() {
         <div className="flex h-screen flex-col bg-[#0a0a0d]">
             <BuilderTopbar workflowName={workflow?.name} saving={saving} onSave={handleSave} />
             <div className="flex min-h-0 flex-1">
-                <BuilderCanvas canvasRef={canvasRef} onSelectNode={setSelectedNode} />
+                <BuilderCanvas canvasRef={canvasRef} onSelectNode={setSelectedNode} initialGraph={initialGraph} />
                 {selectedNode ? (
                     <NodeConfigPanel
                         node={selectedNode}

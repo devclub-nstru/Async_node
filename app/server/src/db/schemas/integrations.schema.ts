@@ -5,6 +5,7 @@ import { workflows } from "./workflow.schema.ts";
 export const integrations = pgTable("integrations",{
     id: serial("id").primaryKey(),
     workflowId: integer("workflow_id").notNull().references(() => workflows.id),
+    nodeId: varchar("node_id", { length: 255 }).notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
     credentialsJson: jsonb("credentials_json").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),

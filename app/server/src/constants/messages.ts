@@ -17,6 +17,9 @@ export const ERROR_MESSAGES = {
     WORKFLOW_MISSING_FIELDS: "Name and description are required",
     WORKFLOW_INVALID_ID: "Invalid workflow ID",
     WORKFLOW_FORBIDDEN: "You do not have permission to delete this workflow",
+    WORKFLOW_UPDATE_FORBIDDEN: "You do not have permission to update this workflow",
+    WORKFLOW_GRAPH_INVALID: "graphJson with nodes and edges arrays is required",
+    WORKFLOW_TOO_MANY_NODES: "Workflow exceeds the maximum allowed number of nodes",
 
     // Server
     INTERNAL_SERVER_ERROR: "Internal Server Error",
@@ -37,4 +40,5 @@ export const SUCCESS_MESSAGES = {
     WORKFLOW_RETRIEVED: "Workflow retrieved successfully",
     WORKFLOW_CREATED: "Workflow created successfully",
     WORKFLOW_DELETED: "Workflow deleted successfully",
+    WORKFLOW_SAVED: "Workflow saved successfully",
 } as const;
