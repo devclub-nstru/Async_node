@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 import {config} from './config.ts';
 // url: config.redisUrl
 export const client = createClient({
-
+url: config.redisUrl 
 
 });
 
