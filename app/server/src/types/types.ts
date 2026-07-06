@@ -37,14 +37,16 @@ export type thttpError= {
 
 }
 
-export enum NodeType {
-  OPENAI = "openai",
-  GROQ = "groq",
-  ANTHROPIC = "anthropic",
-  HTTP = "http",
-  SLACK = "slack",
-  EMAIL = "email"
-}
+export const NodeType = {
+  OPENAI: "openai",
+  GROQ: "groq",
+  ANTHROPIC: "anthropic",
+  HTTP: "http",
+  SLACK: "slack",
+  EMAIL: "email",
+} as const;
+
+export type NodeType = (typeof NodeType)[keyof typeof NodeType];
 
 export interface WorkflowNode {
   id: string;

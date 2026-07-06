@@ -40,6 +40,24 @@ export const deleteWorkflowById = async (workflowId: number) => {
 
 }
 
+export const getTriggersByWorkflowId = async (workflowId: number) => {
+    try{
+        const result = await db.select().from(triggers).where(eq(triggers.workflowId, workflowId));
+        return result
+    }catch(err){
+        return err
+    }
+}
+
+export const getIntegrationsByWorkflowId = async (workflowId: number) => {
+    try{
+        const result = await db.select().from(integrations).where(eq(integrations.workflowId, workflowId));
+        return result
+    }catch(err){
+        return err
+    }
+}
+
 export const saveWorkflowGraph = async (
     workflowId: number,
     graphJson: unknown,

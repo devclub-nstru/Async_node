@@ -52,7 +52,6 @@ export default function DashboardClient({ user }: DashboardClientProps) {
   async function handleSignOut() {
     setSigningOut(true)
     try {
-      console.log(user)
       await api.post("/v1/auth/signout")
       router.push("/signin")
     } catch {

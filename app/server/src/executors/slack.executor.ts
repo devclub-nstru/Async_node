@@ -7,8 +7,11 @@ export async function executeSlackNode(
     webhookUrl: string;
   }
 ) {
-  return sendSlackMessage({
+  console.log(`[node ${node.id}] slack: started`);
+  const result = await sendSlackMessage({
     credentials,
     text: node.data.text
   });
+  console.log(`[node ${node.id}] slack: completed`);
+  return result;
 }

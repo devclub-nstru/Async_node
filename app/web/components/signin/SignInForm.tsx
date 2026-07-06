@@ -50,7 +50,6 @@ export default function SignInForm() {
         email: form.email,
         password: form.password,
       })
-      console.log("res", res)
       if(res.data.data.isVerified === false){
           
           await sendVerificationEmail(form.email)

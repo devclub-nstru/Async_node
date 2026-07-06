@@ -92,44 +92,6 @@ const integrations = [
   },
 ];
 
-const logos = integrations.map((item) => (
-  <div
-    key={item.name}
-    className="
-      flex-shrink-0
-      w-[100px]
-      h-[100px]
-      rounded-2xl
-      border
-      flex
-      items-center
-      justify-center
-      transition-all
-      duration-300
-      hover:border-white/15
-    "
-    style={{
-      background: "rgba(255, 255, 255, 0.04)",
-      borderColor: "rgba(255,255,255,0.06)",
-      backdropFilter: "blur(24px)",
-      fontFamily: "Inter, sans-serif",
-    }}
-  >
-    <img
-      src={item.image}
-      alt={item.name}
-      className="
-        h-10
-        w-auto
-        object-contain
-        opacity-80
-        hover:opacity-100
-        transition-opacity
-      "
-    />
-  </div>
-));
-
 export function IntegrationsSection() {
   return (
     <section className="relative pt-36 pb-12 overflow-hidden">

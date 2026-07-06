@@ -7,6 +7,7 @@ import {toast} from "sonner";
 import type {Edge, Node} from "reactflow";
 import {useMe} from "@/hooks/useMe";
 import {useWorkflow} from "@/hooks/useWorkflow";
+import {useExecutionSocket} from "@/hooks/useExecutionSocket";
 import BuilderTopbar from "@/components/builder/BuilderTopbar";
 import NodeSidebar from "@/components/builder/NodeSidebar";
 import BuilderCanvas, {type BuilderCanvasHandle} from "@/components/builder/BuilderCanvas";
@@ -19,6 +20,7 @@ export default function builder() {
     const [saving, setSaving] = useState(false)
     const [selectedNode, setSelectedNode] = useState<Node | null>(null)
     const canvasRef = useRef<BuilderCanvasHandle | null>(null)
+    const { nodeStatuses } = useExecutionSocket(params.id)
 
     const router = useRouter()
 
@@ -76,10 +78,16 @@ export default function builder() {
         <div className="flex h-screen flex-col bg-[#0a0a0d]">
             <BuilderTopbar workflowName={workflow?.name} saving={saving} onSave={handleSave} />
             <div className="flex min-h-0 flex-1">
-                <BuilderCanvas canvasRef={canvasRef} onSelectNode={setSelectedNode} initialGraph={initialGraph} />
+                <BuilderCanvas
+                    canvasRef={canvasRef}
+                    onSelectNode={setSelectedNode}
+                    initialGraph={initialGraph}
+                    nodeStatuses={nodeStatuses}
+                />
                 {selectedNode ? (
                     <NodeConfigPanel
                         node={selectedNode}
+                        workflowId={Number(params.id)}
                         onChange={handleNodeDataChange}
                         onClose={() => setSelectedNode(null)}
                     />

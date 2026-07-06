@@ -42,4 +42,5 @@ export const SUCCESS_MESSAGES = {
     WORKFLOW_CREATED: "Workflow created successfully",
     WORKFLOW_DELETED: "Workflow deleted successfully",
     WORKFLOW_SAVED: "Workflow saved successfully",
+    WORKFLOW_RUN_STARTED: "Workflow run started successfully",
 } as const;

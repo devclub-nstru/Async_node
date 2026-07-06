@@ -1,5 +1,5 @@
 import router from "express";
-import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController, updateWorkflowGraphController } from "./workflow.controller.ts";
+import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController, updateWorkflowGraphController, runWorkflowController } from "./workflow.controller.ts";
 
 export const workflowRouter = router.Router();
 
@@ -283,3 +283,73 @@ workflowRouter.delete("/workflows/:workflowId", deleteWorkflowController);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 workflowRouter.put("/workflows/:workflowId", updateWorkflowGraphController);
+
+/**
+ * @openapi
+ * /api/v1/workflows/workflows/{workflowId}/run:
+ *   post:
+ *     tags:
+ *       - Workflows
+ *     summary: Manually run a workflow (builds the executable nodes from graph_json plus trigger/integration config)
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: workflowId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Numeric ID of the workflow
+ *     responses:
+ *       200:
+ *         description: Workflow run started successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/SuccessResponse'
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         nodes:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                         edges:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *       400:
+ *         description: Invalid workflow ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Workflow not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+workflowRouter.post("/workflows/:workflowId/run", runWorkflowController);

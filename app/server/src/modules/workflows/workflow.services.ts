@@ -75,8 +75,6 @@ export const updateWorkflowGraph = async (
 ) => {
     try {
         const workflow = await getWorkflowById(workflowId) as typeof workflows.$inferSelect | undefined;
-        console.log(workflow)
-        console.log(userId)
         if (!workflow) {
             return new Error(ERROR_MESSAGES.WORKFLOW_NOT_FOUND);
         }

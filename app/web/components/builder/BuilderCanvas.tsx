@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState, type DragEvent } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react"
 import ReactFlow, {
   Background,
   BackgroundVariant,
@@ -18,6 +18,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css"
 import { DRAG_DATA_FORMAT, NODE_DEFS, type BuilderNodeCategory } from "./nodeTypes"
 import WorkflowNode from "./WorkflowNode"
+import type { NodeRunStatus } from "@/hooks/useExecutionSocket"
 
 let nodeIdCounter = 0
 function nextNodeId() {
@@ -50,13 +51,23 @@ interface BuilderCanvasProps {
   onSelectNode: (node: Node | null) => void
   canvasRef: React.MutableRefObject<BuilderCanvasHandle | null>
   initialGraph?: { nodes: Node[]; edges: Edge[] } | null
+  nodeStatuses?: Record<string, NodeRunStatus>
 }
 
-export default function BuilderCanvas({ onSelectNode, canvasRef, initialGraph }: BuilderCanvasProps) {
+export default function BuilderCanvas({ onSelectNode, canvasRef, initialGraph, nodeStatuses }: BuilderCanvasProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null)
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  const renderedNodes = useMemo(() => {
+    if (!nodeStatuses || Object.keys(nodeStatuses).length === 0) return nodes
+    return nodes.map((node) =>
+      nodeStatuses[node.id]
+        ? { ...node, data: { ...node.data, runStatus: nodeStatuses[node.id] } }
+        : node
+    )
+  }, [nodes, nodeStatuses])
 
   useEffect(() => {
     if (!initialGraph) return
@@ -117,7 +128,7 @@ export default function BuilderCanvas({ onSelectNode, canvasRef, initialGraph }:
   return (
     <div ref={wrapperRef} className="h-full w-full flex-1 bg-[#0a0a0d]">
       <ReactFlow
-        nodes={nodes}
+        nodes={renderedNodes}
         edges={edges}
         nodeTypes={NODE_TYPES}
         onNodesChange={onNodesChange}
