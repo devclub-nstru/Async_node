@@ -23,6 +23,7 @@ export const ERROR_MESSAGES = {
 
     // Server
     INTERNAL_SERVER_ERROR: "Internal Server Error",
+    RATE_LIMIT_EXCEEDED: "Too many requests. Please try again later.",
 
     //verification code
     VERIFICATION_CODE_EXPIRED: "Verification code has expired",

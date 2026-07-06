@@ -6,8 +6,8 @@ import {eq} from "drizzle-orm";
 
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken} from "../../utils/tokens.ts";
 import { ERROR_MESSAGES } from "../../constants/messages.ts";
-import {sendVerificationEmail} from "../../utils/emailsend.ts";
 import {client} from "../../config/redis.ts";
+import { addVerificationEmailJob } from "../../jobs/verificationEmail.job.ts";
 
 export const createUser = async (name: string, email: string, password: string) => {
   
@@ -73,7 +73,7 @@ export const verifyEmail = async(email:string)=>{
         await client.set(`email_verificationcode:${email}`, code, {
             EX: 60 * 10,
         });
-        await sendVerificationEmail(email, code);
+        await addVerificationEmailJob({email, code});
 
     }catch(err){
         return err;
