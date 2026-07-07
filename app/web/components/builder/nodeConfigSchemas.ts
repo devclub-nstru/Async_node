@@ -1,6 +1,6 @@
 import type { BuilderNodeCategory } from "./nodeTypes"
 
-export type FieldType = "text" | "textarea" | "select" | "password" | "number"
+export type FieldType = "text" | "textarea" | "select" | "password" | "number" | "keyvalue"
 
 export interface ConfigField {
   key: string
@@ -65,8 +65,8 @@ export const NODE_CONFIG_FIELDS: Record<Exclude<BuilderNodeCategory, "ai" | "tri
   http: [
     { key: "url", label: "URL", type: "text", placeholder: "https://api.example.com/endpoint", required: true },
     { key: "method", label: "Method", type: "select", options: HTTP_METHOD_OPTIONS, required: true },
-    { key: "headers", label: "Headers (JSON)", type: "textarea", placeholder: '{ "Content-Type": "application/json" }' },
-    { key: "body", label: "Body (JSON)", type: "textarea", placeholder: '{ "key": "value" }' },
+    { key: "headers", label: "Headers", type: "keyvalue" },
+    { key: "body", label: "Body", type: "keyvalue" },
   ],
   email: [
     { key: "host", label: "SMTP Host", type: "text", placeholder: "smtp.example.com", required: true },
@@ -78,7 +78,8 @@ export const NODE_CONFIG_FIELDS: Record<Exclude<BuilderNodeCategory, "ai" | "tri
     { key: "html", label: "Body (HTML)", type: "textarea", required: true },
   ],
   slack: [
-    { key: "webhookUrl", label: "Webhook URL", type: "text", placeholder: "https://hooks.slack.com/services/...", required: true },
+    { key: "botToken", label: "Bot Token", type: "password", placeholder: "xoxb-...", required: true },
+    { key: "channel", label: "Channel", type: "text", placeholder: "#general or C0123456789", required: true },
     { key: "text", label: "Message", type: "textarea", required: true },
   ],
 }

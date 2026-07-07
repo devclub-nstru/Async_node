@@ -11,7 +11,7 @@ function subtitleFor(category: BuilderNodeCategory | undefined, data: Record<str
   if (category === "http") return (data.method as string) || "Choose method"
   if (category === "trigger") return (data.type as string) || "Choose trigger"
   if (category === "email") return (data.to as string) || "Not configured"
-  if (category === "slack") return (data.webhookUrl as string) ? "Configured" : "Not configured"
+  if (category === "slack") return (data.channel as string) || "Not configured"
   return undefined
 }
 

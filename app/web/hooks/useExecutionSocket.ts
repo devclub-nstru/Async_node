@@ -21,6 +21,8 @@ function backendOrigin() {
 
 export function useExecutionSocket(workflowId: number | string | undefined) {
     const [nodeStatuses, setNodeStatuses] = useState<Record<string, NodeRunStatus>>({})
+    const [nodeResponses, setNodeResponses] = useState<Record<string, unknown>>({})
+    const [activeExecutions, setActiveExecutions] = useState<Set<string>>(new Set())
     const socketRef = useRef<Socket | null>(null)
 
     useEffect(() => {
@@ -35,7 +37,22 @@ export function useExecutionSocket(workflowId: number | string | undefined) {
 
         socket.on('execution:event', (event: ExecutionEvent) => {
             if (event.type === 'execution:started') {
+                setActiveExecutions((prev) => {
+                    const next = new Set(prev)
+                    next.add(event.executionId)
+                    return next
+                })
                 setNodeStatuses({})
+                setNodeResponses({})
+                return
+            }
+
+            if (event.type === 'execution:finished') {
+                setActiveExecutions((prev) => {
+                    const next = new Set(prev)
+                    next.delete(event.executionId)
+                    return next
+                })
                 return
             }
 
@@ -45,8 +62,14 @@ export function useExecutionSocket(workflowId: number | string | undefined) {
                 setNodeStatuses((prev) => ({ ...prev, [event.nodeId!]: 'running' }))
             } else if (event.type === 'node:success') {
                 setNodeStatuses((prev) => ({ ...prev, [event.nodeId!]: 'success' }))
+                if (event.data !== undefined) {
+                    setNodeResponses((prev) => ({ ...prev, [event.nodeId!]: event.data }))
+                }
             } else if (event.type === 'node:failed') {
                 setNodeStatuses((prev) => ({ ...prev, [event.nodeId!]: 'failed' }))
+                if (event.error) {
+                    setNodeResponses((prev) => ({ ...prev, [event.nodeId!]: { error: event.error } }))
+                }
             }
         })
 
@@ -56,5 +79,5 @@ export function useExecutionSocket(workflowId: number | string | undefined) {
         }
     }, [workflowId])
 
-    return { nodeStatuses }
+    return { nodeStatuses, nodeResponses, isExecuting: activeExecutions.size > 0 }
 }

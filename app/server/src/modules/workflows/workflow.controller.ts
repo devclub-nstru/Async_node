@@ -1,5 +1,6 @@
 import { createWorkflow, deleteWorkflow, getUserWorkflows, getWorkflow, updateWorkflowGraph } from "./workflow.services.ts";
-import { executeWorkflow } from "./executor.services.ts";
+import { buildExecutionGraph } from "./executor.services.ts";
+import { addWorkflowExecutionJob } from "../../jobs/workflowExecution.job.ts";
 import {httpResponse} from "../../utils/httpResponse.ts";
 import {httpError} from "../../utils/httpError.ts";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages.ts";
@@ -176,22 +177,25 @@ export const runWorkflowController = async (req: Request, res: Response, next: N
             return;
         }
 
-        const result = await executeWorkflow(workflowId, userId);
+        const graph = await buildExecutionGraph(workflowId, userId);
 
-        if (result instanceof Error) {
-            if (result.message === ERROR_MESSAGES.WORKFLOW_NOT_FOUND) {
-                httpError(next, req, 404, result.message);
+        if (graph instanceof Error) {
+            if (graph.message === ERROR_MESSAGES.WORKFLOW_NOT_FOUND) {
+                httpError(next, req, 404, graph.message);
                 return;
             }
-            if (result.message === ERROR_MESSAGES.WORKFLOW_UPDATE_FORBIDDEN) {
-                httpError(next, req, 403, result.message);
+            if (graph.message === ERROR_MESSAGES.WORKFLOW_UPDATE_FORBIDDEN) {
+                httpError(next, req, 403, graph.message);
                 return;
             }
-            httpError(next, req, 400, result.message);
+            httpError(next, req, 400, graph.message);
             return;
         }
 
-        httpResponse(res, req, 200, SUCCESS_MESSAGES.WORKFLOW_RUN_STARTED, result);
+        const executionId = `exec_${Date.now()}_${workflowId}`;
+        await addWorkflowExecutionJob({ workflowId, userId, executionId });
+
+        httpResponse(res, req, 202, SUCCESS_MESSAGES.WORKFLOW_RUN_STARTED, { executionId, status: "queued" });
     } catch (error) {
         httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
     }

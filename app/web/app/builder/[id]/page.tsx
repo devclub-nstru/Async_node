@@ -12,6 +12,7 @@ import BuilderTopbar from "@/components/builder/BuilderTopbar";
 import NodeSidebar from "@/components/builder/NodeSidebar";
 import BuilderCanvas, {type BuilderCanvasHandle} from "@/components/builder/BuilderCanvas";
 import NodeConfigPanel from "@/components/builder/NodeConfigPanel";
+import NodeOutputTerminal from "@/components/builder/NodeOutputTerminal";
 import api from "@/lib/api";
 export default function builder() {
     const { user,loading,route } = useMe()
@@ -20,7 +21,7 @@ export default function builder() {
     const [saving, setSaving] = useState(false)
     const [selectedNode, setSelectedNode] = useState<Node | null>(null)
     const canvasRef = useRef<BuilderCanvasHandle | null>(null)
-    const { nodeStatuses } = useExecutionSocket(params.id)
+    const { nodeStatuses, nodeResponses, isExecuting } = useExecutionSocket(params.id)
 
     const router = useRouter()
 
@@ -76,24 +77,29 @@ export default function builder() {
 
     return(
         <div className="flex h-screen flex-col bg-[#0a0a0d]">
-            <BuilderTopbar workflowName={workflow?.name} saving={saving} onSave={handleSave} />
-            <div className="flex min-h-0 flex-1">
-                <BuilderCanvas
-                    canvasRef={canvasRef}
-                    onSelectNode={setSelectedNode}
-                    initialGraph={initialGraph}
-                    nodeStatuses={nodeStatuses}
-                />
-                {selectedNode ? (
-                    <NodeConfigPanel
-                        node={selectedNode}
-                        workflowId={Number(params.id)}
-                        onChange={handleNodeDataChange}
-                        onClose={() => setSelectedNode(null)}
+            <BuilderTopbar workflowName={workflow?.name} saving={saving} disabled={isExecuting} onSave={handleSave} />
+            <div className="flex min-h-0 flex-1 flex-col">
+                <div className="flex min-h-0 flex-1">
+                    <BuilderCanvas
+                        canvasRef={canvasRef}
+                        onSelectNode={setSelectedNode}
+                        initialGraph={initialGraph}
+                        nodeStatuses={nodeStatuses}
+                        locked={isExecuting}
                     />
-                ) : (
-                    <NodeSidebar />
-                )}
+                    {selectedNode ? (
+                        <NodeConfigPanel
+                            node={selectedNode}
+                            workflowId={Number(params.id)}
+                            onChange={handleNodeDataChange}
+                            onClose={() => setSelectedNode(null)}
+                            disabled={isExecuting}
+                        />
+                    ) : (
+                        <NodeSidebar disabled={isExecuting} />
+                    )}
+                </div>
+                <NodeOutputTerminal node={selectedNode} response={selectedNode ? nodeResponses[selectedNode.id] : undefined} />
             </div>
         </div>
     )

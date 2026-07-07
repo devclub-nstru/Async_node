@@ -22,6 +22,7 @@ interface NodeConfigPanelProps {
   workflowId: number
   onChange: (nodeId: string, data: Record<string, unknown>) => void
   onClose: () => void
+  disabled?: boolean
 }
 
 const PROVIDER_FIELD = {
@@ -32,7 +33,7 @@ const PROVIDER_FIELD = {
   options: AI_PROVIDERS.map((p) => ({ value: p.value, label: p.label })),
 }
 
-export default function NodeConfigPanel({ node, workflowId, onChange, onClose }: NodeConfigPanelProps) {
+export default function NodeConfigPanel({ node, workflowId, onChange, onClose, disabled }: NodeConfigPanelProps) {
   const category = node.data?.category as BuilderNodeCategory | undefined
   const def = getNodeDef(category)
   const label = def?.label ?? node.data?.label ?? "Node"
@@ -41,7 +42,7 @@ export default function NodeConfigPanel({ node, workflowId, onChange, onClose }:
   const isManualTrigger = category === "trigger" && (node.data?.type ?? "manual") === "manual"
   const [running, setRunning] = useState(false)
 
-  function setField(key: string, value: string) {
+  function setField(key: string, value: string | Record<string, string>) {
     onChange(node.id, { ...node.data, [key]: value })
   }
 
@@ -71,7 +72,7 @@ export default function NodeConfigPanel({ node, workflowId, onChange, onClose }:
           : []
 
   return (
-    <div className="flex w-64 shrink-0 flex-col gap-3 overflow-y-auto border-l border-white/[0.06] bg-[#0a0a0d] p-3">
+    <div className={`flex w-64 shrink-0 flex-col gap-3 overflow-y-auto border-l border-white/6 bg-[#0a0a0d] p-3 ${disabled ? "pointer-events-none opacity-70" : ""}`} aria-disabled={disabled}>
       <div className="flex items-center justify-between px-1">
         <div className="flex min-w-0 items-center gap-2">
           {Icon && (
@@ -88,7 +89,8 @@ export default function NodeConfigPanel({ node, workflowId, onChange, onClose }:
         </div>
         <button
           onClick={onClose}
-          className="flex shrink-0 items-center justify-center rounded p-1 text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/70"
+          disabled={disabled}
+          className="flex shrink-0 items-center justify-center rounded p-1 text-white/30 transition-colors hover:bg-white/6 hover:text-white/70"
         >
           <X size={13} />
         </button>
@@ -96,7 +98,7 @@ export default function NodeConfigPanel({ node, workflowId, onChange, onClose }:
 
       <div className="flex items-center justify-between px-1">
         <span className="text-[10px] uppercase tracking-[0.06em] text-white/20">Node ID</span>
-        <code className="truncate rounded bg-white/[0.04] px-1.5 py-0.5 font-mono text-[10px] text-white/40">
+        <code className="truncate rounded bg-white/4 px-1.5 py-0.5 font-mono text-[10px] text-white/40">
           {node.id}
         </code>
       </div>
@@ -108,14 +110,15 @@ export default function NodeConfigPanel({ node, workflowId, onChange, onClose }:
           <ConfigFieldInput
             key={field.key}
             field={field}
-            value={(node.data?.[field.key] as string) ?? ""}
+            value={node.data?.[field.key] ?? (field.type === "keyvalue" ? {} : "")}
             onChange={(value) => setField(field.key, value)}
+            disabled={disabled}
           />
         ))
       )}
 
       {isManualTrigger && (
-        <Button size="sm" className="w-full" onClick={handleRun} disabled={running}>
+        <Button size="sm" className="w-full" onClick={handleRun} disabled={running || disabled}>
           {running ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
           {running ? "Running..." : "Run"}
         </Button>

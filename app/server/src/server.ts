@@ -5,6 +5,7 @@ import { SUCCESS_MESSAGES } from "./constants/messages.ts";
 import logger from "./utils/logger.ts";
 import { attachExecutionSocket } from "./ws/executionSocket.ts";
 import "./workers/VerificationMailworker.ts";
+import "./workers/WorkflowExecutionWorker.ts";
 
 
 const server = app.listen(config.port, () => {

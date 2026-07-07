@@ -150,7 +150,7 @@ async function runNodeExecutor(node: WorkflowNode) {
 
     case NodeType.SLACK:
       return executeSlackNode(node, {
-        webhookUrl: node.data.webhookUrl,
+        botToken: node.data.botToken,
       });
 
     case NodeType.ANTHROPIC:

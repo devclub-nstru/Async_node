@@ -8,7 +8,7 @@ import { globalExecutor, type ExecutorEdge, type ExecutorNode } from "../../exec
 type GraphNode = { id: string; data?: Record<string, unknown> };
 type GraphJson = { nodes: GraphNode[]; edges: unknown[] };
 
-export const executeWorkflow = async (workflowId: number, userId: number) => {
+export const buildExecutionGraph = async (workflowId: number, userId: number) => {
     try {
         const workflow = await getWorkflowById(workflowId) as typeof workflows.$inferSelect | undefined;
 
@@ -57,17 +57,29 @@ export const executeWorkflow = async (workflowId: number, userId: number) => {
             return { id: node.id, config: (node.data ?? {}) as Record<string, any> };
         });
 
-        const executionId = `exec_${Date.now()}_${workflowId}`;
+        return { nodes, edges: edges as ExecutorEdge[] };
+    } catch (err) {
+        return err instanceof Error ? err : new Error(String(err));
+    }
+};
 
+export const executeWorkflow = async (workflowId: number, userId: number, executionId: string) => {
+    const graph = await buildExecutionGraph(workflowId, userId);
+
+    if (graph instanceof Error) {
+        return graph;
+    }
+
+    try {
         const executionContext = await globalExecutor(
             executionId,
             String(workflowId),
-            nodes,
-            edges as ExecutorEdge[]
+            graph.nodes,
+            graph.edges
         );
 
         return executionContext;
     } catch (err) {
-        return err;
+        return err instanceof Error ? err : new Error(String(err));
     }
 };
