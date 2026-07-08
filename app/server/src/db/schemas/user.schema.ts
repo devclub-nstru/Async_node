@@ -1,4 +1,4 @@
-import { pgTable, serial, text, varchar,boolean } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, boolean, timestamp } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users",{
     id: serial("id").primaryKey(),
@@ -7,7 +7,7 @@ export const users = pgTable("users",{
     password:text("password").notNull(),
     refreshToken:text("refresh_token"),
     isVerified: boolean("is_verified").notNull().default(false),
-    createdAt: text("created_at").notNull().default(new Date().toISOString()),
-    updatedAt: text("updated_at").notNull().default(new Date().toISOString())
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow()
     
 })

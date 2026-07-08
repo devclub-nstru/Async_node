@@ -23,7 +23,10 @@ export default function VerifyCard({ userId }: { userId: string }) {
     if(user?.isVerified){
       router.push("/dashboard")
     }
-  },[user])
+    if(route){
+      router.push("/signin")
+    }
+  },[user,route])
 
   const handleChange = useCallback(
     (i: number, val: string) => {

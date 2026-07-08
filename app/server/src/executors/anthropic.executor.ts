@@ -7,9 +7,18 @@ export async function executeAnthropicNode(
     apiKey: string;
   }
 ) {
-  return runAnthropic({
+  console.log(`[node ${node.id}] anthropic: started`);
+  const response = await runAnthropic({
     credentials,
     prompt: node.data.prompt,
     model: node.data.model
   });
+
+  const content = response.content
+    .filter((block): block is Extract<typeof block, { type: "text" }> => block.type === "text")
+    .map((block) => block.text)
+    .join("");
+
+  console.log(`[node ${node.id}] anthropic: completed`);
+  return { content };
 }

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import api from "@/lib/api"
-import refreshToken from "@/lib/refreshToken"
+import refreshToken from "@/services/auth/refreshToken"
 interface User {
   id: string
   email: string

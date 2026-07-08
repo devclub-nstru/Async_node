@@ -10,10 +10,13 @@ export async function executeEmailNode(
     password: string;
   }
 ) {
-  return sendEmail({
+  console.log(`[node ${node.id}] email: started`);
+  const result = await sendEmail({
     credentials,
     to: node.data.to,
     subject: node.data.subject,
     html: node.data.html
   });
+  console.log(`[node ${node.id}] email: completed`);
+  return result;
 }

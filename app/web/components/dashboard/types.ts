@@ -1,21 +1,16 @@
-export type WorkflowStatus = "active" | "inactive" | "error"
+export type WorkflowStatus = "draft" | "active" | "completed"
 
 export interface WorkflowItem {
-  id: string
+  id: number
+  userId: number
   name: string
   description: string
+  graphJson: unknown
   status: WorkflowStatus
-  lastRun: string
-  runs: number
+  scheduleEnabled: boolean
+  scheduleIntervalSeconds: number | null
+  createdAt: string
+  updatedAt: string
 }
 
 export const PAGE_SIZE = 8
-
-export const MOCK_WORKFLOWS: WorkflowItem[] = Array.from({ length: 23 }, (_, i) => ({
-  id: `wf-${i + 1}`,
-  name: `Workflow ${i + 1}`,
-  description: ["Sync CRM to Slack", "Email digest automation", "DB backup pipeline", "Alert on error", "Weekly report"][i % 5],
-  status: (["active", "active", "inactive", "error", "active"] as WorkflowStatus[])[i % 5],
-  lastRun: `${i + 1}h ago`,
-  runs: Math.floor(Math.random() * 500) + 10,
-}))

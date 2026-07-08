@@ -7,9 +7,12 @@ export async function executeGroqNode(
     apiKey: string;
   }
 ) {
-  return runGroq({
+  console.log(`[node ${node.id}] groq: started`);
+  const result = await runGroq({
     credentials,
     prompt: node.data.prompt,
     model: node.data.model
   });
+  console.log(`[node ${node.id}] groq: completed`);
+  return result;
 }

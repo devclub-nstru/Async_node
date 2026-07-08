@@ -9,7 +9,7 @@ import axios from "axios"
 import api from "@/lib/api"
 import { toast } from "sonner"
 import { useMe } from "@/hooks/useMe"
-import { sendVerificationEmail } from "@/lib/sendVerification"
+import { sendVerificationEmail } from "@/services/auth/sendVerification"
 
 const inputCls = cn(
   "w-full rounded px-4 py-3 text-sm text-[#f0eee9]",
@@ -50,7 +50,6 @@ export default function SignInForm() {
         email: form.email,
         password: form.password,
       })
-      console.log("res", res)
       if(res.data.data.isVerified === false){
           
           await sendVerificationEmail(form.email)
@@ -124,11 +123,11 @@ export default function SignInForm() {
       </div>
 
       {/* forgot */}
-      <div className="mb-6 flex items-center justify-between">
+      {/* <div className="mb-6 flex items-center justify-between">
         <Link href="/forgot-password" className="text-[13px] text-amber-600 hover:underline">
           Forgot password?
         </Link>
-      </div>
+      </div> */}
 
       {/* primary CTA */}
       <button type="submit" disabled={loading} className="signin-cta mb-4 disabled:opacity-50 disabled:cursor-not-allowed">

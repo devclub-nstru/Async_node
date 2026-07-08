@@ -1,6 +1,6 @@
 import LeftPanel from "@/components/signin/LeftPanel"
 import VerifyCard from "@/components/verification/VerifyCard"
-import {useMe} from "@/hooks/useMe"
+
 
 export const metadata = {
   title: "Verify Email — AsyncNode",

@@ -16,13 +16,24 @@ export const ERROR_MESSAGES = {
     WORKFLOW_NOT_FOUND: "Workflow not found",
     WORKFLOW_MISSING_FIELDS: "Name and description are required",
     WORKFLOW_INVALID_ID: "Invalid workflow ID",
+    WORKFLOW_FORBIDDEN: "You do not have permission to delete this workflow",
+    WORKFLOW_UPDATE_FORBIDDEN: "You do not have permission to update this workflow",
+    WORKFLOW_GRAPH_INVALID: "graphJson with nodes and edges arrays is required",
+    WORKFLOW_TOO_MANY_NODES: "Workflow exceeds the maximum allowed number of nodes",
 
     // Server
     INTERNAL_SERVER_ERROR: "Internal Server Error",
+    RATE_LIMIT_EXCEEDED: "Too many requests. Please try again later.",
 
     //verification code
     VERIFICATION_CODE_EXPIRED: "Verification code has expired",
     INVALID_VERIFICATION_CODE: "Invalid verification code",
+
+    // Schedule
+    SCHEDULE_INTERVAL_TOO_SHORT: "Interval must be a whole number of seconds, minimum 60",
+
+    // Webhook
+    WEBHOOK_NOT_FOUND: "Webhook not found",
 } as const;
 
 export const SUCCESS_MESSAGES = {
@@ -35,4 +46,22 @@ export const SUCCESS_MESSAGES = {
     WORKFLOWS_RETRIEVED: "Workflows retrieved successfully",
     WORKFLOW_RETRIEVED: "Workflow retrieved successfully",
     WORKFLOW_CREATED: "Workflow created successfully",
+    WORKFLOW_DELETED: "Workflow deleted successfully",
+    WORKFLOW_SAVED: "Workflow saved successfully",
+    WORKFLOW_RUN_STARTED: "Workflow run started successfully",
+
+    // Execution
+    EXECUTIONS_RETRIEVED: "Executions retrieved successfully",
+    EXECUTION_RETRIEVED: "Execution retrieved successfully",
+    LATEST_EXECUTION_RETRIEVED: "Latest execution retrieved successfully",
+
+    // Schedule
+    SCHEDULE_STARTED: "Workflow schedule started successfully",
+    SCHEDULE_STOPPED: "Workflow schedule stopped successfully",
+
+    // Webhook
+    WEBHOOK_TRIGGERED: "Webhook received, workflow run queued",
+
+    // Triggers
+    WORKFLOW_TRIGGERS_RETRIEVED: "Workflow triggers retrieved successfully",
 } as const;
