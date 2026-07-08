@@ -1,4 +1,4 @@
-import { pgTable, serial, integer, text, varchar, jsonb, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, serial, integer, text, varchar, jsonb, timestamp, pgEnum, index } from "drizzle-orm/pg-core";
 import { workflows } from "./workflow.schema.ts";
 import {triggers} from "./triggers.schema.ts";
 
@@ -15,7 +15,11 @@ export const execution = pgTable("execution",{
     completedAt: timestamp("completed_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow()
-})
+}, (table) => [
+    index("execution_workflow_id_idx").on(table.workflowId),
+    index("execution_trigger_id_idx").on(table.triggerId),
+    index("execution_workflow_id_status_idx").on(table.workflowId, table.status),
+])
 
 
 
@@ -31,7 +35,10 @@ export const nodeExecution = pgTable("node_execution",{
     completedAt: timestamp("completed_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow()
-})
+}, (table) => [
+    index("node_execution_execution_id_idx").on(table.executionId),
+    index("node_execution_execution_id_status_idx").on(table.executionId, table.status),
+])
 
 
 export const executionLogs = pgTable("execution_logs",{
@@ -43,4 +50,7 @@ export const executionLogs = pgTable("execution_logs",{
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow()
 
-})
+}, (table) => [
+    index("execution_logs_execution_id_idx").on(table.executionId),
+    index("execution_logs_node_execution_id_idx").on(table.nodeExecutionId),
+])
