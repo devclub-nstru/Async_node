@@ -7,6 +7,8 @@ export interface WorkflowItem {
   description: string
   graphJson: unknown
   status: WorkflowStatus
+  scheduleEnabled: boolean
+  scheduleIntervalSeconds: number | null
   createdAt: string
   updatedAt: string
 }

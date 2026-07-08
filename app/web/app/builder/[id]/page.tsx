@@ -17,11 +17,12 @@ import api from "@/lib/api";
 export default function builder() {
     const { user,loading,route } = useMe()
     const params = useParams<{ id: string }>()
-    const {workflow,loading:workflowLoading,notFound:workflowNotFound} = useWorkflow(params.id)
+    const {workflow,loading:workflowLoading,notFound:workflowNotFound,refetchScheduleOnly} = useWorkflow(params.id)
     const [saving, setSaving] = useState(false)
     const [selectedNode, setSelectedNode] = useState<Node | null>(null)
+    const [webhookTokensByNodeId, setWebhookTokensByNodeId] = useState<Record<string, string>>({})
     const canvasRef = useRef<BuilderCanvasHandle | null>(null)
-    const { nodeStatuses, nodeResponses, isExecuting } = useExecutionSocket(params.id)
+    const { nodeStatuses, nodeResponses, runLog, isExecuting } = useExecutionSocket(params.id)
 
     const router = useRouter()
 
@@ -39,6 +40,15 @@ export default function builder() {
         try {
             const response = await api.put(`/v1/workflows/workflows/${params.id}`, { graphJson: graph })
             toast.success(response.data?.message ?? "Workflow saved successfully")
+
+            const savedTriggers = response.data?.data?.triggers as { nodeId: string; webhookToken: string | null }[] | undefined
+            if (savedTriggers) {
+                const tokens: Record<string, string> = {}
+                for (const t of savedTriggers) {
+                    if (t.webhookToken) tokens[t.nodeId] = t.webhookToken
+                }
+                setWebhookTokensByNodeId(tokens)
+            }
         } catch (err) {
             const message = axios.isAxiosError(err)
                 ? err.response?.data?.message ?? "Failed to save workflow"
@@ -62,6 +72,23 @@ export default function builder() {
             router.push(`/verification/${user.email}`)
         }
     }, [route,user])
+
+    useEffect(() => {
+        if (!params.id) return
+        api.get(`/v1/workflows/workflows/${params.id}/triggers`)
+            .then((response) => {
+                const fetchedTriggers = response.data?.data as { nodeId: string; webhookToken: string | null }[] | undefined
+                if (!fetchedTriggers) return
+                const tokens: Record<string, string> = {}
+                for (const t of fetchedTriggers) {
+                    if (t.webhookToken) tokens[t.nodeId] = t.webhookToken
+                }
+                setWebhookTokensByNodeId(tokens)
+            })
+            .catch(() => {
+                // best-effort; webhook URL display just won't be pre-filled
+            })
+    }, [params.id])
 
     if (loading || workflowLoading) {
         return (
@@ -94,12 +121,21 @@ export default function builder() {
                             onChange={handleNodeDataChange}
                             onClose={() => setSelectedNode(null)}
                             disabled={isExecuting}
+                            scheduleEnabled={workflow?.scheduleEnabled ?? false}
+                            scheduleIntervalSeconds={workflow?.scheduleIntervalSeconds ?? null}
+                            onScheduleChange={refetchScheduleOnly}
+                            webhookToken={webhookTokensByNodeId[selectedNode.id]}
                         />
                     ) : (
                         <NodeSidebar disabled={isExecuting} />
                     )}
                 </div>
-                <NodeOutputTerminal node={selectedNode} response={selectedNode ? nodeResponses[selectedNode.id] : undefined} />
+                <NodeOutputTerminal
+                    node={selectedNode}
+                    response={selectedNode ? nodeResponses[selectedNode.id] : undefined}
+                    runLog={runLog}
+                    allNodes={canvasRef.current?.getGraph().nodes ?? initialGraph?.nodes ?? []}
+                />
             </div>
         </div>
     )

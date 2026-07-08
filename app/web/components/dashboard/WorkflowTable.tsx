@@ -48,7 +48,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
   return (
     <div
       onClick={() => router.push(`/builder/${wf.id}`)}
-      className="grid grid-cols-[1fr_120px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0 transition-colors hover:bg-white/[0.03] cursor-pointer"
+      className="grid grid-cols-[1fr_180px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0 transition-colors hover:bg-white/[0.03] cursor-pointer"
       style={{ animationDelay: `${140 + index * 30}ms`, opacity: deleting ? 0.5 : 1 }}
     >
       <div className="min-w-0">
@@ -56,7 +56,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
         <p className="truncate text-[12px] text-white/35">{wf.description}</p>
       </div>
 
-      <StatusPill status={wf.status} />
+      <StatusPill status={wf.status} scheduleEnabled={wf.scheduleEnabled} />
 
       <span className="text-[12px] text-white/35">{timeAgo(wf.updatedAt)}</span>
 
@@ -95,7 +95,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
 function WorkflowRowSkeleton({ index }: { index: number }) {
   return (
     <div
-      className="grid grid-cols-[1fr_120px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0"
+      className="grid grid-cols-[1fr_180px_100px_40px] gap-4 items-center border-b border-white/[0.04] px-5 py-4 last:border-0"
       style={{ animationDelay: `${140 + index * 30}ms` }}
     >
       <div className="min-w-0 space-y-2">
@@ -124,7 +124,7 @@ export default function WorkflowTable({ workflows, loading, onDeleted }: Workflo
       className="dash-enter mb-6 overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm"
       style={{ animationDelay: "140ms" }}
     >
-      <div className="grid grid-cols-[1fr_120px_100px_40px] gap-4 border-b border-white/[0.05] px-5 py-3">
+      <div className="grid grid-cols-[1fr_180px_100px_40px] gap-4 border-b border-white/[0.05] px-5 py-3">
         {COLUMNS.map((h) => (
           <span key={h} className="text-[11px] font-medium uppercase tracking-[0.06em] text-white/25">{h}</span>
         ))}

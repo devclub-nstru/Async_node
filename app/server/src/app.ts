@@ -6,6 +6,8 @@ import { authRouter } from "./modules/auth/auth.route.ts";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler.ts";
 import { swaggerSpec } from "./config/swagger.ts";
 import { workflowRouter } from "./modules/workflows/workflow.route.ts";
+import { executionRouter } from "./modules/executions/execution.route.ts";
+import { webhookRouter } from "./modules/executions/webhook.route.ts";
 import {authenticate} from "./middlewares/auth.middleware.ts";
 import cookieParser from "cookie-parser"; // Import cookie-parser
 
@@ -65,6 +67,8 @@ app.get("/api/docs.json", (_req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/workflows', authenticate, workflowRouter);
+app.use('/api/v1/workflows', authenticate, executionRouter);
+app.use('/api/v1/webhooks', webhookRouter);
 
 
 

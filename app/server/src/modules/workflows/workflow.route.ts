@@ -1,5 +1,5 @@
 import router from "express";
-import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController, updateWorkflowGraphController, runWorkflowController } from "./workflow.controller.ts";
+import { createWorkflowController, deleteWorkflowController, getUserWorkflowsController, getWorkflowController, updateWorkflowGraphController, runWorkflowController, startWorkflowScheduleController, stopWorkflowScheduleController, getWorkflowTriggersController } from "./workflow.controller.ts";
 import { runWorkflowRateLimit } from "../../middlewares/runWorkflowRateLimit.middleware.ts";
 
 export const workflowRouter = router.Router();
@@ -354,3 +354,8 @@ workflowRouter.put("/workflows/:workflowId", updateWorkflowGraphController);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 workflowRouter.post("/workflows/:workflowId/run", runWorkflowRateLimit, runWorkflowController);
+
+workflowRouter.post("/workflows/:workflowId/schedule/start", startWorkflowScheduleController);
+workflowRouter.post("/workflows/:workflowId/schedule/stop", stopWorkflowScheduleController);
+
+workflowRouter.get("/workflows/:workflowId/triggers", getWorkflowTriggersController);

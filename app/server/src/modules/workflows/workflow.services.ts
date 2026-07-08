@@ -1,7 +1,8 @@
 import { db } from "../../config/db.ts";
 import { workflows } from "../../db/schemas/workflow.schema.ts";
-import {deleteWorkflowById, getWorkflowById, getWorkflowsByUserId, saveWorkflowGraph} from "./workflow.repo.ts";
+import {deleteWorkflowById, getWorkflowById, getWorkflowsByUserId, saveWorkflowGraph, getTriggersByWorkflowId} from "./workflow.repo.ts";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages.ts";
+import { stopWorkflowSchedule } from "../../jobs/workflowExecution.job.ts";
 
 const MAX_NODES = 200;
 const TRIGGER_CATEGORY = "trigger";
@@ -61,6 +62,10 @@ export const deleteWorkflow = async (workflowId:number, userId:number)=>{
             return new Error("Forbidden")
         }
 
+        if (workflow.scheduleEnabled) {
+            await stopWorkflowSchedule(workflowId)
+        }
+
         const result = await deleteWorkflowById(workflowId)
         return result
     }catch(err){
@@ -116,6 +121,24 @@ export const updateWorkflowGraph = async (
         }
 
         const result = await saveWorkflowGraph(workflowId, { nodes, edges }, triggerRows, integrationRows);
+        return result
+    } catch (err) {
+        return err
+    }
+}
+
+export const getWorkflowTriggers = async (workflowId: number, userId: number) => {
+    try {
+        const workflow = await getWorkflowById(workflowId) as typeof workflows.$inferSelect | undefined;
+        if (!workflow) {
+            return new Error(ERROR_MESSAGES.WORKFLOW_NOT_FOUND);
+        }
+
+        if (workflow.userId !== userId) {
+            return new Error(ERROR_MESSAGES.WORKFLOW_UPDATE_FORBIDDEN);
+        }
+
+        const result = await getTriggersByWorkflowId(workflowId);
         return result
     } catch (err) {
         return err

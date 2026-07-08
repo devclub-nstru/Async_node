@@ -28,6 +28,12 @@ export const ERROR_MESSAGES = {
     //verification code
     VERIFICATION_CODE_EXPIRED: "Verification code has expired",
     INVALID_VERIFICATION_CODE: "Invalid verification code",
+
+    // Schedule
+    SCHEDULE_INTERVAL_TOO_SHORT: "Interval must be a whole number of seconds, minimum 60",
+
+    // Webhook
+    WEBHOOK_NOT_FOUND: "Webhook not found",
 } as const;
 
 export const SUCCESS_MESSAGES = {
@@ -43,4 +49,19 @@ export const SUCCESS_MESSAGES = {
     WORKFLOW_DELETED: "Workflow deleted successfully",
     WORKFLOW_SAVED: "Workflow saved successfully",
     WORKFLOW_RUN_STARTED: "Workflow run started successfully",
+
+    // Execution
+    EXECUTIONS_RETRIEVED: "Executions retrieved successfully",
+    EXECUTION_RETRIEVED: "Execution retrieved successfully",
+    LATEST_EXECUTION_RETRIEVED: "Latest execution retrieved successfully",
+
+    // Schedule
+    SCHEDULE_STARTED: "Workflow schedule started successfully",
+    SCHEDULE_STOPPED: "Workflow schedule stopped successfully",
+
+    // Webhook
+    WEBHOOK_TRIGGERED: "Webhook received, workflow run queued",
+
+    // Triggers
+    WORKFLOW_TRIGGERS_RETRIEVED: "Workflow triggers retrieved successfully",
 } as const;

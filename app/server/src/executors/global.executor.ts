@@ -76,11 +76,19 @@ function topologicalSort(nodes: ExecutorNode[], edges: ExecutorEdge[]): Executor
   return order;
 }
 
+export type ExecutionHooks = {
+  onExecutionStart?: () => Promise<void>;
+  onNodeStart?: (nodeId: string, nodeType: string, input: Record<string, any>) => Promise<void>;
+  onNodeComplete?: (nodeId: string, status: "success" | "failed", output: unknown) => Promise<void>;
+  onExecutionComplete?: (status: "success" | "failed") => Promise<void>;
+};
+
 export async function globalExecutor(
   executionId: string,
   workflowId: string,
   nodes: ExecutorNode[],
-  edges: ExecutorEdge[]
+  edges: ExecutorEdge[],
+  hooks: ExecutionHooks = {}
 ): Promise<ExecutionContext> {
   const triggerNode = nodes.find((node) => !node.provider);
   const nodeIdsWithEdges = new Set(edges.flatMap((edge) => [edge.source, edge.target]));
@@ -91,7 +99,9 @@ export async function globalExecutor(
     trigger: triggerNode
       ? { nodeId: triggerNode.id, type: triggerNode.type ?? "manual", data: triggerNode.config }
       : null,
-    nodeOutputs: {},
+    // Seeded under a fixed "trigger" key (not the trigger's actual node id,
+    // which is dynamic) so any node config can reference {{trigger.<field>}}.
+    nodeOutputs: triggerNode ? { trigger: triggerNode.config } : {},
     nodeStatus: {},
     startedAt: new Date().toISOString(),
     finishedAt: null,
@@ -100,6 +110,18 @@ export async function globalExecutor(
   const executionOrder = topologicalSort(nodes, edges);
 
   broadcastExecutionEvent({ type: "execution:started", executionId, workflowId });
+  await hooks.onExecutionStart?.();
+
+  // Record what the trigger received so it shows up in the run log — the
+  // trigger node itself never enters the execution loop below.
+  if (triggerNode) {
+    await hooks.onNodeStart?.(triggerNode.id, triggerNode.type ?? "manual", triggerNode.config);
+    executionContext.nodeStatus[triggerNode.id] = "success";
+    broadcastExecutionEvent({ type: "node:success", executionId, workflowId, nodeId: triggerNode.id, data: triggerNode.config });
+    await hooks.onNodeComplete?.(triggerNode.id, "success", triggerNode.config);
+  }
+
+  let executionFailed = false;
 
   for (const targetNode of executionOrder) {
     // Trigger nodes (and any node with no incoming/outgoing edges) have no executor to run.
@@ -115,22 +137,27 @@ export async function globalExecutor(
 
     executionContext.nodeStatus[targetNode.id] = "running";
     broadcastExecutionEvent({ type: "node:running", executionId, workflowId, nodeId: targetNode.id });
+    await hooks.onNodeStart?.(targetNode.id, workflowNode.type, resolvedConfig);
 
     try {
       const output = await runNodeExecutor(workflowNode);
       executionContext.nodeOutputs[targetNode.id] = output;
       executionContext.nodeStatus[targetNode.id] = "success";
       broadcastExecutionEvent({ type: "node:success", executionId, workflowId, nodeId: targetNode.id, data: output });
+      await hooks.onNodeComplete?.(targetNode.id, "success", output);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       executionContext.nodeStatus[targetNode.id] = "failed";
       executionContext.nodeOutputs[targetNode.id] = { error: errorMessage };
+      executionFailed = true;
       broadcastExecutionEvent({ type: "node:failed", executionId, workflowId, nodeId: targetNode.id, error: errorMessage });
+      await hooks.onNodeComplete?.(targetNode.id, "failed", { error: errorMessage });
     }
   }
 
   executionContext.finishedAt = new Date().toISOString();
   broadcastExecutionEvent({ type: "execution:finished", executionId, workflowId, data: executionContext });
+  await hooks.onExecutionComplete?.(executionFailed ? "failed" : "success");
 
   return executionContext;
 }

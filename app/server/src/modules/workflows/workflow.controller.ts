@@ -1,5 +1,5 @@
-import { createWorkflow, deleteWorkflow, getUserWorkflows, getWorkflow, updateWorkflowGraph } from "./workflow.services.ts";
-import { buildExecutionGraph } from "./executor.services.ts";
+import { createWorkflow, deleteWorkflow, getUserWorkflows, getWorkflow, updateWorkflowGraph, getWorkflowTriggers } from "./workflow.services.ts";
+import { buildExecutionGraph, startWorkflowScheduleService, stopWorkflowScheduleService } from "../executions/executor.services.ts";
 import { addWorkflowExecutionJob } from "../../jobs/workflowExecution.job.ts";
 import {httpResponse} from "../../utils/httpResponse.ts";
 import {httpError} from "../../utils/httpError.ts";
@@ -192,10 +192,122 @@ export const runWorkflowController = async (req: Request, res: Response, next: N
             return;
         }
 
-        const executionId = `exec_${Date.now()}_${workflowId}`;
-        await addWorkflowExecutionJob({ workflowId, userId, executionId });
+        await addWorkflowExecutionJob({ workflowId, userId });
 
-        httpResponse(res, req, 202, SUCCESS_MESSAGES.WORKFLOW_RUN_STARTED, { executionId, status: "queued" });
+        httpResponse(res, req, 202, SUCCESS_MESSAGES.WORKFLOW_RUN_STARTED, { status: "queued" });
+    } catch (error) {
+        httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+    }
+}
+
+function handleScheduleServiceError(next: NextFunction, req: Request, error: Error) {
+    if (error.message === ERROR_MESSAGES.WORKFLOW_NOT_FOUND) {
+        httpError(next, req, 404, error.message);
+        return;
+    }
+    if (error.message === ERROR_MESSAGES.WORKFLOW_UPDATE_FORBIDDEN) {
+        httpError(next, req, 403, error.message);
+        return;
+    }
+    if (error.message === ERROR_MESSAGES.SCHEDULE_INTERVAL_TOO_SHORT) {
+        httpError(next, req, 400, error.message);
+        return;
+    }
+    httpError(next, req, 400, error.message);
+}
+
+export const startWorkflowScheduleController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            httpError(next, req, 401, ERROR_MESSAGES.UNAUTHORIZED);
+            return;
+        }
+
+        const workflowId = parseInt(req.params.workflowId as string, 10);
+
+        if (isNaN(workflowId)) {
+            httpError(next, req, 400, ERROR_MESSAGES.WORKFLOW_INVALID_ID);
+            return;
+        }
+
+        const intervalSeconds = Number(req.body?.intervalSeconds);
+
+        const result = await startWorkflowScheduleService(workflowId, userId, intervalSeconds);
+
+        if (result instanceof Error) {
+            handleScheduleServiceError(next, req, result);
+            return;
+        }
+
+        httpResponse(res, req, 200, SUCCESS_MESSAGES.SCHEDULE_STARTED, result);
+    } catch (error) {
+        httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+    }
+}
+
+export const stopWorkflowScheduleController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            httpError(next, req, 401, ERROR_MESSAGES.UNAUTHORIZED);
+            return;
+        }
+
+        const workflowId = parseInt(req.params.workflowId as string, 10);
+
+        if (isNaN(workflowId)) {
+            httpError(next, req, 400, ERROR_MESSAGES.WORKFLOW_INVALID_ID);
+            return;
+        }
+
+        const result = await stopWorkflowScheduleService(workflowId, userId);
+
+        if (result instanceof Error) {
+            handleScheduleServiceError(next, req, result);
+            return;
+        }
+
+        httpResponse(res, req, 200, SUCCESS_MESSAGES.SCHEDULE_STOPPED, result);
+    } catch (error) {
+        httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
+    }
+}
+
+export const getWorkflowTriggersController = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user?.userId;
+
+        if (!userId) {
+            httpError(next, req, 401, ERROR_MESSAGES.UNAUTHORIZED);
+            return;
+        }
+
+        const workflowId = parseInt(req.params.workflowId as string, 10);
+
+        if (isNaN(workflowId)) {
+            httpError(next, req, 400, ERROR_MESSAGES.WORKFLOW_INVALID_ID);
+            return;
+        }
+
+        const triggers = await getWorkflowTriggers(workflowId, userId);
+
+        if (triggers instanceof Error) {
+            if (triggers.message === ERROR_MESSAGES.WORKFLOW_NOT_FOUND) {
+                httpError(next, req, 404, triggers.message);
+                return;
+            }
+            if (triggers.message === ERROR_MESSAGES.WORKFLOW_UPDATE_FORBIDDEN) {
+                httpError(next, req, 403, triggers.message);
+                return;
+            }
+            httpError(next, req, 400, triggers.message);
+            return;
+        }
+
+        httpResponse(res, req, 200, SUCCESS_MESSAGES.WORKFLOW_TRIGGERS_RETRIEVED, triggers);
     } catch (error) {
         httpError(next, req, 500, ERROR_MESSAGES.INTERNAL_SERVER_ERROR);
     }

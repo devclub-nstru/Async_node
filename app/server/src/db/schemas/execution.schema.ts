@@ -13,8 +13,6 @@ export const execution = pgTable("execution",{
     status: statusEnum("status").notNull().default("pending"),
     startedAt: timestamp("started_at"),
     completedAt: timestamp("completed_at"),
-    inputJson: jsonb("input_json"),
-    outputJson: jsonb("output_json"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow()
 })
@@ -29,7 +27,6 @@ export const nodeExecution = pgTable("node_execution",{
     status: statusEnum("status").notNull().default("pending"),
     inputJson: jsonb("input_json"),
     outputJson: jsonb("output_json"),
-    errorMessage: text("error_message"),
     startedAt: timestamp("started_at"),
     completedAt: timestamp("completed_at"),
     createdAt: timestamp("created_at").notNull().defaultNow(),

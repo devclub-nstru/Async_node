@@ -84,16 +84,29 @@ export const NODE_CONFIG_FIELDS: Record<Exclude<BuilderNodeCategory, "ai" | "tri
   ],
 }
 
-export const TRIGGER_CONFIG_FIELDS: ConfigField[] = [
-  {
-    key: "type",
-    label: "Trigger Type",
-    type: "select",
-    required: true,
-    options: [
-      { value: "manual", label: "Manual" },
-      { value: "webhook", label: "Webhook" },
-      { value: "cron", label: "Schedule (Cron)" },
-    ],
-  },
-]
+export const MIN_SCHEDULE_INTERVAL_SECONDS = 60
+
+export const TRIGGER_TYPE_FIELD: ConfigField = {
+  key: "type",
+  label: "Trigger Type",
+  type: "select",
+  required: true,
+  options: [
+    { value: "manual", label: "Manual" },
+    { value: "webhook", label: "Webhook" },
+    { value: "cron", label: "Schedule (Cron)" },
+  ],
+}
+
+const CRON_INTERVAL_FIELD: ConfigField = {
+  key: "intervalSeconds",
+  label: "Interval (seconds)",
+  type: "number",
+  placeholder: `Minimum ${MIN_SCHEDULE_INTERVAL_SECONDS}`,
+  required: true,
+}
+
+export function getTriggerFields(type: string | undefined): ConfigField[] {
+  if (type === "cron") return [TRIGGER_TYPE_FIELD, CRON_INTERVAL_FIELD]
+  return [TRIGGER_TYPE_FIELD]
+}
