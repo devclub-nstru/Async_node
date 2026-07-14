@@ -58,12 +58,14 @@ function WorkflowNode({ data, selected }: NodeProps) {
     >
       {runStatus && <StatusBadge status={runStatus} />}
 
-      <Handle
-        type="target"
-        position={Position.Left}
-        className="!size-2.5 !border-2 !border-[#161618]"
-        style={{ background: color }}
-      />
+      {category !== "trigger" && (
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="!size-2.5 !border-2 !border-[#161618]"
+          style={{ background: color }}
+        />
+      )}
 
       <div
         className="flex size-8 shrink-0 items-center justify-center rounded-lg"

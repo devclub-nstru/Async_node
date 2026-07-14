@@ -2,10 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Workflow, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import {useRouter} from "next/navigation";
+import Logo from "./Logo";
 
-const NAV_LINKS = ["Features","Integrations","AI","Enterprise","Docs","Pricing"];
+const NAV_LINKS: { label: string; href: string }[] = [
+  { label: "Features", href: "#" },
+  { label: "Integrations", href: "#" },
+  { label: "AI", href: "#" },
+  { label: "Enterprise", href: "#" },
+  { label: "Docs", href: "/docs" },
+  { label: "Pricing", href: "#" },
+];
 
 export function Navbar() {
   const router = useRouter();
@@ -35,28 +43,13 @@ export function Navbar() {
       }}
     >
       <div className="w-full px-8 flex items-center justify-between" style={{ height: 60 }}>
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Mark — three stacked horizontal bars of different widths */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, width: 20 }}>
-            <div style={{ height: 2, width: 20, background: '#D97706', borderRadius: 1 }} />
-            <div style={{ height: 2, width: 14, background: 'rgba(217,119,6,0.5)', borderRadius: 1 }} />
-            <div style={{ height: 2, width: 8, background: 'rgba(217,119,6,0.25)', borderRadius: 1 }} />
-          </div>
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '1rem',
-            letterSpacing: '-0.02em',
-            color: '#F0EEE9',
-          }}>AsyncNode</span>
-        </div>
+        <Logo />
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-0.5">
           {NAV_LINKS.map(link => (
             <a
-              key={link} href="#"
+              key={link.label} href={link.href}
               style={{
                 color: 'rgba(255,255,255,0.35)',
                 fontFamily: 'var(--font-body)',
@@ -70,7 +63,7 @@ export function Navbar() {
               onMouseEnter={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.85)'; }}
               onMouseLeave={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.35)'; }}
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </div>
@@ -144,7 +137,7 @@ export function Navbar() {
           >
             <div className="px-8 py-4 flex flex-col gap-3">
               {NAV_LINKS.map(link => (
-                <a key={link} href="#" style={{ color: "#71717A", fontFamily: "var(--font-body)", fontSize: "0.9rem" }}>{link}</a>
+                <a key={link.label} href={link.href} style={{ color: "#71717A", fontFamily: "var(--font-body)", fontSize: "0.9rem" }}>{link.label}</a>
               ))}
               <div className="pt-3 flex flex-col gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
                 <a href="#" className="text-sm text-center py-2 rounded-xl" style={{ color: "#71717A", border: "1px solid rgba(255,255,255,0.08)" }}>Sign in</a>

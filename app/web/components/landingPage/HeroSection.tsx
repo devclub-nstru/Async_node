@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
 import {useRouter} from "next/navigation";
@@ -238,15 +238,43 @@ function SvgNode({
 export function HeroSection() {
   const [tick, setTick] = useState(0);
   const router = useRouter();
+  const videoWrapperRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoInView, setVideoInView] = useState(false);
+
   useEffect(() => {
     const id = setInterval(() => setTick((t) => t + 1), 1800);
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const el = videoWrapperRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setVideoInView(entry.isIntersecting),
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (videoInView) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [videoInView]);
+
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
       {/* Background Video with blur and fade mask */}
       <div
+        ref={videoWrapperRef}
         style={{
           position: "absolute",
           top: 0,
@@ -258,21 +286,25 @@ export function HeroSection() {
           zIndex: 0,
         }}
       >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.45,
-            filter: "blur(3.5px) brightness()",
-            transform: "scale(1.06)",
-          }}
-          src="/BgVideo-Landing.mp4"
-        />
+        {videoInView && (
+          <video
+            ref={videoRef}
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: 0.45,
+              filter: "blur(3.5px) brightness()",
+              transform: "scale(1.06)",
+            }}
+            src="/BgVideo-Landing.mp4"
+          />
+        )}
         {/* Soft bottom fade to blend with page background */}
         <div
           style={{

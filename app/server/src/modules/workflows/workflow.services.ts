@@ -98,6 +98,33 @@ export const updateWorkflowGraph = async (
             return new Error(ERROR_MESSAGES.WORKFLOW_TOO_MANY_NODES);
         }
 
+        const triggerNodeIds = new Set(
+            nodes.filter((node) => node.data?.category === TRIGGER_CATEGORY).map((node) => node.id)
+        );
+
+        const outgoingCounts = new Map<string, number>();
+        const incomingCounts = new Map<string, number>();
+
+        for (const edge of edges as { source?: string; target?: string }[]) {
+            const source = edge?.source;
+            const target = edge?.target;
+
+            if (!source || !target) {
+                return new Error(ERROR_MESSAGES.WORKFLOW_GRAPH_INVALID_EDGES);
+            }
+
+            if (triggerNodeIds.has(target)) {
+                return new Error(ERROR_MESSAGES.WORKFLOW_GRAPH_INVALID_EDGES);
+            }
+
+            outgoingCounts.set(source, (outgoingCounts.get(source) ?? 0) + 1);
+            incomingCounts.set(target, (incomingCounts.get(target) ?? 0) + 1);
+
+            if (outgoingCounts.get(source)! > 1 || incomingCounts.get(target)! > 1) {
+                return new Error(ERROR_MESSAGES.WORKFLOW_GRAPH_INVALID_EDGES);
+            }
+        }
+
         const triggerRows: { nodeId: string; type: string; configJson: unknown }[] = [];
         const integrationRows: { nodeId: string; provider: string; credentialsJson: unknown }[] = [];
 

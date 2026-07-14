@@ -2,6 +2,7 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
 import {notFound} from "next/navigation";
+import dynamic from "next/dynamic";
 import axios from "axios";
 import {toast} from "sonner";
 import type {Edge, Node} from "reactflow";
@@ -10,10 +11,19 @@ import {useWorkflow} from "@/hooks/useWorkflow";
 import {useExecutionSocket} from "@/hooks/useExecutionSocket";
 import BuilderTopbar from "@/components/builder/BuilderTopbar";
 import NodeSidebar from "@/components/builder/NodeSidebar";
-import BuilderCanvas, {type BuilderCanvasHandle} from "@/components/builder/BuilderCanvas";
+import type {BuilderCanvasHandle} from "@/components/builder/BuilderCanvas";
 import NodeConfigPanel from "@/components/builder/NodeConfigPanel";
 import NodeOutputTerminal from "@/components/builder/NodeOutputTerminal";
 import api from "@/lib/api";
+
+const BuilderCanvas = dynamic(() => import("@/components/builder/BuilderCanvas"), {
+    ssr: false,
+    loading: () => (
+        <div className="flex h-full w-full flex-1 items-center justify-center bg-[#0a0a0d]">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-white/50" />
+        </div>
+    ),
+})
 export default function builder() {
     const { user,loading,route } = useMe()
     const params = useParams<{ id: string }>()

@@ -20,6 +20,7 @@ export const ERROR_MESSAGES = {
     WORKFLOW_UPDATE_FORBIDDEN: "You do not have permission to update this workflow",
     WORKFLOW_GRAPH_INVALID: "graphJson with nodes and edges arrays is required",
     WORKFLOW_TOO_MANY_NODES: "Workflow exceeds the maximum allowed number of nodes",
+    WORKFLOW_GRAPH_INVALID_EDGES: "Each node may have at most one incoming and one outgoing connection, and trigger nodes cannot have incoming connections",
 
     // Server
     INTERNAL_SERVER_ERROR: "Internal Server Error",

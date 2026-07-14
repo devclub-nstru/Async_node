@@ -4,7 +4,7 @@ import { executeWorkflow } from "../modules/executions/executor.services.ts";
 import type { WorkflowExecutionJobData } from "../jobs/workflowExecution.job.ts";
 import logger from "../utils/logger.ts";
 
-const WORKFLOW_WORKER_CONCURRENCY = 5;
+const WORKFLOW_WORKER_CONCURRENCY = 10;
 
 export const workflowExecutionWorker = new Worker<WorkflowExecutionJobData>(
   "run-workflow",

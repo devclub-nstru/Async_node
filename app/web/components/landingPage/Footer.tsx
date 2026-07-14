@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import Logo from "@/components/layout/Logo";
 
 const LINKS = {
   Product: [
@@ -20,15 +21,8 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
           <div className="col-span-2">
-            <div className="flex items-center gap-2.5 mb-5">
-              <div className="flex flex-col gap-[3px] w-5">
-                <div className="h-[2px] w-5 bg-[#D97706] rounded-[1px]" />
-                <div className="h-[2px] w-[14px] bg-[rgba(217,119,6,0.4)] rounded-[1px]" />
-                <div className="h-[2px] w-[8px] bg-[rgba(217,119,6,0.2)] rounded-[1px]" />
-              </div>
-              <span className="font-display text-[1.02rem] font-bold text-[#FAFAFA]">
-                AsyncNode
-              </span>
+            <div className="mb-5">
+              <Logo size="sm" />
             </div>
             <p className="font-body font-light text-[0.82rem] leading-[1.7] text-[rgba(255,255,255,0.2)] max-w-[250px] mb-5">
               Visual workflow automation for teams that move fast. Build,

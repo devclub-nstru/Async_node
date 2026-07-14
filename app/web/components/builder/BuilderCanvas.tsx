@@ -92,6 +92,22 @@ export default function BuilderCanvas({ onSelectNode, canvasRef, initialGraph, n
 
   const onPaneClick = useCallback(() => onSelectNode(null), [onSelectNode])
 
+  const isValidConnection = useCallback(
+    (connection: Connection) => {
+      if (!connection.source || !connection.target) return false
+      if (connection.source === connection.target) return false
+
+      const targetNode = nodes.find((n) => n.id === connection.target)
+
+      if (targetNode?.data?.category === "trigger") return false
+      if (edges.some((e) => e.source === connection.source)) return false
+      if (edges.some((e) => e.target === connection.target)) return false
+
+      return true
+    },
+    [nodes, edges]
+  )
+
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
@@ -135,6 +151,7 @@ export default function BuilderCanvas({ onSelectNode, canvasRef, initialGraph, n
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
         onInit={setReactFlowInstance}
         onDrop={onDrop}
         onDragOver={onDragOver}
