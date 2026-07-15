@@ -1,21 +1,18 @@
-import { LogOut, Workflow } from "lucide-react"
+import { LogOut } from "lucide-react";
+import Logo from "@/components/layout/Logo";
 
 interface DashboardHeaderProps {
-  signingOut: boolean
-  onSignOut: () => void
+  signingOut: boolean;
+  onSignOut: () => void;
 }
 
 export default function DashboardHeader({ signingOut, onSignOut }: DashboardHeaderProps) {
   return (
-    <header className="dash-enter mb-10 flex items-center justify-between" style={{ animationDelay: "0ms" }}>
-      <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-amber-600/20 text-amber-500">
-          <Workflow size={16} />
-        </div>
-        <span className="font-display text-[18px] font-bold tracking-tight text-[#f0eee9]">
-          Async<span className="text-amber-600">Node</span>
-        </span>
-      </div>
+    <header
+      className="dash-enter mb-10 flex items-center justify-between"
+      style={{ animationDelay: "0ms" }}
+    >
+      <Logo href="/dashboard" />
 
       <button
         onClick={onSignOut}
@@ -26,5 +23,5 @@ export default function DashboardHeader({ signingOut, onSignOut }: DashboardHead
         {signingOut ? "Signing out…" : "Sign out"}
       </button>
     </header>
-  )
+  );
 }

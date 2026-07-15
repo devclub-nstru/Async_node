@@ -1,25 +1,34 @@
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { PAGE_SIZE } from "./types"
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { PAGE_SIZE } from "./types";
 
 interface WorkflowPaginationProps {
-  page: number
-  totalPages: number
-  filteredCount: number
-  onPageChange: (page: number) => void
+  page: number;
+  totalPages: number;
+  filteredCount: number;
+  onPageChange: (page: number) => void;
 }
 
-export default function WorkflowPagination({ page, totalPages, filteredCount, onPageChange }: WorkflowPaginationProps) {
-  const rangeStart = Math.min((page - 1) * PAGE_SIZE + 1, filteredCount)
-  const rangeEnd = Math.min(page * PAGE_SIZE, filteredCount)
+export default function WorkflowPagination({
+  page,
+  totalPages,
+  filteredCount,
+  onPageChange,
+}: WorkflowPaginationProps) {
+  const rangeStart = Math.min((page - 1) * PAGE_SIZE + 1, filteredCount);
+  const rangeEnd = Math.min(page * PAGE_SIZE, filteredCount);
 
   return (
-    <div className="dash-enter flex items-center justify-between" style={{ animationDelay: "200ms" }}>
+    <div
+      className="dash-enter flex items-center justify-between"
+      style={{ animationDelay: "200ms" }}
+    >
       <p className="text-[12px] text-white/30">
         Showing{" "}
-        <span className="text-white/55">{rangeStart}–{rangeEnd}</span>
-        {" "}of{" "}
-        <span className="text-white/55">{filteredCount}</span> workflows
+        <span className="text-white/55">
+          {rangeStart}–{rangeEnd}
+        </span>{" "}
+        of <span className="text-white/55">{filteredCount}</span> workflows
       </p>
 
       <div className="flex items-center gap-1">
@@ -55,5 +64,5 @@ export default function WorkflowPagination({ page, totalPages, filteredCount, on
         </button>
       </div>
     </div>
-  )
+  );
 }

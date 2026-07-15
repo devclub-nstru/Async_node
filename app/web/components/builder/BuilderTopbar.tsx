@@ -1,17 +1,22 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ArrowLeft, Loader2, Save } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import Link from "next/link";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface BuilderTopbarProps {
-  workflowName?: string
-  saving?: boolean
-  disabled?: boolean
-  onSave?: () => void
+  workflowName?: string;
+  saving?: boolean;
+  disabled?: boolean;
+  onSave?: () => void;
 }
 
-export default function BuilderTopbar({ workflowName, saving, disabled, onSave }: BuilderTopbarProps) {
+export default function BuilderTopbar({
+  workflowName,
+  saving,
+  disabled,
+  onSave,
+}: BuilderTopbarProps) {
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/6 bg-[#0a0a0d] px-4">
       <div className="flex min-w-0 items-center gap-3">
@@ -31,5 +36,5 @@ export default function BuilderTopbar({ workflowName, saving, disabled, onSave }
         {saving ? "Saving..." : "Save"}
       </Button>
     </header>
-  )
+  );
 }

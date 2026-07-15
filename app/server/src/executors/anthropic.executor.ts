@@ -5,13 +5,13 @@ export async function executeAnthropicNode(
   node: WorkflowNode,
   credentials: {
     apiKey: string;
-  }
+  },
 ) {
   console.log(`[node ${node.id}] anthropic: started`);
   const response = await runAnthropic({
     credentials,
     prompt: node.data.prompt,
-    model: node.data.model
+    model: node.data.model,
   });
 
   const content = response.content

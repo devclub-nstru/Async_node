@@ -184,20 +184,16 @@ const GLASS_CARD_STYLES: React.CSSProperties = {
   borderLeft: "1px solid rgba(255, 255, 255, 0.06)",
   borderRight: "1px solid rgba(255, 255, 255, 0.03)",
   borderBottom: "1px solid rgba(255, 255, 255, 0.02)",
-  boxShadow:
-    "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
   borderRadius: 8,
 };
 
-
 export function WorkflowBuilder() {
   const [activeNodeId, setActiveNodeId] = useState<number>(3);
-  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>(
-    {
-      Triggers: true,
-      "AI Agents": true,
-    },
-  );
+  const [openCategories, setOpenCategories] = useState<Record<string, boolean>>({
+    Triggers: true,
+    "AI Agents": true,
+  });
 
   const toggleCategory = (categoryName: string) => {
     setOpenCategories((prev) => ({
@@ -216,8 +212,7 @@ export function WorkflowBuilder() {
           right: "-10%",
           width: 500,
           height: 500,
-          background:
-            "radial-gradient(ellipse, rgba(217, 119, 6, 0.07) 0%, transparent 65%)",
+          background: "radial-gradient(ellipse, rgba(217, 119, 6, 0.07) 0%, transparent 65%)",
           filter: "blur(80px)",
           pointerEvents: "none",
         }}
@@ -282,8 +277,8 @@ export function WorkflowBuilder() {
               margin: "0 auto",
             }}
           >
-            A professional workflow canvas that feels like a real IDE —
-            drag-and-drop, live execution tracing, and instant deployment.
+            A professional workflow canvas that feels like a real IDE — drag-and-drop, live
+            execution tracing, and instant deployment.
           </p>
         </motion.div>
 
@@ -393,9 +388,7 @@ export function WorkflowBuilder() {
                           size={10}
                           className="text-[#3F3F46] transition-transform duration-150"
                           style={{
-                            transform: isOpen
-                              ? "rotate(0deg)"
-                              : "rotate(-90deg)",
+                            transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)",
                           }}
                         />
                       </button>
@@ -504,9 +497,7 @@ export function WorkflowBuilder() {
                       borderLeft: `1px solid ${isActive ? "rgba(217, 119, 6, 0.2)" : "rgba(255, 255, 255, 0.06)"}`,
                       borderRight: `1px solid ${isActive ? "rgba(217, 119, 6, 0.1)" : "rgba(255, 255, 255, 0.03)"}`,
                       borderBottom: `1px solid ${isActive ? "rgba(217, 119, 6, 0.05)" : "rgba(255, 255, 255, 0.02)"}`,
-                      boxShadow: isRunning
-                        ? "0 0 16px rgba(217, 119, 6, 0.18)"
-                        : "none",
+                      boxShadow: isRunning ? "0 0 16px rgba(217, 119, 6, 0.18)" : "none",
                       borderRadius: 2,
                     }}
                   >
@@ -549,10 +540,7 @@ export function WorkflowBuilder() {
                       </div>
 
                       {node.status === "done" && (
-                        <CheckCircle2
-                          size={10}
-                          className="text-[#22C55E] flex-shrink-0"
-                        />
+                        <CheckCircle2 size={10} className="text-[#22C55E] flex-shrink-0" />
                       )}
                       {node.status === "running" && (
                         <div className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse bg-[#D97706]" />
@@ -703,8 +691,7 @@ export function WorkflowBuilder() {
                       borderRadius: 2,
                     }}
                   >
-                    "Analyze the lead and score 0–100 based on company size,
-                    tech stack…"
+                    &quot;Analyze the lead and score 0–100 based on company size, tech stack…&quot;
                   </div>
                 </div>
 
@@ -714,14 +701,10 @@ export function WorkflowBuilder() {
                       key={tab}
                       className="flex-1 py-1.5 text-xs text-center"
                       style={{
-                        background:
-                          i === 0 ? "rgba(217, 119, 6, 0.1)" : "transparent",
+                        background: i === 0 ? "rgba(217, 119, 6, 0.1)" : "transparent",
                         border:
-                          i === 0
-                            ? "1px solid rgba(217, 119, 6, 0.3)"
-                            : "1px solid transparent",
-                        color:
-                          i === 0 ? "#D97706" : "rgba(255, 255, 255, 0.25)",
+                          i === 0 ? "1px solid rgba(217, 119, 6, 0.3)" : "1px solid transparent",
+                        color: i === 0 ? "#D97706" : "rgba(255, 255, 255, 0.25)",
                         borderRadius: 4,
                         fontFamily: "var(--font-mono)",
                         fontSize: "0.6rem",

@@ -126,8 +126,7 @@ const GLASS_CARD_STYLES: React.CSSProperties = {
   borderLeft: "1px solid rgba(255, 255, 255, 0.06)",
   borderRight: "1px solid rgba(255, 255, 255, 0.03)",
   borderBottom: "1px solid rgba(255, 255, 255, 0.02)",
-  boxShadow:
-    "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
   borderRadius: 8,
 };
 
@@ -145,9 +144,7 @@ export function MonitoringSection() {
   }, []);
 
   const filteredLogs =
-    filterLevel === "ALL"
-      ? ALL_LOGS
-      : ALL_LOGS.filter((log) => log.level === filterLevel);
+    filterLevel === "ALL" ? ALL_LOGS : ALL_LOGS.filter((log) => log.level === filterLevel);
 
   return (
     <section className="relative py-28 overflow-hidden bg-transparent">
@@ -181,8 +178,7 @@ export function MonitoringSection() {
               Debug any failure in{" "}
               <span
                 style={{
-                  background:
-                    "linear-gradient(135deg, #FBBF24 0%, #D97706 100%)",
+                  background: "linear-gradient(135deg, #FBBF24 0%, #D97706 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   display: "inline-block",
@@ -204,8 +200,8 @@ export function MonitoringSection() {
               margin: "0 auto",
             }}
           >
-            Step-by-step execution traces, real-time log streaming, and
-            performance analytics — all in one place.
+            Step-by-step execution traces, real-time log streaming, and performance analytics — all
+            in one place.
           </p>
         </motion.div>
 

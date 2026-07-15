@@ -31,12 +31,7 @@ const integrations = [
   {
     name: "OpenAI",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        className="h-14 w-14"
-        fillRule="evenodd"
-        clipRule="evenodd"
-      >
+      <svg viewBox="0 0 24 24" className="h-14 w-14" fillRule="evenodd" clipRule="evenodd">
         <path
           fill="#FFFFFF"
           fillRule="evenodd"
@@ -50,12 +45,7 @@ const integrations = [
   {
     name: "Groq",
     icon: (
-      <svg
-        viewBox="0 0 512 512"
-        className="h-14 w-14"
-        fillRule="evenodd"
-        clipRule="evenodd"
-      >
+      <svg viewBox="0 0 512 512" className="h-14 w-14" fillRule="evenodd" clipRule="evenodd">
         <path
           fill="#FFFFFF"
           fillRule="evenodd"
@@ -99,8 +89,7 @@ export function IntegrationsSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            "radial-gradient(circle at center, rgba(217,119,6,0.18) 0%, transparent 60%)",
+          background: "radial-gradient(circle at center, rgba(217,119,6,0.18) 0%, transparent 60%)",
         }}
       />
 
@@ -122,8 +111,7 @@ export function IntegrationsSection() {
           </h2>
 
           <p className="mt-3.5 text-[18px] font-medium text-white/35 max-w-140 mx-auto leading-[1.6] tracking-[0.01em] font-body">
-            Use pre-built nodes for common apps. Custom API connections for
-            everything else.
+            Use pre-built nodes for common apps. Custom API connections for everything else.
           </p>
         </motion.div>
 

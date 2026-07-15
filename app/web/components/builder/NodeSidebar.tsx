@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import type { DragEvent } from "react"
-import { NODE_DEFS, DRAG_DATA_FORMAT, type BuilderNodeDef } from "./nodeTypes"
+import type { DragEvent } from "react";
+import { NODE_DEFS, DRAG_DATA_FORMAT, type BuilderNodeDef } from "./nodeTypes";
 
 function NodeCard({ node, disabled }: { node: BuilderNodeDef; disabled?: boolean }) {
-  const Icon = node.icon
+  const Icon = node.icon;
 
   function handleDragStart(event: DragEvent<HTMLDivElement>) {
     if (disabled) {
-      event.preventDefault()
-      return
+      event.preventDefault();
+      return;
     }
-    event.dataTransfer.setData(DRAG_DATA_FORMAT, node.type)
-    event.dataTransfer.effectAllowed = "move"
+    event.dataTransfer.setData(DRAG_DATA_FORMAT, node.type);
+    event.dataTransfer.effectAllowed = "move";
   }
 
   return (
@@ -29,16 +29,19 @@ function NodeCard({ node, disabled }: { node: BuilderNodeDef; disabled?: boolean
         <p className="truncate text-[11px] text-white/35">{node.description}</p>
       </div>
     </div>
-  )
+  );
 }
 
 interface NodeSidebarProps {
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 export default function NodeSidebar({ disabled }: NodeSidebarProps) {
   return (
-    <aside className={`flex w-64 shrink-0 flex-col gap-3 overflow-y-auto border-l border-white/6 bg-[#0a0a0d] p-3 ${disabled ? "pointer-events-none opacity-70" : ""}`} aria-disabled={disabled}>
+    <aside
+      className={`flex w-64 shrink-0 flex-col gap-3 overflow-y-auto border-l border-white/6 bg-[#0a0a0d] p-3 ${disabled ? "pointer-events-none opacity-70" : ""}`}
+      aria-disabled={disabled}
+    >
       <span className="px-1 text-[11px] font-medium uppercase tracking-[0.06em] text-white/25">
         Nodes
       </span>
@@ -46,5 +49,5 @@ export default function NodeSidebar({ disabled }: NodeSidebarProps) {
         <NodeCard key={node.type} node={node} disabled={disabled} />
       ))}
     </aside>
-  )
+  );
 }

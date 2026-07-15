@@ -1,10 +1,10 @@
-import { Search, Plus } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Search, Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface WorkflowToolbarProps {
-  search: string
-  onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void
-  onCreateClick: () => void
+  search: string;
+  onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onCreateClick: () => void;
 }
 
 export default function WorkflowToolbar({ search, onSearch, onCreateClick }: WorkflowToolbarProps) {
@@ -32,5 +32,5 @@ export default function WorkflowToolbar({ search, onSearch, onCreateClick }: Wor
         Create Workflow
       </button>
     </div>
-  )
+  );
 }

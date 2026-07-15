@@ -5,22 +5,22 @@ const EDGES = [
   "M240,280 Q310,200 380,180",
   "M380,180 Q400,230 420,340",
   "M240,280 Q180,290 120,360",
-]
+];
 
 const PARTICLES = [
-  { d: "M80,120 Q160,70 240,80",   dur: "3s" },
+  { d: "M80,120 Q160,70 240,80", dur: "3s" },
   { d: "M240,80 Q310,100 380,180", dur: "4.2s" },
   { d: "M80,120 Q160,170 240,280", dur: "5.4s" },
-]
+];
 
 const NODES = [
-  { cx: 80,  cy: 120, label: "trigger" },
-  { cx: 240, cy: 80,  label: "api.fetch" },
+  { cx: 80, cy: 120, label: "trigger" },
+  { cx: 240, cy: 80, label: "api.fetch" },
   { cx: 380, cy: 180, label: "transform" },
   { cx: 240, cy: 280, label: "filter.map" },
   { cx: 420, cy: 340, label: "webhook.out" },
   { cx: 120, cy: 360, label: "notify.slack" },
-]
+];
 
 export default function NodeGraph() {
   return (
@@ -49,11 +49,26 @@ export default function NodeGraph() {
 
         {NODES.map(({ cx, cy, label }) => (
           <g key={label}>
-            <circle cx={cx} cy={cy} r="22" fill="rgba(217,119,6,0.04)" stroke="rgba(217,119,6,0.12)" strokeWidth="1" />
-            <circle cx={cx} cy={cy} r="14" fill="#111113" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
-            <circle cx={cx} cy={cy} r="4"  fill="#D97706" opacity="0.8" />
+            <circle
+              cx={cx}
+              cy={cy}
+              r="22"
+              fill="rgba(217,119,6,0.04)"
+              stroke="rgba(217,119,6,0.12)"
+              strokeWidth="1"
+            />
+            <circle
+              cx={cx}
+              cy={cy}
+              r="14"
+              fill="#111113"
+              stroke="rgba(255,255,255,0.12)"
+              strokeWidth="1"
+            />
+            <circle cx={cx} cy={cy} r="4" fill="#D97706" opacity="0.8" />
             <text
-              x={cx} y={cy + 34}
+              x={cx}
+              y={cy + 34}
               textAnchor="middle"
               fontSize="10"
               fontFamily="'IBM Plex Mono', ui-monospace, monospace"
@@ -70,5 +85,5 @@ export default function NodeGraph() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(to_top,#060608,transparent)]" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-[linear-gradient(to_bottom,#060608,transparent)]" />
     </div>
-  )
+  );
 }

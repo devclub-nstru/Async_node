@@ -17,7 +17,11 @@ function resolvePath(source: unknown, path: string): unknown {
   return current;
 }
 
-function resolvePlaceholder(nodeId: string, path: string, nodeOutputs: Record<string, unknown>): unknown {
+function resolvePlaceholder(
+  nodeId: string,
+  path: string,
+  nodeOutputs: Record<string, unknown>,
+): unknown {
   if (FORBIDDEN_KEYS.has(nodeId)) return undefined;
   const nodeOutput = nodeOutputs[nodeId];
   if (nodeOutput === undefined) return undefined;
@@ -44,7 +48,11 @@ function resolveString(value: string, nodeOutputs: Record<string, unknown>): unk
   });
 }
 
-export function resolveTemplate(value: unknown, nodeOutputs: Record<string, unknown>, seen = new WeakSet<object>()): unknown {
+export function resolveTemplate(
+  value: unknown,
+  nodeOutputs: Record<string, unknown>,
+  seen = new WeakSet<object>(),
+): unknown {
   if (typeof value === "string") {
     return resolveString(value, nodeOutputs);
   }

@@ -2,12 +2,11 @@
 
 import { motion } from "motion/react";
 import { ArrowRight, Play, Workflow, Shield, Clock } from "lucide-react";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function FinalCTA() {
   const router = useRouter();
   return (
-
     <section className="relative overflow-hidden py-32 sm:py-40 bg-[rgba(217,119,6,0.04)] border-t border-[rgba(217,119,6,0.1)] border-b border-[rgba(217,119,6,0.06)]">
       <div
         className="absolute inset-0 bg-[length:80px_80px] bg-[image:linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] rotate-[3deg] scale-110
@@ -23,10 +22,7 @@ export function FinalCTA() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full mb-10 bg-amber-500/[0.04] border border-amber-500/15 shadow-[0_0_12px_rgba(217,119,6,0.02)] transition-all duration-300 hover:bg-amber-500/[0.07] hover:border-amber-500/25">
-            <Workflow
-              size={11}
-              className="text-amber-500 transition-transform duration-300"
-            />
+            <Workflow size={11} className="text-amber-500 transition-transform duration-300" />
             <span className="font-mono text-[10px] font-semibold tracking-[0.06em] text-amber-500/90 uppercase select-none">
               Deploy your first workflow in under 5 minutes
             </span>
@@ -41,8 +37,8 @@ export function FinalCTA() {
           </h2>
 
           <p className="max-w-[500px] mx-auto mb-12 font-body text-[1.05rem] leading-[1.72] text-[rgba(255,255,255,0.38)]">
-            Create workflows, orchestrate AI agents, and automate business
-            operations from one unified platform.
+            Create workflows, orchestrate AI agents, and automate business operations from one
+            unified platform.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
@@ -81,7 +77,6 @@ export function FinalCTA() {
                     "linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)",
                   pointerEvents: "none",
                 }}
-         
               />
               Start Building Free
               <span style={{ fontSize: 16 }}>→</span>

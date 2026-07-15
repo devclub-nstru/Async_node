@@ -8,9 +8,7 @@ interface SlackInput {
   text: string;
 }
 
-export async function sendSlackMessage(
-  input: SlackInput
-) {
+export async function sendSlackMessage(input: SlackInput) {
   const response = await axios.post(
     "https://slack.com/api/chat.postMessage",
     {
@@ -22,7 +20,7 @@ export async function sendSlackMessage(
         Authorization: `Bearer ${input.credentials.botToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   if (!response.data.ok) {

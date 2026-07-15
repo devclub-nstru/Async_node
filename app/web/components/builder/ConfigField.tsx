@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import KeyValueField from "./KeyValueField"
-import type { ConfigField as ConfigFieldDef } from "./nodeConfigSchemas"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import KeyValueField from "./KeyValueField";
+import type { ConfigField as ConfigFieldDef } from "./nodeConfigSchemas";
 
 interface ConfigFieldProps {
-  field: ConfigFieldDef
-  value: unknown
-  onChange: (value: string | Record<string, string>) => void
-  disabled?: boolean
+  field: ConfigFieldDef;
+  value: unknown;
+  onChange: (value: string | Record<string, string>) => void;
+  disabled?: boolean;
 }
 
 export default function ConfigFieldInput({ field, value, onChange, disabled }: ConfigFieldProps) {
@@ -57,7 +57,9 @@ export default function ConfigFieldInput({ field, value, onChange, disabled }: C
       ) : (
         <Input
           id={field.key}
-          type={field.type === "password" ? "password" : field.type === "number" ? "number" : "text"}
+          type={
+            field.type === "password" ? "password" : field.type === "number" ? "number" : "text"
+          }
           value={(value as string) ?? ""}
           placeholder={field.placeholder}
           onChange={(e) => onChange(e.target.value)}
@@ -66,5 +68,5 @@ export default function ConfigFieldInput({ field, value, onChange, disabled }: C
         />
       )}
     </div>
-  )
+  );
 }

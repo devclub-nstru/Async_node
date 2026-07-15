@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Dialog as DialogPrimitive } from "radix-ui"
-import { Loader2, X } from "lucide-react"
-import { toast } from "sonner"
-import { cn } from "@/lib/utils"
-import { createWorkflow } from "@/services/workflows/createWorkflow"
-import type { WorkflowItem } from "./types"
+import { useState } from "react";
+import { Dialog as DialogPrimitive } from "radix-ui";
+import { Loader2, X } from "lucide-react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { createWorkflow } from "@/services/workflows/createWorkflow";
+import type { WorkflowItem } from "./types";
 
 interface CreateWorkflowDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onCreated: (workflow: WorkflowItem) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreated: (workflow: WorkflowItem) => void;
 }
 
 const inputCls = cn(
@@ -20,33 +20,37 @@ const inputCls = cn(
   "bg-white/5 border border-white/[0.06]",
   "transition-[border-color,box-shadow]",
   "focus:border-amber-600 focus:ring-[3px] focus:ring-amber-600/20",
-)
+);
 
-export default function CreateWorkflowDialog({ open, onOpenChange, onCreated }: CreateWorkflowDialogProps) {
-  const [name, setName] = useState("")
-  const [description, setDescription] = useState("")
-  const [submitting, setSubmitting] = useState(false)
+export default function CreateWorkflowDialog({
+  open,
+  onOpenChange,
+  onCreated,
+}: CreateWorkflowDialogProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   function reset() {
-    setName("")
-    setDescription("")
+    setName("");
+    setDescription("");
   }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!name.trim() || !description.trim() || submitting) return
+    e.preventDefault();
+    if (!name.trim() || !description.trim() || submitting) return;
 
-    setSubmitting(true)
+    setSubmitting(true);
     try {
-      const workflow = await createWorkflow({ name: name.trim(), description: description.trim() })
-      onCreated(workflow)
-      toast.success("Workflow created")
-      reset()
-      onOpenChange(false)
+      const workflow = await createWorkflow({ name: name.trim(), description: description.trim() });
+      onCreated(workflow);
+      toast.success("Workflow created");
+      reset();
+      onOpenChange(false);
     } catch {
-      toast.error("Failed to create workflow. Please try again.")
+      toast.error("Failed to create workflow. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   }
 
@@ -55,8 +59,8 @@ export default function CreateWorkflowDialog({ open, onOpenChange, onCreated }: 
       open={open}
       onOpenChange={(next) => {
         if (!submitting) {
-          onOpenChange(next)
-          if (!next) reset()
+          onOpenChange(next);
+          if (!next) reset();
         }
       }}
     >
@@ -128,5 +132,5 @@ export default function CreateWorkflowDialog({ open, onOpenChange, onCreated }: 
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
-  )
+  );
 }

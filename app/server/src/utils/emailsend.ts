@@ -10,10 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendVerificationEmail(
-  to: string,
-  code: string
-): Promise<void> {
+export async function sendVerificationEmail(to: string, code: string): Promise<void> {
   await transporter.sendMail({
     from: `"AsyncNode" <${config.smtpUser}>`, // sender address
     to,

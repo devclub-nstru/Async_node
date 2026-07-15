@@ -1,24 +1,24 @@
-"use client"
-import DashboardClient from "@/components/dashboard/DashboardClient"
-import { useMe } from "@/hooks/useMe"
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+"use client";
+import DashboardClient from "@/components/dashboard/DashboardClient";
+import { useMe } from "@/hooks/useMe";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
-  const { user,loading,route } = useMe()
+  const { user, loading, route } = useMe();
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (route) {
-      router.push("/signin")
+      router.push("/signin");
     }
-    if(user?.isVerified === false){
-      router.push(`/verification/${user.email}`)
+    if (user?.isVerified === false) {
+      router.push(`/verification/${user.email}`);
     }
-  }, [route,user])
+  }, [route, user]);
 
-  if (loading) return null
+  if (loading) return null;
 
-  return <DashboardClient user={user} />
+  return <DashboardClient user={user} />;
 }

@@ -2,10 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Workflow, Menu, X } from "lucide-react";
-import {useRouter} from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Logo from "./Logo";
 
-const NAV_LINKS = ["Features","Integrations","AI","Enterprise","Docs","Pricing"];
+const NAV_LINKS: { label: string; href: string }[] = [
+  { label: "Features", href: "#" },
+  { label: "Integrations", href: "#" },
+  { label: "AI", href: "#" },
+  { label: "Enterprise", href: "#" },
+  { label: "Docs", href: "/docs" },
+  { label: "Pricing", href: "#" },
+];
 
 export function Navbar() {
   const router = useRouter();
@@ -25,52 +33,42 @@ export function Navbar() {
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[96%] max-w-[1350px] transition-all duration-300"
       style={{
-        background: scrolled ? 'rgba(6,6,8,0.78)' : 'rgba(6,6,8,0.4)',
-        backdropFilter: 'blur(20px) saturate(160%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(160%)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        borderRadius: '12px',
-        boxShadow: scrolled ? '0 12px 40px rgba(0,0,0,0.6)' : '0 4px 20px rgba(0,0,0,0.2)',
-        overflow: 'hidden',
+        background: scrolled ? "rgba(6,6,8,0.78)" : "rgba(6,6,8,0.4)",
+        backdropFilter: "blur(20px) saturate(160%)",
+        WebkitBackdropFilter: "blur(20px) saturate(160%)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "12px",
+        boxShadow: scrolled ? "0 12px 40px rgba(0,0,0,0.6)" : "0 4px 20px rgba(0,0,0,0.2)",
+        overflow: "hidden",
       }}
     >
       <div className="w-full px-8 flex items-center justify-between" style={{ height: 60 }}>
-        {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {/* Mark — three stacked horizontal bars of different widths */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 3, width: 20 }}>
-            <div style={{ height: 2, width: 20, background: '#D97706', borderRadius: 1 }} />
-            <div style={{ height: 2, width: 14, background: 'rgba(217,119,6,0.5)', borderRadius: 1 }} />
-            <div style={{ height: 2, width: 8, background: 'rgba(217,119,6,0.25)', borderRadius: 1 }} />
-          </div>
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '1rem',
-            letterSpacing: '-0.02em',
-            color: '#F0EEE9',
-          }}>AsyncNode</span>
-        </div>
+        <Logo />
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-0.5">
-          {NAV_LINKS.map(link => (
+          {NAV_LINKS.map((link) => (
             <a
-              key={link} href="#"
+              key={link.label}
+              href={link.href}
               style={{
-                color: 'rgba(255,255,255,0.35)',
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.82rem',
+                color: "rgba(255,255,255,0.35)",
+                fontFamily: "var(--font-body)",
+                fontSize: "0.82rem",
                 fontWeight: 400,
-                letterSpacing: '0.04em',
-                padding: '6px 14px',
+                letterSpacing: "0.04em",
+                padding: "6px 14px",
                 borderRadius: 4,
-                transition: 'color 0.2s ease',
+                transition: "color 0.2s ease",
               }}
-              onMouseEnter={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.85)'; }}
-              onMouseLeave={e => { (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.35)'; }}
+              onMouseEnter={(e) => {
+                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.85)";
+              }}
+              onMouseLeave={(e) => {
+                (e.target as HTMLElement).style.color = "rgba(255,255,255,0.35)";
+              }}
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </div>
@@ -88,42 +86,46 @@ export function Navbar() {
               borderRadius: "6px",
               transition: "color 0.2s ease, background-color 0.2s ease",
             }}
-            onMouseEnter={e => {
-              (e.target as HTMLElement).style.color = '#F0EEE9';
-              (e.target as HTMLElement).style.backgroundColor = 'rgba(255,255,255,0.05)';
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.color = "#F0EEE9";
+              (e.target as HTMLElement).style.backgroundColor = "rgba(255,255,255,0.05)";
             }}
-            onMouseLeave={e => {
-              (e.target as HTMLElement).style.color = 'rgba(255,255,255,0.65)';
-              (e.target as HTMLElement).style.backgroundColor = 'transparent';
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.color = "rgba(255,255,255,0.65)";
+              (e.target as HTMLElement).style.backgroundColor = "transparent";
             }}
 
-            onClick={() => { router.push("/signin") }}
+            onClick={() => {
+              router.push("/signin");
+            }}
           >
             Sign in
           </a>
           <motion.a
             whileHover={{
-              boxShadow: '0 0 0 1px rgba(217,119,6,0.6), 0 0 32px rgba(217,119,6,0.25)',
+              boxShadow: "0 0 0 1px rgba(217,119,6,0.6), 0 0 32px rgba(217,119,6,0.25)",
             }}
             whileTap={{ scale: 0.975 }}
             href="#"
             style={{
-              display: 'flex',
-              alignItems: 'center',
+              display: "flex",
+              alignItems: "center",
               gap: 8,
-              padding: '8px 20px',
+              padding: "8px 20px",
               borderRadius: 40,
-              border: '1px solid rgba(217,119,6,0.35)',
-              background: 'rgba(217,119,6,0.08)',
-              color: '#D97706',
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.82rem',
+              border: "1px solid rgba(217,119,6,0.35)",
+              background: "rgba(217,119,6,0.08)",
+              color: "#D97706",
+              fontFamily: "var(--font-body)",
+              fontSize: "0.82rem",
               fontWeight: 500,
-              letterSpacing: '0.02em',
+              letterSpacing: "0.02em",
             }}
-            onClick={() => { router.push("/signup") }}
+            onClick={() => {
+              router.push("/signup");
+            }}
           >
-             Get Started Free
+            Get Started Free
             <span style={{ fontSize: 12 }}>→</span>
           </motion.a>
         </div>
@@ -143,12 +145,33 @@ export function Navbar() {
             style={{ background: "rgba(6,6,8,0.4)", borderTop: "1px solid rgba(255,255,255,0.06)" }}
           >
             <div className="px-8 py-4 flex flex-col gap-3">
-              {NAV_LINKS.map(link => (
-                <a key={link} href="#" style={{ color: "#71717A", fontFamily: "var(--font-body)", fontSize: "0.9rem" }}>{link}</a>
+              {NAV_LINKS.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  style={{ color: "#71717A", fontFamily: "var(--font-body)", fontSize: "0.9rem" }}
+                >
+                  {link.label}
+                </a>
               ))}
-              <div className="pt-3 flex flex-col gap-2" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-                <a href="#" className="text-sm text-center py-2 rounded-xl" style={{ color: "#71717A", border: "1px solid rgba(255,255,255,0.08)" }}>Sign in</a>
-                <a href="#" className="text-sm text-center py-2 rounded-xl text-white font-medium" style={{ background: "#D97706" }}>Get Started Free</a>
+              <div
+                className="pt-3 flex flex-col gap-2"
+                style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
+              >
+                <a
+                  href="#"
+                  className="text-sm text-center py-2 rounded-xl"
+                  style={{ color: "#71717A", border: "1px solid rgba(255,255,255,0.08)" }}
+                >
+                  Sign in
+                </a>
+                <a
+                  href="#"
+                  className="text-sm text-center py-2 rounded-xl text-white font-medium"
+                  style={{ background: "#D97706" }}
+                >
+                  Get Started Free
+                </a>
               </div>
             </div>
           </motion.div>
