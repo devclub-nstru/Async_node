@@ -1,14 +1,17 @@
-import { LogOut } from "lucide-react"
-import Logo from "@/components/layout/Logo"
+import { LogOut } from "lucide-react";
+import Logo from "@/components/layout/Logo";
 
 interface DashboardHeaderProps {
-  signingOut: boolean
-  onSignOut: () => void
+  signingOut: boolean;
+  onSignOut: () => void;
 }
 
 export default function DashboardHeader({ signingOut, onSignOut }: DashboardHeaderProps) {
   return (
-    <header className="dash-enter mb-10 flex items-center justify-between" style={{ animationDelay: "0ms" }}>
+    <header
+      className="dash-enter mb-10 flex items-center justify-between"
+      style={{ animationDelay: "0ms" }}
+    >
       <Logo href="/dashboard" />
 
       <button
@@ -20,5 +23,5 @@ export default function DashboardHeader({ signingOut, onSignOut }: DashboardHead
         {signingOut ? "Signing out…" : "Sign out"}
       </button>
     </header>
-  )
+  );
 }

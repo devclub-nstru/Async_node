@@ -1,34 +1,40 @@
-import {creatUserController, signInUserController, signOutUserController, sendVerificationCodeController, verifyEmailController, refreshAccessTokenController} from "./auth.controller.ts";
+import {
+  creatUserController,
+  signInUserController,
+  signOutUserController,
+  sendVerificationCodeController,
+  verifyEmailController,
+  refreshAccessTokenController,
+} from "./auth.controller.ts";
 import router from "express";
 import { authenticate } from "../../middlewares/auth.middleware.ts";
-import {getMeController} from "./auth.controller.ts";
+import { getMeController } from "./auth.controller.ts";
 import { rateLimit } from "express-rate-limit";
 import { ERROR_MESSAGES } from "../../constants/messages.ts";
 import type { thttpError } from "../../types/types.ts";
 
-
 export const authRouter = router.Router();
 
 const authLimiter = rateLimit({
-	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 10, // Limit each IP to 10 requests per window on sensitive auth endpoints
-	standardHeaders: "draft-8",
-	legacyHeaders: false,
-	ipv6Subnet: 56,
-	handler: (req, res) => {
-		const response: thttpError = {
-			success: false,
-			status: 429,
-			message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
-			request: {
-				ip: req.ip || "",
-				method: req.method || "",
-				url: req.url || "",
-			},
-			trace: null,
-		};
-		res.status(429).json(response);
-	},
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 10, // Limit each IP to 10 requests per window on sensitive auth endpoints
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+  handler: (req, res) => {
+    const response: thttpError = {
+      success: false,
+      status: 429,
+      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
+      request: {
+        ip: req.ip || "",
+        method: req.method || "",
+        url: req.url || "",
+      },
+      trace: null,
+    };
+    res.status(429).json(response);
+  },
 });
 
 /**
@@ -64,7 +70,7 @@ const authLimiter = rateLimit({
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signup", authLimiter, creatUserController)
+authRouter.post("/signup", authLimiter, creatUserController);
 
 /**
  * @openapi
@@ -105,7 +111,7 @@ authRouter.post("/signup", authLimiter, creatUserController)
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signin", authLimiter, signInUserController)
+authRouter.post("/signin", authLimiter, signInUserController);
 
 /**
  * @openapi
@@ -128,10 +134,10 @@ authRouter.post("/signin", authLimiter, signInUserController)
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signout", signOutUserController)
+authRouter.post("/signout", signOutUserController);
 
-authRouter.post("/token/refresh", refreshAccessTokenController)
-authRouter.post("/verify/send", authenticate, authLimiter, sendVerificationCodeController)
-authRouter.post("/verify/confirm", authenticate, authLimiter, verifyEmailController)
+authRouter.post("/token/refresh", refreshAccessTokenController);
+authRouter.post("/verify/send", authenticate, authLimiter, sendVerificationCodeController);
+authRouter.post("/verify/confirm", authenticate, authLimiter, verifyEmailController);
 
-authRouter.get("/me", authenticate, getMeController)
+authRouter.get("/me", authenticate, getMeController);

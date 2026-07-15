@@ -1,20 +1,13 @@
-import LeftPanel from "@/components/signin/LeftPanel"
-import VerifyCard from "@/components/verification/VerifyCard"
-
+import LeftPanel from "@/components/signin/LeftPanel";
+import VerifyCard from "@/components/verification/VerifyCard";
 
 export const metadata = {
   title: "Verify Email — AsyncNode",
   description: "Confirm your email address to activate your AsyncNode account.",
-}
+};
 
-export default async function VerifyEmailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>
-}) {
-  const { id } = await params
-
-
+export default async function VerifyEmailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
   return (
     <>
@@ -86,5 +79,5 @@ export default async function VerifyEmailPage({
         </div>
       </div>
     </>
-  )
+  );
 }

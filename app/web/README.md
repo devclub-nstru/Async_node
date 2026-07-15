@@ -15,8 +15,8 @@ Runs at [http://localhost:3000](http://localhost:3000). Requires the backend (`a
 
 ## Structure
 
-* `app/` — routes: `/`, `/signin`, `/signup`, `/verification/[id]`, `/dashboard`, `/builder/[id]`
-* `components/builder/` — the React Flow-based workflow canvas and node editor
-* `components/dashboard/`, `components/signin/`, `components/signup/` — page-specific components
-* `hooks/` — `useWorkflow`, `useWorkflows`, `useMe`, `useExecutionSocket` (Socket.IO client for live execution updates)
-* `services/` — API client functions grouped by domain (`auth/`, `workflows/`)
+- `app/` — routes: `/`, `/signin`, `/signup`, `/verification/[id]`, `/dashboard`, `/builder/[id]`
+- `components/builder/` — the React Flow-based workflow canvas and node editor
+- `components/dashboard/`, `components/signin/`, `components/signup/` — page-specific components
+- `hooks/` — `useWorkflow`, `useWorkflows`, `useMe`, `useExecutionSocket` (Socket.IO client for live execution updates)
+- `services/` — API client functions grouped by domain (`auth/`, `workflows/`)

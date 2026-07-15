@@ -67,12 +67,8 @@
           "name": "execution_workflow_id_workflows_id_fk",
           "tableFrom": "execution",
           "tableTo": "workflows",
-          "columnsFrom": [
-            "workflow_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -80,12 +76,8 @@
           "name": "execution_trigger_id_triggers_id_fk",
           "tableFrom": "execution",
           "tableTo": "triggers",
-          "columnsFrom": [
-            "trigger_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trigger_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -151,12 +143,8 @@
           "name": "execution_logs_execution_id_execution_id_fk",
           "tableFrom": "execution_logs",
           "tableTo": "execution",
-          "columnsFrom": [
-            "execution_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["execution_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -164,12 +152,8 @@
           "name": "execution_logs_node_execution_id_node_execution_id_fk",
           "tableFrom": "execution_logs",
           "tableTo": "node_execution",
-          "columnsFrom": [
-            "node_execution_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["node_execution_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -267,12 +251,8 @@
           "name": "node_execution_execution_id_execution_id_fk",
           "tableFrom": "node_execution",
           "tableTo": "execution",
-          "columnsFrom": [
-            "execution_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["execution_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -338,12 +318,8 @@
           "name": "integrations_workflow_id_workflows_id_fk",
           "tableFrom": "integrations",
           "tableTo": "workflows",
-          "columnsFrom": [
-            "workflow_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -417,12 +393,8 @@
           "name": "triggers_workflow_id_workflows_id_fk",
           "tableFrom": "triggers",
           "tableTo": "workflows",
-          "columnsFrom": [
-            "workflow_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -496,9 +468,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -568,12 +538,8 @@
           "name": "workflows_user_id_users_id_fk",
           "tableFrom": "workflows",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -589,29 +555,17 @@
     "public.status_enum": {
       "name": "status_enum",
       "schema": "public",
-      "values": [
-        "pending",
-        "running",
-        "completed",
-        "failed"
-      ]
+      "values": ["pending", "running", "completed", "failed"]
     },
     "public.is_active": {
       "name": "is_active",
       "schema": "public",
-      "values": [
-        "true",
-        "false"
-      ]
+      "values": ["true", "false"]
     },
     "public.workflow_status": {
       "name": "workflow_status",
       "schema": "public",
-      "values": [
-        "draft",
-        "active",
-        "completed"
-      ]
+      "values": ["draft", "active", "completed"]
     }
   },
   "schemas": {},

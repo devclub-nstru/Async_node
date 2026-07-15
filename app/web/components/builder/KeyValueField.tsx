@@ -1,69 +1,79 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Plus, X } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { Plus, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 interface KeyValuePair {
-  key: string
-  value: string
+  key: string;
+  value: string;
 }
 
 interface KeyValueFieldProps {
-  value: Record<string, string>
-  onChange: (value: Record<string, string>) => void
-  disabled?: boolean
-  addLabel?: string
+  value: Record<string, string>;
+  onChange: (value: Record<string, string>) => void;
+  disabled?: boolean;
+  addLabel?: string;
 }
 
 function isPlainObject(value: unknown): value is Record<string, string> {
-  return value !== null && typeof value === "object" && !Array.isArray(value)
+  return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function toPairs(value: Record<string, string>): KeyValuePair[] {
-  const entries = isPlainObject(value) ? Object.entries(value) : []
-  return entries.length > 0 ? entries.map(([key, val]) => ({ key, value: val })) : [{ key: "", value: "" }]
+  const entries = isPlainObject(value) ? Object.entries(value) : [];
+  return entries.length > 0
+    ? entries.map(([key, val]) => ({ key, value: val }))
+    : [{ key: "", value: "" }];
 }
 
 function toRecord(pairs: KeyValuePair[]): Record<string, string> {
-  const record: Record<string, string> = {}
+  const record: Record<string, string> = {};
   for (const pair of pairs) {
-    if (pair.key.trim()) record[pair.key] = pair.value
+    if (pair.key.trim()) record[pair.key] = pair.value;
   }
-  return record
+  return record;
 }
 
-export default function KeyValueField({ value, onChange, disabled, addLabel = "Add row" }: KeyValueFieldProps) {
-  const [pairs, setPairs] = useState<KeyValuePair[]>(() => toPairs(value))
+export default function KeyValueField({
+  value,
+  onChange,
+  disabled,
+  addLabel = "Add row",
+}: KeyValueFieldProps) {
+  const [pairs, setPairs] = useState<KeyValuePair[]>(() => toPairs(value));
+  const [prevValue, setPrevValue] = useState(value);
 
   // Re-sync from props only when the incoming value doesn't match what we'd
   // produce from current local state — avoids clobbering in-progress blank
   // rows/keys on every parent re-render while still picking up external resets.
-  useEffect(() => {
-    const incoming = JSON.stringify(isPlainObject(value) ? value : {})
-    const current = JSON.stringify(toRecord(pairs))
+  // Adjusted directly during render (rather than in an effect) to avoid an
+  // extra post-render commit; see https://react.dev/learn/you-might-not-need-an-effect
+  if (value !== prevValue) {
+    const incoming = JSON.stringify(isPlainObject(value) ? value : {});
+    const current = JSON.stringify(toRecord(pairs));
+    setPrevValue(value);
     if (incoming !== current) {
-      setPairs(toPairs(value))
+      setPairs(toPairs(value));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }
 
   function commit(next: KeyValuePair[]) {
-    setPairs(next)
-    onChange(toRecord(next))
+    setPairs(next);
+    onChange(toRecord(next));
   }
 
   function updatePair(index: number, patch: Partial<KeyValuePair>) {
-    commit(pairs.map((pair, i) => (i === index ? { ...pair, ...patch } : pair)))
+    commit(pairs.map((pair, i) => (i === index ? { ...pair, ...patch } : pair)));
   }
 
   function addPair() {
-    commit([...pairs, { key: "", value: "" }])
+    commit([...pairs, { key: "", value: "" }]);
   }
 
   function removePair(index: number) {
-    const next = pairs.filter((_, i) => i !== index)
-    commit(next.length > 0 ? next : [{ key: "", value: "" }])
+    const next = pairs.filter((_, i) => i !== index);
+    commit(next.length > 0 ? next : [{ key: "", value: "" }]);
   }
 
   return (
@@ -104,5 +114,5 @@ export default function KeyValueField({ value, onChange, disabled, addLabel = "A
         {addLabel}
       </button>
     </div>
-  )
+  );
 }

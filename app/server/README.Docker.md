@@ -30,4 +30,4 @@ docker build --platform=linux/amd64 -t asyncnode-server .
 
 ### References
 
-* [Docker's Node.js guide](https://docs.docker.com/language/nodejs/)
+- [Docker's Node.js guide](https://docs.docker.com/language/nodejs/)

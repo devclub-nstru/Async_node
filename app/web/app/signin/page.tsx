@@ -1,10 +1,10 @@
-import LeftPanel from "@/components/signin/LeftPanel"
-import AuthCard from "@/components/signin/AuthCard"
+import LeftPanel from "@/components/signin/LeftPanel";
+import AuthCard from "@/components/signin/AuthCard";
 
 export const metadata = {
   title: "Sign In — AsyncNode",
   description: "Sign in to your AsyncNode account.",
-}
+};
 
 export default function SignInPage() {
   return (
@@ -77,5 +77,5 @@ export default function SignInPage() {
         </div>
       </div>
     </>
-  )
+  );
 }

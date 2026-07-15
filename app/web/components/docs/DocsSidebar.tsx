@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Logo from "@/components/layout/Logo"
+import Link from "next/link";
+import Logo from "@/components/layout/Logo";
 
 export const DOCS_NAV = [
   { id: "overview", label: "Overview" },
@@ -10,7 +10,7 @@ export const DOCS_NAV = [
   { id: "data-flow", label: "Passing Data Between Nodes" },
   { id: "triggers", label: "Triggers" },
   { id: "logging", label: "Logs & Debugging" },
-] as const
+] as const;
 
 export default function DocsSidebar() {
   return (
@@ -20,7 +20,9 @@ export default function DocsSidebar() {
       </div>
 
       <nav className="flex flex-col gap-1">
-        <p className="mb-1 px-2 text-[11px] font-medium uppercase tracking-wider text-white/30">Documentation</p>
+        <p className="mb-1 px-2 text-[11px] font-medium uppercase tracking-wider text-white/30">
+          Documentation
+        </p>
         {DOCS_NAV.map((item) => (
           <a
             key={item.id}
@@ -39,5 +41,5 @@ export default function DocsSidebar() {
         ← Back to dashboard
       </Link>
     </aside>
-  )
+  );
 }

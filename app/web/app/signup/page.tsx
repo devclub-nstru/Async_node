@@ -1,10 +1,10 @@
-import LeftPanel from "@/components/signin/LeftPanel"
-import SignUpCard from "@/components/signup/SignUpCard"
+import LeftPanel from "@/components/signin/LeftPanel";
+import SignUpCard from "@/components/signup/SignUpCard";
 
 export const metadata = {
   title: "Sign Up — AsyncNode",
   description: "Create your AsyncNode workspace.",
-}
+};
 
 export default function SignUpPage() {
   return (
@@ -91,5 +91,5 @@ export default function SignUpPage() {
         </div>
       </div>
     </>
-  )
+  );
 }

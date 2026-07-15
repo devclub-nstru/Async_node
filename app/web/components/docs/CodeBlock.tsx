@@ -1,6 +1,6 @@
 interface CodeBlockProps {
-  code: string
-  label?: string
+  code: string;
+  label?: string;
 }
 
 export default function CodeBlock({ code, label }: CodeBlockProps) {
@@ -13,5 +13,5 @@ export default function CodeBlock({ code, label }: CodeBlockProps) {
         {code}
       </pre>
     </div>
-  )
+  );
 }

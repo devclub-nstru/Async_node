@@ -1,47 +1,55 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { DropdownMenu } from "radix-ui"
-import { Workflow, MoreHorizontal, Trash2, Loader2 } from "lucide-react"
-import { toast } from "sonner"
-import StatusPill from "./StatusPill"
-import type { WorkflowItem } from "./types"
-import { deleteWorkflow } from "@/services/workflows/deleteWorkflows"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { DropdownMenu } from "radix-ui";
+import { Workflow, MoreHorizontal, Trash2, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import StatusPill from "./StatusPill";
+import type { WorkflowItem } from "./types";
+import { deleteWorkflow } from "@/services/workflows/deleteWorkflows";
 
-const COLUMNS = ["Name", "Status", "Updated", ""]
+const COLUMNS = ["Name", "Status", "Updated", ""];
 
 interface WorkflowTableProps {
-  workflows: WorkflowItem[]
-  loading?: boolean
-  onDeleted?: (workflowId: number) => void
+  workflows: WorkflowItem[];
+  loading?: boolean;
+  onDeleted?: (workflowId: number) => void;
 }
 
 function timeAgo(iso: string) {
-  const diffMs = Date.now() - new Date(iso).getTime()
-  const minutes = Math.floor(diffMs / 60000)
-  if (minutes < 1) return "just now"
-  if (minutes < 60) return `${minutes}m ago`
-  const hours = Math.floor(minutes / 60)
-  if (hours < 24) return `${hours}h ago`
-  const days = Math.floor(hours / 24)
-  return `${days}d ago`
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const minutes = Math.floor(diffMs / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  return `${days}d ago`;
 }
 
-function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number; onDeleted?: (workflowId: number) => void }) {
-  const [deleting, setDeleting] = useState(false)
-  const router = useRouter()
+function WorkflowRow({
+  wf,
+  index,
+  onDeleted,
+}: {
+  wf: WorkflowItem;
+  index: number;
+  onDeleted?: (workflowId: number) => void;
+}) {
+  const [deleting, setDeleting] = useState(false);
+  const router = useRouter();
 
   async function handleDelete() {
-    if (deleting) return
-    setDeleting(true)
+    if (deleting) return;
+    setDeleting(true);
     try {
-      await deleteWorkflow(wf.id)
-      toast.success(`"${wf.name}" deleted`)
-      onDeleted?.(wf.id)
+      await deleteWorkflow(wf.id);
+      toast.success(`"${wf.name}" deleted`);
+      onDeleted?.(wf.id);
     } catch {
-      toast.error("Failed to delete workflow. Please try again.")
-      setDeleting(false)
+      toast.error("Failed to delete workflow. Please try again.");
+      setDeleting(false);
     }
   }
 
@@ -67,7 +75,11 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
             onClick={(e) => e.stopPropagation()}
             className="flex items-center justify-center rounded p-1 text-white/25 transition-colors hover:bg-white/10 hover:text-white/60 disabled:pointer-events-none"
           >
-            {deleting ? <Loader2 size={14} className="animate-spin" /> : <MoreHorizontal size={14} />}
+            {deleting ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <MoreHorizontal size={14} />
+            )}
           </button>
         </DropdownMenu.Trigger>
 
@@ -89,7 +101,7 @@ function WorkflowRow({ wf, index, onDeleted }: { wf: WorkflowItem; index: number
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
     </div>
-  )
+  );
 }
 
 function WorkflowRowSkeleton({ index }: { index: number }) {
@@ -106,7 +118,7 @@ function WorkflowRowSkeleton({ index }: { index: number }) {
       <div className="h-3 w-14 animate-pulse rounded bg-white/[0.04]" />
       <div className="h-4 w-4 animate-pulse rounded bg-white/[0.04]" />
     </div>
-  )
+  );
 }
 
 function EmptyState() {
@@ -115,7 +127,7 @@ function EmptyState() {
       <Workflow size={28} className="opacity-30" />
       <p className="text-[13px]">No workflows found</p>
     </div>
-  )
+  );
 }
 
 export default function WorkflowTable({ workflows, loading, onDeleted }: WorkflowTableProps) {
@@ -126,7 +138,12 @@ export default function WorkflowTable({ workflows, loading, onDeleted }: Workflo
     >
       <div className="grid grid-cols-[1fr_180px_100px_40px] gap-4 border-b border-white/[0.05] px-5 py-3">
         {COLUMNS.map((h) => (
-          <span key={h} className="text-[11px] font-medium uppercase tracking-[0.06em] text-white/25">{h}</span>
+          <span
+            key={h}
+            className="text-[11px] font-medium uppercase tracking-[0.06em] text-white/25"
+          >
+            {h}
+          </span>
         ))}
       </div>
 
@@ -135,8 +152,10 @@ export default function WorkflowTable({ workflows, loading, onDeleted }: Workflo
       ) : workflows.length === 0 ? (
         <EmptyState />
       ) : (
-        workflows.map((wf, i) => <WorkflowRow key={wf.id} wf={wf} index={i} onDeleted={onDeleted} />)
+        workflows.map((wf, i) => (
+          <WorkflowRow key={wf.id} wf={wf} index={i} onDeleted={onDeleted} />
+        ))
       )}
     </div>
-  )
+  );
 }

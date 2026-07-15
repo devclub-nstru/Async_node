@@ -1,18 +1,27 @@
-import type { LucideIcon } from "lucide-react"
+import type { LucideIcon } from "lucide-react";
 
 interface NodeTypeCardProps {
-  icon: LucideIcon
-  color: string
-  name: string
-  description: string
-  fields: { name: string; detail: string }[]
+  icon: LucideIcon;
+  color: string;
+  name: string;
+  description: string;
+  fields: { name: string; detail: string }[];
 }
 
-export default function NodeTypeCard({ icon: Icon, color, name, description, fields }: NodeTypeCardProps) {
+export default function NodeTypeCard({
+  icon: Icon,
+  color,
+  name,
+  description,
+  fields,
+}: NodeTypeCardProps) {
   return (
     <div className="rounded-lg border border-white/8 bg-[#111114] p-4">
       <div className="flex items-center gap-3">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg" style={{ background: `${color}1f`, color }}>
+        <div
+          className="flex size-8 shrink-0 items-center justify-center rounded-lg"
+          style={{ background: `${color}1f`, color }}
+        >
           <Icon size={16} />
         </div>
         <div>
@@ -30,5 +39,5 @@ export default function NodeTypeCard({ icon: Icon, color, name, description, fie
         ))}
       </dl>
     </div>
-  )
+  );
 }

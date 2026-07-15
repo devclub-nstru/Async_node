@@ -7,15 +7,12 @@ import { attachExecutionSocket } from "./ws/executionSocket.ts";
 import "./workers/VerificationMailworker.ts";
 import "./workers/WorkflowExecutionWorker.ts";
 
-
 const server = app.listen(config.port, () => {
-    logger.info(`Server is running on port ${config.port}`);
+  logger.info(`Server is running on port ${config.port}`);
 });
 
 attachExecutionSocket(server);
 
-
-
 app.get("/health", (req, res) => {
-    return httpResponse(res, req, 200, SUCCESS_MESSAGES.SERVER_RUNNING);
+  return httpResponse(res, req, 200, SUCCESS_MESSAGES.SERVER_RUNNING);
 });

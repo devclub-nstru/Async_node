@@ -11,11 +11,10 @@ export type VerificationEmailJobData = {
 export const verificationMailWorker = new Worker<VerificationEmailJobData>(
   "send-verification-email",
   async (job: Job<VerificationEmailJobData>) => {
- 
     const { email, code } = job.data;
     await sendVerificationEmail(email, code);
   },
-  { connection }
+  { connection },
 );
 
 verificationMailWorker.on("completed", (job) => {

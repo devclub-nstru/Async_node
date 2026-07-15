@@ -1,7 +1,7 @@
-import { Bot, Globe, Mail, MessageSquare, Zap } from "lucide-react"
-import DocsSection from "../DocsSection"
-import NodeTypeCard from "../NodeTypeCard"
-import ImagePlaceholder from "../ImagePlaceholder"
+import { Bot, Globe, Mail, MessageSquare, Zap } from "lucide-react";
+import DocsSection from "../DocsSection";
+import NodeTypeCard from "../NodeTypeCard";
+import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function NodesSection() {
   return (
@@ -28,9 +28,15 @@ export default function NodesSection() {
           description="Calls an AI model"
           fields={[
             { name: "Provider", detail: "Anthropic, OpenAI, or Groq" },
-            { name: "Model", detail: "Depends on provider, e.g. claude-sonnet-5, gpt-5.1, llama-3.3-70b-versatile" },
+            {
+              name: "Model",
+              detail: "Depends on provider, e.g. claude-sonnet-5, gpt-5.1, llama-3.3-70b-versatile",
+            },
             { name: "API Key", detail: "Provider API key" },
-            { name: "Prompt", detail: "Supports {{nodeId.field}} references to earlier node output" },
+            {
+              name: "Prompt",
+              detail: "Supports {{nodeId.field}} references to earlier node output",
+            },
           ]}
         />
         <NodeTypeCard
@@ -72,5 +78,5 @@ export default function NodesSection() {
 
       <ImagePlaceholder label="Screenshot: node config panel for each node type" aspect="video" />
     </DocsSection>
-  )
+  );
 }

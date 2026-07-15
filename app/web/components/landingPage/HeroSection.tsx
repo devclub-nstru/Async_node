@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { ChevronRight } from "lucide-react";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 /* ─── Layout constants ───────────────────────────────────────────────────── */
 const NW = 148,
@@ -106,15 +106,7 @@ const EDGES = [
 ];
 
 /* ─── SVG Node ────────────────────────────────────────────────────────────── */
-function SvgNode({
-  id,
-  label,
-  type,
-  x,
-  y,
-  color,
-  status,
-}: (typeof NODES)[number]) {
+function SvgNode({ id, label, type, x, y, color, status }: (typeof NODES)[number]) {
   const isRunning = status === "running";
   const isDone = status === "done";
   return (
@@ -138,12 +130,7 @@ function SvgNode({
           strokeWidth="1.5"
           opacity="0.4"
         >
-          <animate
-            attributeName="opacity"
-            values="0.4;0.1;0.4"
-            dur="2s"
-            repeatCount="indefinite"
-          />
+          <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite" />
         </rect>
       )}
       <rect
@@ -158,14 +145,7 @@ function SvgNode({
         className="transition-all duration-300 hover:fill-white/[0.07] hover:stroke-white/[0.18]"
       />
       <rect x={x + 1} y={y} width={NW - 2} height={2.5} rx={1.5} fill={color} />
-      <rect
-        x={x + 8}
-        y={y + 15}
-        width={26}
-        height={26}
-        rx={6}
-        fill={`${color}18`}
-      />
+      <rect x={x + 8} y={y + 15} width={26} height={26} rx={6} fill={`${color}18`} />
       <text
         x={x + 21}
         y={y + 33}
@@ -204,12 +184,7 @@ function SvgNode({
         fill={isDone ? "#22C55E" : isRunning ? color : "#27272A"}
       >
         {isRunning && (
-          <animate
-            attributeName="opacity"
-            values="1;0.2;1"
-            dur="1.2s"
-            repeatCount="indefinite"
-          />
+          <animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite" />
         )}
       </circle>
       {id !== "webhook" && (
@@ -251,10 +226,9 @@ export function HeroSection() {
     const el = videoWrapperRef.current;
     if (!el) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setVideoInView(entry.isIntersecting),
-      { rootMargin: "200px" }
-    );
+    const observer = new IntersectionObserver(([entry]) => setVideoInView(entry.isIntersecting), {
+      rootMargin: "200px",
+    });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
@@ -310,8 +284,7 @@ export function HeroSection() {
           style={{
             position: "absolute",
             inset: 0,
-            background:
-              "linear-gradient(to bottom, transparent 60%, #060608 100%)",
+            background: "linear-gradient(to bottom, transparent 60%, #060608 100%)",
           }}
         />
       </div>
@@ -330,8 +303,7 @@ export function HeroSection() {
       <div
         className="absolute top-[10%] left-1/2 -translate-x-1/2 w-150 h-100 pointer-events-none blur-[60px]"
         style={{
-          background:
-            "radial-gradient(ellipse, rgba(217,119,6,0.14) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(217,119,6,0.14) 0%, transparent 70%)",
         }}
       />
 
@@ -339,8 +311,7 @@ export function HeroSection() {
       <div
         className="absolute bottom-0 right-0 w-100 h-100 pointer-events-none blur-[80px]"
         style={{
-          background:
-            "radial-gradient(ellipse, rgba(255,255,255,0.02) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, rgba(255,255,255,0.02) 0%, transparent 70%)",
         }}
       />
 
@@ -379,8 +350,8 @@ export function HeroSection() {
               textShadow: "0 2px 10px rgba(0, 0, 0, 0.6)",
             }}
           >
-            Orchestrate AI agents, connect any API, and automate production
-            pipelines — without writing infrastructure code.
+            Orchestrate AI agents, connect any API, and automate production pipelines — without
+            writing infrastructure code.
           </p>
 
           {/* CTAs */}
@@ -507,9 +478,7 @@ export function HeroSection() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-600/8 border border-amber-600/18">
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-amber-600" />
-                <span className="text-amber-600 font-mono text-[0.62rem] tracking-wider">
-                  LIVE
-                </span>
+                <span className="text-amber-600 font-mono text-[0.62rem] tracking-wider">LIVE</span>
               </div>
               <ChevronRight size={13} className="text-[#3F3F46]" />
             </div>
@@ -523,13 +492,7 @@ export function HeroSection() {
               className="absolute inset-0 w-full h-full z-2"
             >
               <defs>
-                <filter
-                  id="amberGlow"
-                  x="-200%"
-                  y="-200%"
-                  width="500%"
-                  height="500%"
-                >
+                <filter id="amberGlow" x="-200%" y="-200%" width="500%" height="500%">
                   <feGaussianBlur stdDeviation="3" result="b" />
                   <feMerge>
                     <feMergeNode in="b" />
@@ -544,9 +507,7 @@ export function HeroSection() {
                   id={e.id}
                   d={e.path}
                   fill="none"
-                  stroke={
-                    e.active ? "rgba(217,119,6,0.25)" : "rgba(255,255,255,0.05)"
-                  }
+                  stroke={e.active ? "rgba(217,119,6,0.25)" : "rgba(255,255,255,0.05)"}
                   strokeWidth={e.active ? 1.5 : 1}
                 />
               ))}
@@ -591,18 +552,9 @@ export function HeroSection() {
                 { k: "Success rate", v: "99.8%", c: "text-green-500" },
                 { k: "Avg latency", v: "138ms", c: "text-[#A1A1AA]" },
               ].map((m) => (
-                <div
-                  key={m.k}
-                  className="flex items-center justify-between mb-1"
-                >
-                  <span className="text-[#52525B] font-mono text-[0.6rem]">
-                    {m.k}
-                  </span>
-                  <span
-                    className={`${m.c} font-mono text-[0.68rem] font-semibold`}
-                  >
-                    {m.v}
-                  </span>
+                <div key={m.k} className="flex items-center justify-between mb-1">
+                  <span className="text-[#52525B] font-mono text-[0.6rem]">{m.k}</span>
+                  <span className={`${m.c} font-mono text-[0.68rem] font-semibold`}>{m.v}</span>
                 </div>
               ))}
             </motion.div>
@@ -636,18 +588,13 @@ export function HeroSection() {
               </div>
               <div className="flex items-center gap-1.5 mt-2.5">
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse bg-amber-600" />
-                <span className="text-amber-600 font-mono text-[0.6rem]">
-                  Processing… 1.4s
-                </span>
+                <span className="text-amber-600 font-mono text-[0.6rem]">Processing… 1.4s</span>
               </div>
             </motion.div>
 
             {/* Minimap */}
             <div className="hidden md:block absolute bottom-3.5 right-3.5 w-27 h-15 z-10 rounded-lg overflow-hidden bg-[#060608]/90 border border-white/[0.08] backdrop-blur-md shadow-lg">
-              <svg
-                viewBox="0 0 1040 460"
-                className="w-full h-full opacity-[0.65]"
-              >
+              <svg viewBox="0 0 1040 460" className="w-full h-full opacity-[0.65]">
                 {NODES.map((n) => (
                   <rect
                     key={n.id}
@@ -665,11 +612,7 @@ export function HeroSection() {
                     key={e.id}
                     d={e.path}
                     fill="none"
-                    stroke={
-                      e.active
-                        ? "rgba(217,119,6,0.5)"
-                        : "rgba(255,255,255,0.05)"
-                    }
+                    stroke={e.active ? "rgba(217,119,6,0.5)" : "rgba(255,255,255,0.05)"}
                     strokeWidth={e.active ? 3 : 1.5}
                   />
                 ))}
@@ -689,17 +632,12 @@ export function HeroSection() {
                 ["2 agents", "◈"],
                 ["3 active", "●"],
               ].map(([l, i]) => (
-                <span
-                  key={l}
-                  className="text-[#3F3F46] font-mono text-[0.62rem]"
-                >
+                <span key={l} className="text-[#3F3F46] font-mono text-[0.62rem]">
                   {i} {l}
                 </span>
               ))}
             </div>
-            <span className="text-green-500 font-mono text-[0.62rem]">
-              ● RUNNING
-            </span>
+            <span className="text-green-500 font-mono text-[0.62rem]">● RUNNING</span>
           </div>
         </div>
       </motion.div>

@@ -1,14 +1,14 @@
-import LogoMark from "./LogoMark"
-import NodeGraph from "./NodeGraph"
+import LogoMark from "./LogoMark";
+import NodeGraph from "./NodeGraph";
 
-const BADGES = ["99.9% Uptime", "SOC 2 Type II", "GDPR Ready", "< 50ms Latency"]
+const BADGES = ["99.9% Uptime", "SOC 2 Type II", "GDPR Ready", "< 50ms Latency"];
 
 function MonoBadge({ children }: { children: React.ReactNode }) {
   return (
     <span className="font-mono rounded px-[10px] py-1 text-[11px] tracking-[0.06em] text-amber-600/70 bg-amber-600/[0.06] border border-amber-600/[0.18]">
       {children}
     </span>
-  )
+  );
 }
 
 export default function LeftPanel() {
@@ -27,8 +27,8 @@ export default function LeftPanel() {
           Visual workflow automation
         </p>
         <p className="mx-auto max-w-[360px] text-sm font-light leading-relaxed text-white/40">
-          Connect APIs, transform data, and automate complex pipelines —
-          without writing a single line of boilerplate.
+          Connect APIs, transform data, and automate complex pipelines — without writing a single
+          line of boilerplate.
         </p>
       </div>
 
@@ -38,5 +38,5 @@ export default function LeftPanel() {
         ))}
       </div>
     </div>
-  )
+  );
 }

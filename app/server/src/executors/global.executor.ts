@@ -88,7 +88,7 @@ export async function globalExecutor(
   workflowId: string,
   nodes: ExecutorNode[],
   edges: ExecutorEdge[],
-  hooks: ExecutionHooks = {}
+  hooks: ExecutionHooks = {},
 ): Promise<ExecutionContext> {
   const triggerNode = nodes.find((node) => !node.provider);
   const nodeIdsWithEdges = new Set(edges.flatMap((edge) => [edge.source, edge.target]));
@@ -117,7 +117,13 @@ export async function globalExecutor(
   if (triggerNode) {
     await hooks.onNodeStart?.(triggerNode.id, triggerNode.type ?? "manual", triggerNode.config);
     executionContext.nodeStatus[triggerNode.id] = "success";
-    broadcastExecutionEvent({ type: "node:success", executionId, workflowId, nodeId: triggerNode.id, data: triggerNode.config });
+    broadcastExecutionEvent({
+      type: "node:success",
+      executionId,
+      workflowId,
+      nodeId: triggerNode.id,
+      data: triggerNode.config,
+    });
     await hooks.onNodeComplete?.(triggerNode.id, "success", triggerNode.config);
   }
 
@@ -127,7 +133,10 @@ export async function globalExecutor(
     // Trigger nodes (and any node with no incoming/outgoing edges) have no executor to run.
     if (!targetNode.provider || !nodeIdsWithEdges.has(targetNode.id)) continue;
 
-    const resolvedConfig = resolveTemplate(targetNode.config, executionContext.nodeOutputs) as Record<string, any>;
+    const resolvedConfig = resolveTemplate(
+      targetNode.config,
+      executionContext.nodeOutputs,
+    ) as Record<string, any>;
 
     const workflowNode: WorkflowNode = {
       id: targetNode.id,
@@ -136,27 +145,49 @@ export async function globalExecutor(
     };
 
     executionContext.nodeStatus[targetNode.id] = "running";
-    broadcastExecutionEvent({ type: "node:running", executionId, workflowId, nodeId: targetNode.id });
+    broadcastExecutionEvent({
+      type: "node:running",
+      executionId,
+      workflowId,
+      nodeId: targetNode.id,
+    });
     await hooks.onNodeStart?.(targetNode.id, workflowNode.type, resolvedConfig);
 
     try {
       const output = await runNodeExecutor(workflowNode);
       executionContext.nodeOutputs[targetNode.id] = output;
       executionContext.nodeStatus[targetNode.id] = "success";
-      broadcastExecutionEvent({ type: "node:success", executionId, workflowId, nodeId: targetNode.id, data: output });
+      broadcastExecutionEvent({
+        type: "node:success",
+        executionId,
+        workflowId,
+        nodeId: targetNode.id,
+        data: output,
+      });
       await hooks.onNodeComplete?.(targetNode.id, "success", output);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       executionContext.nodeStatus[targetNode.id] = "failed";
       executionContext.nodeOutputs[targetNode.id] = { error: errorMessage };
       executionFailed = true;
-      broadcastExecutionEvent({ type: "node:failed", executionId, workflowId, nodeId: targetNode.id, error: errorMessage });
+      broadcastExecutionEvent({
+        type: "node:failed",
+        executionId,
+        workflowId,
+        nodeId: targetNode.id,
+        error: errorMessage,
+      });
       await hooks.onNodeComplete?.(targetNode.id, "failed", { error: errorMessage });
     }
   }
 
   executionContext.finishedAt = new Date().toISOString();
-  broadcastExecutionEvent({ type: "execution:finished", executionId, workflowId, data: executionContext });
+  broadcastExecutionEvent({
+    type: "execution:finished",
+    executionId,
+    workflowId,
+    data: executionContext,
+  });
   await hooks.onExecutionComplete?.(executionFailed ? "failed" : "success");
 
   return executionContext;

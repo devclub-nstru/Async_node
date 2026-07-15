@@ -4,13 +4,7 @@ import { motion } from "motion/react";
 import Logo from "@/components/layout/Logo";
 
 const LINKS = {
-  Product: [
-    "Features",
-    "Integrations",
-    "Pricing",
-    "Documentation",
-    "Changelog",
-  ],
+  Product: ["Features", "Integrations", "Pricing", "Documentation", "Changelog"],
   Resources: ["Blog", "Guides", "Community", "Templates", "API Reference"],
   Company: ["About", "Careers", "Contact", "Press", "Legal"],
 };
@@ -25,8 +19,8 @@ export function Footer() {
               <Logo size="sm" />
             </div>
             <p className="font-body font-light text-[0.82rem] leading-[1.7] text-[rgba(255,255,255,0.2)] max-w-[250px] mb-5">
-              Visual workflow automation for teams that move fast. Build,
-              deploy, and monitor AI-powered pipelines at production scale.
+              Visual workflow automation for teams that move fast. Build, deploy, and monitor
+              AI-powered pipelines at production scale.
             </p>
           </div>
 

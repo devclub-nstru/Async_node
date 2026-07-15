@@ -45,5 +45,5 @@ export default function DashboardBackground() {
       <div className="pointer-events-none absolute -top-[120px] -right-[120px] z-0 h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle,rgba(217,119,6,0.12)_0%,rgba(217,119,6,0.04)_40%,transparent_70%)]" />
       <div className="pointer-events-none absolute -bottom-[150px] -left-[100px] z-0 h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(30,45,100,0.18)_0%,transparent_65%)]" />
     </>
-  )
+  );
 }

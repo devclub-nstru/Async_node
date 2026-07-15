@@ -1,6 +1,6 @@
-import DocsSection from "../DocsSection"
-import CodeBlock from "../CodeBlock"
-import ImagePlaceholder from "../ImagePlaceholder"
+import DocsSection from "../DocsSection";
+import CodeBlock from "../CodeBlock";
+import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function DataFlowSection() {
   return (
@@ -11,16 +11,25 @@ export default function DataFlowSection() {
     >
       <div className="space-y-3 text-[13.5px] leading-relaxed text-white/55">
         <p>
-          Reference an earlier node&apos;s output from any text field (Prompt, Body, Message, URL, Headers, etc.)
-          using double curly braces:
+          Reference an earlier node&apos;s output from any text field (Prompt, Body, Message, URL,
+          Headers, etc.) using double curly braces:
         </p>
       </div>
 
       <CodeBlock label="Template syntax" code={"{{nodeId.path.to.field}}"} />
 
       <div className="space-y-3 text-[13.5px] leading-relaxed text-white/55">
-        <p><span className="font-mono text-white/80">nodeId</span> is the ID of the node whose output you want (shown in the Run Log and in the node config panel). <span className="font-mono text-white/80">path.to.field</span> walks into that node&apos;s output object.</p>
-        <p>The trigger node is always available under the fixed key <span className="font-mono text-white/80">trigger</span>, regardless of its node ID — this is the only node whose reference key never changes.</p>
+        <p>
+          <span className="font-mono text-white/80">nodeId</span> is the ID of the node whose output
+          you want (shown in the Run Log and in the node config panel).{" "}
+          <span className="font-mono text-white/80">path.to.field</span> walks into that node&apos;s
+          output object.
+        </p>
+        <p>
+          The trigger node is always available under the fixed key{" "}
+          <span className="font-mono text-white/80">trigger</span>, regardless of its node ID — this
+          is the only node whose reference key never changes.
+        </p>
       </div>
 
       <CodeBlock
@@ -33,10 +42,17 @@ export default function DataFlowSection() {
       />
 
       <div className="space-y-3 text-[13.5px] leading-relaxed text-white/55">
-        <p>If a field&apos;s value is <em>exactly</em> one placeholder, the resolved value keeps its original type (object, number, etc.). If a placeholder is embedded inside a longer string, it&apos;s inserted as text.</p>
+        <p>
+          If a field&apos;s value is <em>exactly</em> one placeholder, the resolved value keeps its
+          original type (object, number, etc.). If a placeholder is embedded inside a longer string,
+          it&apos;s inserted as text.
+        </p>
       </div>
 
-      <ImagePlaceholder label="Screenshot: a node config field using a {{nodeId.field}} reference" aspect="video" />
+      <ImagePlaceholder
+        label="Screenshot: a node config field using a {{nodeId.field}} reference"
+        aspect="video"
+      />
     </DocsSection>
-  )
+  );
 }

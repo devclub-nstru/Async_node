@@ -20,7 +20,7 @@ export const workflowExecutionWorker = new Worker<WorkflowExecutionJobData>(
 
     return result;
   },
-  { connection: workflowQueueConnection, concurrency: WORKFLOW_WORKER_CONCURRENCY }
+  { connection: workflowQueueConnection, concurrency: WORKFLOW_WORKER_CONCURRENCY },
 );
 
 workflowExecutionWorker.on("completed", (job) => {

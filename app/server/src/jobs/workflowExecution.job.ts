@@ -16,12 +16,12 @@ export function schedulerIdForWorkflow(workflowId: number) {
 
 export async function startWorkflowSchedule(
   data: WorkflowExecutionJobData,
-  intervalSeconds: number
+  intervalSeconds: number,
 ) {
   return WorkflowExecutionQueue.upsertJobScheduler(
     schedulerIdForWorkflow(data.workflowId),
     { every: intervalSeconds * 1000 },
-    { name: "run-workflow", data }
+    { name: "run-workflow", data },
   );
 }
 

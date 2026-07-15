@@ -1,5 +1,5 @@
-import Logo from "@/components/layout/Logo"
+import Logo from "@/components/layout/Logo";
 
 export default function LogoMark() {
-  return <Logo size="md" />
+  return <Logo size="md" />;
 }
