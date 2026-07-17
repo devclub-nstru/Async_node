@@ -10,8 +10,7 @@ export const httpError = (
   data?: unknown,
   trace?: object | null,
 ) => {
-  const response: thttpError = {
-    success: false,
+  logger.error("HTTP Error", {
     status,
     message,
     request: {
@@ -21,9 +20,13 @@ export const httpError = (
     },
     data,
     trace: trace ?? null,
-  };
+  });
 
-  logger.error("HTTP Error", response);
+  const response: thttpError = {
+    success: false,
+    status,
+    message,
+  };
 
   return next(response);
 };

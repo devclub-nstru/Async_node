@@ -16,18 +16,18 @@ It is currently a **modular monolith**: a single Express API process that also r
 
 **Technology**
 
-* Next.js (App Router)
-* React, TypeScript
-* React Flow (workflow canvas)
-* Socket.IO client
+- Next.js (App Router)
+- React, TypeScript
+- React Flow (workflow canvas)
+- Socket.IO client
 
 **Responsibilities**
 
-* User authentication (signin/signup/verification pages)
-* Workflow builder UI — node canvas, node configuration panels, edge management
-* Workflow list/dashboard
-* Execution monitoring and history display
-* Real-time execution updates via Socket.IO
+- User authentication (signin/signup/verification pages)
+- Workflow builder UI — node canvas, node configuration panels, edge management
+- Workflow list/dashboard
+- Execution monitoring and history display
+- Real-time execution updates via Socket.IO
 
 The frontend never executes workflows. It only manages workflow definitions (graph JSON) and displays execution data pushed from the backend.
 
@@ -39,16 +39,16 @@ State is held in local component state and small custom hooks (`useWorkflow`, `u
 
 **Technology**
 
-* Node.js, Express 5, TypeScript
+- Node.js, Express 5, TypeScript
 
 **Responsibilities**
 
-* Authentication & authorization (JWT access/refresh tokens in httpOnly cookies)
-* Workflow CRUD and graph persistence
-* Trigger and integration config sync (derived from the saved graph)
-* Triggering executions (manual, webhook, scheduled)
-* Execution/log query endpoints
-* Realtime event broadcasting (via the same process's Socket.IO server)
+- Authentication & authorization (JWT access/refresh tokens in httpOnly cookies)
+- Workflow CRUD and graph persistence
+- Trigger and integration config sync (derived from the saved graph)
+- Triggering executions (manual, webhook, scheduled)
+- Execution/log query endpoints
+- Realtime event broadcasting (via the same process's Socket.IO server)
 
 Organized as modules under `src/modules/` (`auth`, `workflows`, `executions`), each with its own controller/service/repo files.
 
@@ -60,12 +60,12 @@ Implemented in `src/executors/global.executor.ts` plus per-type executors (`http
 
 **Responsibilities**
 
-* Build an executable node/edge list from a workflow's `graphJson` plus its persisted trigger/integration config
-* Resolve execution order via topological sort
-* Run nodes **sequentially** in that order (not parallelized)
-* Persist per-node status/input/output to `node_execution`, and execution-level status to `execution`
-* Emit Socket.IO events as each node starts/succeeds/fails and when the execution finishes
-* Write log lines to `execution_logs`
+- Build an executable node/edge list from a workflow's `graphJson` plus its persisted trigger/integration config
+- Resolve execution order via topological sort
+- Run nodes **sequentially** in that order (not parallelized)
+- Persist per-node status/input/output to `node_execution`, and execution-level status to `execution`
+- Emit Socket.IO events as each node starts/succeeds/fails and when the execution finishes
+- Write log lines to `execution_logs`
 
 Node failures are recorded in `node_execution.output_json` (e.g. `{ error: message }`) rather than a dedicated error column.
 
@@ -75,13 +75,13 @@ Node failures are recorded in `node_execution.output_json` (e.g. `{ error: messa
 
 **Technology**
 
-* BullMQ, Redis
+- BullMQ, Redis
 
 **Responsibilities**
 
-* `WorkflowExecutionQueue` — queues a workflow run (manual, webhook, or scheduled) as a job
-* `VerificationEmailQueue` — queues verification email sends
-* Repeatable jobs (BullMQ job schedulers) back the interval-based scheduling feature (`schedule/start` / `schedule/stop`)
+- `WorkflowExecutionQueue` — queues a workflow run (manual, webhook, or scheduled) as a job
+- `VerificationEmailQueue` — queues verification email sends
+- Repeatable jobs (BullMQ job schedulers) back the interval-based scheduling feature (`schedule/start` / `schedule/stop`)
 
 Workers (`src/workers/WorkflowExecutionWorker.ts`, `src/workers/VerificationMailworker.ts`) run in the same Node process as the API server and consume these queues.
 
@@ -91,9 +91,9 @@ Workers (`src/workers/WorkflowExecutionWorker.ts`, `src/workers/VerificationMail
 
 Three trigger types actually exist, each represented by a row in the `triggers` table:
 
-* **Manual** — started via `POST /workflows/:id/run`
-* **Webhook** — a unique `webhookToken` is generated per webhook trigger node; `POST /api/v1/webhooks/:token` looks it up and queues a run
-* **Cron / scheduled** — an interval in seconds (`scheduleIntervalSeconds`) is stored on the workflow; starting the schedule registers a BullMQ repeatable job
+- **Manual** — started via `POST /workflows/:id/run`
+- **Webhook** — a unique `webhookToken` is generated per webhook trigger node; `POST /api/v1/webhooks/:token` looks it up and queues a run
+- **Cron / scheduled** — an interval in seconds (`scheduleIntervalSeconds`) is stored on the workflow; starting the schedule registers a BullMQ repeatable job
 
 There is no generic "external event" trigger beyond webhooks.
 
@@ -103,11 +103,11 @@ There is no generic "external event" trigger beyond webhooks.
 
 **Technology**
 
-* Socket.IO (`src/ws/executionSocket.ts` on the server, `hooks/useExecutionSocket.ts` on the client)
+- Socket.IO (`src/ws/executionSocket.ts` on the server, `hooks/useExecutionSocket.ts` on the client)
 
 **Responsibilities**
 
-* Push `execution:started`, `node:running`, `node:success`, `node:failed`, and `execution:finished` events as an execution progresses, so the builder UI can update without polling
+- Push `execution:started`, `node:running`, `node:success`, `node:failed`, and `execution:finished` events as an execution progresses, so the builder UI can update without polling
 
 ---
 
@@ -115,11 +115,11 @@ There is no generic "external event" trigger beyond webhooks.
 
 **Technology**
 
-* PostgreSQL, Drizzle ORM (targets Neon's serverless driver)
+- PostgreSQL, Drizzle ORM (targets Neon's serverless driver)
 
 **Responsibilities**
 
-* Users, workflows, triggers, integrations, executions, node executions, execution logs
+- Users, workflows, triggers, integrations, executions, node executions, execution logs
 
 See [`docs/database/DATABASE.md`](../database/DATABASE.md) for the full schema.
 
@@ -129,7 +129,7 @@ See [`docs/database/DATABASE.md`](../database/DATABASE.md) for the full schema.
 
 **Responsibilities**
 
-* BullMQ queue storage and job coordination
+- BullMQ queue storage and job coordination
 
 Redis is not used as a general-purpose cache in this codebase today — its only role is backing BullMQ.
 
@@ -139,17 +139,17 @@ Redis is not used as a general-purpose cache in this codebase today — its only
 
 ### AI Providers
 
-* OpenAI
-* Anthropic
-* Groq
+- OpenAI
+- Anthropic
+- Groq
 
 Each is a thin per-provider executor (`anthropic.executor.ts`, `openai.executor.ts`, `groq.executor.ts`) wrapping the respective SDK — there isn't a unified provider abstraction beyond sharing the same executor function signature.
 
 ### Integration Providers
 
-* **Slack** — send a message via the `slack` node type (`slack.executor.ts`)
-* **Email (SMTP)** — send via the `email` node type (`email.executor.ts`, Nodemailer), separate from the AI/Slack integrations table
-* **HTTP** — make an arbitrary HTTP request via the `http` node type (`http.executor.ts`)
+- **Slack** — send a message via the `slack` node type (`slack.executor.ts`)
+- **Email (SMTP)** — send via the `email` node type (`email.executor.ts`, Nodemailer), separate from the AI/Slack integrations table
+- **HTTP** — make an arbitrary HTTP request via the `http` node type (`http.executor.ts`)
 
 Gmail, Google Sheets, and Telegram are not implemented.
 
@@ -162,6 +162,7 @@ Gmail, Google Sheets, and Telegram are not implemented.
 ```
 Frontend → Backend API → PostgreSQL
 ```
+
 Used for authentication, workflow management, and execution history.
 
 ## WebSocket
@@ -169,6 +170,7 @@ Used for authentication, workflow management, and execution history.
 ```
 Execution engine → Socket.IO → Frontend
 ```
+
 Used for live execution/node status updates.
 
 ## Job Queue
@@ -176,6 +178,7 @@ Used for live execution/node status updates.
 ```
 Backend API → BullMQ (Redis) → Worker (same process) → Execution engine
 ```
+
 Manual runs, webhook-triggered runs, and scheduled runs all become BullMQ jobs, consumed by an in-process worker.
 
 ---
@@ -194,6 +197,6 @@ Manual runs, webhook-triggered runs, and scheduled runs all become BullMQ jobs, 
 
 # Related documents
 
-* [docs/database/DATABASE.md](../database/DATABASE.md) — schema reference
-* [docs/api/API.md](../api/API.md) — REST API reference
-* [docs/decisions/DECISIONS.md](../decisions/DECISIONS.md) — architectural decision records
+- [docs/database/DATABASE.md](../database/DATABASE.md) — schema reference
+- [docs/api/API.md](../api/API.md) — REST API reference
+- [docs/decisions/DECISIONS.md](../decisions/DECISIONS.md) — architectural decision records

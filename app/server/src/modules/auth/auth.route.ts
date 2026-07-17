@@ -12,6 +12,9 @@ import { getMeController } from "./auth.controller.ts";
 import { rateLimit } from "express-rate-limit";
 import { ERROR_MESSAGES } from "../../constants/messages.ts";
 import type { thttpError } from "../../types/types.ts";
+import logger from "../../utils/logger.ts";
+import { validate } from "../../middlewares/validate.middleware.ts";
+import { signupSchema, signinSchema } from "./auth.schema.ts";
 
 export const authRouter = router.Router();
 
@@ -22,16 +25,19 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
   ipv6Subnet: 56,
   handler: (req, res) => {
-    const response: thttpError = {
-      success: false,
+    logger.warn(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED, {
       status: 429,
-      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
       request: {
         ip: req.ip || "",
         method: req.method || "",
         url: req.url || "",
       },
-      trace: null,
+    });
+
+    const response: thttpError = {
+      success: false,
+      status: 429,
+      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
     };
     res.status(429).json(response);
   },
@@ -70,7 +76,7 @@ const authLimiter = rateLimit({
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signup", authLimiter, creatUserController);
+authRouter.post("/signup", authLimiter, validate(signupSchema), creatUserController);
 
 /**
  * @openapi
@@ -111,7 +117,7 @@ authRouter.post("/signup", authLimiter, creatUserController);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signin", authLimiter, signInUserController);
+authRouter.post("/signin", authLimiter, validate(signinSchema), signInUserController);
 
 /**
  * @openapi
