@@ -23,10 +23,6 @@ export const creatUserController = async (req: Request, res: Response, next: Nex
   try {
     const { username, email, password } = req.body;
 
-    if (!username || !email || !password) {
-      return httpError(next, req, 400, ERROR_MESSAGES.USERNAME_EMAIL_PASSWORD_REQUIRED);
-    }
-
     const result = await createUser(username, email, password);
     if (result instanceof Error) {
       return httpError(next, req, 400, result.message);
@@ -43,10 +39,6 @@ export const creatUserController = async (req: Request, res: Response, next: Nex
 export const signInUserController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return httpError(next, req, 400, ERROR_MESSAGES.EMAIL_PASSWORD_REQUIRED);
-    }
 
     const result = await signInUser(email, password);
 

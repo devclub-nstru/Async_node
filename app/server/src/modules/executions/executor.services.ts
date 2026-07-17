@@ -21,6 +21,7 @@ import {
   createNodeExecution,
   completeNodeExecution,
 } from "./execution.repo.ts";
+import { decryptCredentials } from "../../utils/credentialCrypto.ts";
 
 export const MIN_SCHEDULE_INTERVAL_SECONDS = 60;
 
@@ -82,7 +83,7 @@ export const buildExecutionGraph = async (
         return {
           id: node.id,
           provider: integration.provider,
-          config: integration.credentialsJson as Record<string, any>,
+          config: decryptCredentials<Record<string, any>>(integration.credentialsJson as string),
         };
       }
 

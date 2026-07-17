@@ -1,6 +1,6 @@
 services:
   web:
-    build: 
+    build:
       context: ../app/web
       dockerfile: docker/Dockerfile
     ports:
@@ -11,10 +11,9 @@ services:
     environment:
       WATCHPACK_POLLING: "true"
       backend_URI: ${BACKEND_URI}
-      
 
   server:
-    build: 
+    build:
       context: ../app/server
       dockerfile: docker/Dockerfile
     ports:
@@ -40,4 +39,3 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
-    

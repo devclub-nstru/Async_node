@@ -6,10 +6,10 @@ This document records major architectural decisions made during the development 
 
 Each decision includes:
 
-* Context
-* Alternatives considered
-* Reasoning
-* Trade-offs
+- Context
+- Alternatives considered
+- Reasoning
+- Trade-offs
 
 ---
 
@@ -23,21 +23,21 @@ Use PostgreSQL as the primary persistent datastore.
 
 AsyncNode manages highly related entities:
 
-* Users
-* Workflows (with node/edge graphs stored as JSON, see ADR-005)
-* Triggers
-* Integrations
-* Executions
-* Node Executions
-* Execution Logs
+- Users
+- Workflows (with node/edge graphs stored as JSON, see ADR-005)
+- Triggers
+- Integrations
+- Executions
+- Node Executions
+- Execution Logs
 
 The system requires:
 
-* Strong consistency
-* Relationships
-* Transactions
-* Complex querying
-* Durable execution state
+- Strong consistency
+- Relationships
+- Transactions
+- Complex querying
+- Durable execution state
 
 ## Alternatives Considered
 
@@ -45,31 +45,31 @@ The system requires:
 
 Rejected because:
 
-* Workflow execution data is highly relational
-* Frequent joins would be difficult
-* Consistency guarantees are weaker
+- Workflow execution data is highly relational
+- Frequent joins would be difficult
+- Consistency guarantees are weaker
 
 ### SQLite
 
 Rejected because:
 
-* Not suitable for production-scale concurrent workloads
-* Limited horizontal growth options
+- Not suitable for production-scale concurrent workloads
+- Limited horizontal growth options
 
 ## Reason Chosen
 
 PostgreSQL provides:
 
-* ACID transactions
-* Foreign keys
-* Complex queries
-* JSON support
-* Excellent ecosystem
+- ACID transactions
+- Foreign keys
+- Complex queries
+- JSON support
+- Excellent ecosystem
 
 ## Trade-offs Accepted
 
-* More schema management
-* More complex scaling than document databases
+- More schema management
+- More complex scaling than document databases
 
 Accepted because expected scale is achievable within PostgreSQL.
 
@@ -85,11 +85,11 @@ Use BullMQ and Redis as the workflow job execution system.
 
 Workflow executions may:
 
-* Run for minutes or hours
-* Execute thousands of jobs
-* Require retries
-* Require scheduling
-* Require concurrent processing
+- Run for minutes or hours
+- Execute thousands of jobs
+- Require retries
+- Require scheduling
+- Require concurrent processing
 
 A simple in-memory execution model is insufficient.
 
@@ -99,38 +99,38 @@ A simple in-memory execution model is insufficient.
 
 Rejected because:
 
-* Lost state during crashes
-* Difficult retry support
-* Limited scalability
+- Lost state during crashes
+- Difficult retry support
+- Limited scalability
 
 ### RabbitMQ
 
 Rejected because:
 
-* More operational complexity
-* BullMQ provides required features out of the box
+- More operational complexity
+- BullMQ provides required features out of the box
 
 ### Apache Kafka
 
 Rejected because:
 
-* Excessive complexity for v1
-* Better suited for event streaming
+- Excessive complexity for v1
+- Better suited for event streaming
 
 ## Reason Chosen
 
 BullMQ provides:
 
-* Delayed jobs
-* Retries
-* Concurrency controls
-* Scheduling
-* Worker management
+- Delayed jobs
+- Retries
+- Concurrency controls
+- Scheduling
+- Worker management
 
 ## Trade-offs Accepted
 
-* Additional infrastructure dependency
-* Redis operational complexity
+- Additional infrastructure dependency
+- Redis operational complexity
 
 Accepted because workflow reliability depends on durable job execution.
 
@@ -154,22 +154,22 @@ Workflow structure changes should not affect historical executions.
 
 Rejected because:
 
-* Historical tracking becomes difficult
-* Concurrent executions become complicated
+- Historical tracking becomes difficult
+- Concurrent executions become complicated
 
 ## Reason Chosen
 
 Separation provides:
 
-* Better scalability
-* Historical execution tracking
-* Easier debugging
-* Cleaner architecture
+- Better scalability
+- Historical execution tracking
+- Easier debugging
+- Cleaner architecture
 
 ## Trade-offs Accepted
 
-* Additional database tables
-* More joins
+- Additional database tables
+- More joins
 
 Accepted for maintainability and observability.
 
@@ -185,10 +185,10 @@ Execute workflows through events and queued jobs rather than synchronous API req
 
 Workflows may:
 
-* Contain 100+ nodes
-* Call external APIs
-* Wait for human approval
-* Execute long-running AI tasks
+- Contain 100+ nodes
+- Call external APIs
+- Wait for human approval
+- Execute long-running AI tasks
 
 HTTP request lifetimes are insufficient.
 
@@ -198,23 +198,23 @@ HTTP request lifetimes are insufficient.
 
 Rejected because:
 
-* Request timeouts
-* Poor reliability
-* Limited scalability
+- Request timeouts
+- Poor reliability
+- Limited scalability
 
 ## Reason Chosen
 
 Event-driven systems allow:
 
-* Long-running execution
-* Recovery
-* Retry support
-* Horizontal scaling
+- Long-running execution
+- Recovery
+- Retry support
+- Horizontal scaling
 
 ## Trade-offs Accepted
 
-* More system complexity
-* Harder debugging
+- More system complexity
+- Harder debugging
 
 Accepted because reliability is a core product requirement.
 
@@ -232,9 +232,9 @@ Workflow structures are dynamic.
 
 Different workflows contain:
 
-* Different node types
-* Different configurations
-* Different graph shapes
+- Different node types
+- Different configurations
+- Different graph shapes
 
 ## Alternatives Considered
 
@@ -242,23 +242,23 @@ Different workflows contain:
 
 Rejected because:
 
-* Excessive complexity
-* Frequent schema changes
+- Excessive complexity
+- Frequent schema changes
 
 ## Reason Chosen
 
 JSON provides:
 
-* Flexibility
-* Faster development
-* Easier versioning
+- Flexibility
+- Faster development
+- Easier versioning
 
 Workflow metadata remains relational while graph definitions remain flexible.
 
 ## Trade-offs Accepted
 
-* Harder database-level validation
-* More application validation required
+- Harder database-level validation
+- More application validation required
 
 Accepted because workflow structures evolve frequently.
 
@@ -274,10 +274,10 @@ Use Socket.IO for workflow execution monitoring.
 
 Users need live visibility into:
 
-* Node completion
-* Workflow progress
-* Failures
-* Logs
+- Node completion
+- Workflow progress
+- Failures
+- Logs
 
 Polling would generate unnecessary load.
 
@@ -287,28 +287,28 @@ Polling would generate unnecessary load.
 
 Rejected because:
 
-* Increased API traffic
-* Higher latency
-* Poor user experience
+- Increased API traffic
+- Higher latency
+- Poor user experience
 
 ### Server-Sent Events (SSE)
 
 Rejected because:
 
-* Less flexible for future bidirectional communication
+- Less flexible for future bidirectional communication
 
 ## Reason Chosen
 
 Socket.IO provides:
 
-* Realtime communication
-* Automatic reconnection
-* Room-based subscriptions
+- Realtime communication
+- Automatic reconnection
+- Room-based subscriptions
 
 ## Trade-offs Accepted
 
-* Persistent connections
-* Additional infrastructure complexity
+- Persistent connections
+- Additional infrastructure complexity
 
 Accepted because monitoring is a core product feature.
 
@@ -324,9 +324,9 @@ Support OpenAI, Anthropic, and Groq as separate node types, each with its own ex
 
 The product requires support for:
 
-* OpenAI
-* Anthropic
-* Groq
+- OpenAI
+- Anthropic
+- Groq
 
 ## Alternatives Considered
 
@@ -334,8 +334,8 @@ The product requires support for:
 
 A shared interface behind which any provider could be swapped was considered, but rejected for the initial implementation because:
 
-* The three SDKs have different enough request/response shapes that a forced abstraction would leak provider details anyway
-* Premature abstraction would slow down adding the first working version of each
+- The three SDKs have different enough request/response shapes that a forced abstraction would leak provider details anyway
+- Premature abstraction would slow down adding the first working version of each
 
 ## Reason Chosen
 
@@ -343,8 +343,8 @@ Three thin executors (`anthropic.executor.ts`, `openai.executor.ts`, `groq.execu
 
 ## Trade-offs Accepted
 
-* No single point to add cross-provider guardrails or fallback logic today
-* Adding a new provider means writing a new executor rather than configuring an existing one
+- No single point to add cross-provider guardrails or fallback logic today
+- Adding a new provider means writing a new executor rather than configuring an existing one
 
 Revisit this decision if/when a real need for provider-agnostic switching (e.g. automatic fallback) emerges.
 
@@ -360,10 +360,10 @@ Persist workflow execution state in PostgreSQL.
 
 The PRD requires:
 
-* Failure recovery
-* Long-running workflows
-* Retry capability
-* Execution history
+- Failure recovery
+- Long-running workflows
+- Retry capability
+- Execution history
 
 Execution progress cannot exist only in memory.
 
@@ -373,28 +373,28 @@ Execution progress cannot exist only in memory.
 
 Rejected because:
 
-* Lost on crashes
-* Impossible recovery
+- Lost on crashes
+- Impossible recovery
 
 ### Redis-Only State
 
 Rejected because:
 
-* Not primary durable storage
-* Risk of data loss
+- Not primary durable storage
+- Risk of data loss
 
 ## Reason Chosen
 
 PostgreSQL guarantees:
 
-* Durability
-* Recovery
-* Historical tracking
+- Durability
+- Recovery
+- Historical tracking
 
 ## Trade-offs Accepted
 
-* Additional database writes
-* Slightly slower execution updates
+- Additional database writes
+- Slightly slower execution updates
 
 Accepted because reliability is more important than raw speed.
 
@@ -410,9 +410,9 @@ Route workflow execution through a BullMQ queue and worker rather than running i
 
 Some nodes may perform:
 
-* AI requests
-* External API calls
-* Long-running operations
+- AI requests
+- External API calls
+- Long-running operations
 
 ## Alternatives Considered
 
@@ -420,17 +420,17 @@ Some nodes may perform:
 
 Rejected because:
 
-* Ties execution duration to an HTTP request lifetime
-* One slow node run could tie up an API server thread/connection
-* No retry or crash-recovery story
+- Ties execution duration to an HTTP request lifetime
+- One slow node run could tie up an API server thread/connection
+- No retry or crash-recovery story
 
 ## Reason Chosen
 
 Queueing the run and consuming it via a BullMQ worker gives:
 
-* Decoupling from the triggering request
-* BullMQ's built-in retry/backoff primitives
-* A path to running the worker as a separate process later, without changing the execution engine
+- Decoupling from the triggering request
+- BullMQ's built-in retry/backoff primitives
+- A path to running the worker as a separate process later, without changing the execution engine
 
 ## Current State
 
@@ -438,7 +438,7 @@ The worker (`src/workers/WorkflowExecutionWorker.ts`) currently runs in the same
 
 ## Trade-offs Accepted
 
-* Added Redis/BullMQ dependency for what is currently a single-process deployment
-* Execution status is only as fresh as the last DB write + Socket.IO emit, not truly synchronous
+- Added Redis/BullMQ dependency for what is currently a single-process deployment
+- Execution status is only as fresh as the last DB write + Socket.IO emit, not truly synchronous
 
 Accepted because decoupling now avoids a harder migration later if/when the worker needs to scale independently.

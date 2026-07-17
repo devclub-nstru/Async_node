@@ -33,16 +33,17 @@ There is currently no automated test suite. Manually verify your change against 
 
 ## Commit / PR conventions
 
-* Write commit messages that describe the change, not the process (`fix: handle missing webhook token` rather than `updated file`).
-* Reference any related issue in the PR description.
-* Keep PRs focused on one thing — separate unrelated fixes into separate PRs.
+- Write commit messages that describe the change, not the process (`fix: handle missing webhook token` rather than `updated file`).
+- Reference any related issue in the PR description.
+- Keep PRs focused on one thing — separate unrelated fixes into separate PRs.
 
 ## Reporting bugs / requesting features
 
 Open a GitHub issue with:
-* What you expected to happen vs. what actually happened
-* Steps to reproduce (for bugs)
-* Relevant logs or screenshots
+
+- What you expected to happen vs. what actually happened
+- Steps to reproduce (for bugs)
+- Relevant logs or screenshots
 
 ## Questions
 

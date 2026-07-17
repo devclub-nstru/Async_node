@@ -9,8 +9,7 @@ export const httpResponse = (
   message: string,
   data?: unknown,
 ) => {
-  const response: thttpResponse = {
-    success: true,
+  logger.info("HTTP Response", {
     status,
     message,
     request: {
@@ -19,9 +18,14 @@ export const httpResponse = (
       url: req.url || "",
     },
     data,
-  };
+  });
 
-  logger.info("HTTP Response", response);
+  const response: thttpResponse = {
+    success: true,
+    status,
+    message,
+    data,
+  };
 
   return res.status(status).json(response);
 };

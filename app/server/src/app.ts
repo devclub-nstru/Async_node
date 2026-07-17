@@ -14,6 +14,7 @@ import cookieParser from "cookie-parser"; // Import cookie-parser
 import { rateLimit } from "express-rate-limit";
 import { ERROR_MESSAGES } from "./constants/messages.ts";
 import type { thttpError } from "./types/types.ts";
+import logger from "./utils/logger.ts";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -23,16 +24,19 @@ const limiter = rateLimit({
   ipv6Subnet: 56, // Set to 60 or 64 to be less aggressive, or 52 or 48 to be more aggressive
   // store: ... , // Redis, Memcached, etc. See below.
   handler: (req, res) => {
-    const response: thttpError = {
-      success: false,
+    logger.warn(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED, {
       status: 429,
-      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
       request: {
         ip: req.ip || "",
         method: req.method || "",
         url: req.url || "",
       },
-      trace: null,
+    });
+
+    const response: thttpError = {
+      success: false,
+      status: 429,
+      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
     };
     res.status(429).json(response);
   },

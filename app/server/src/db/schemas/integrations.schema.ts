@@ -10,6 +10,8 @@ export const integrations = pgTable(
       .references(() => workflows.id),
     nodeId: varchar("node_id", { length: 255 }).notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
+    // Stores the AES-256-GCM encrypted ciphertext (base64), not raw credentials.
+    // Encrypt with encryptCredentials()/decrypt with decryptCredentials().
     credentialsJson: jsonb("credentials_json").notNull(),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
