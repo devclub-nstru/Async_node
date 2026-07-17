@@ -24,6 +24,9 @@ export const config = {
   //redis
   redisUrl: process.env.REDIS_URL as string,
 
+  //credential encryption
+  credentialEncryptionKey: process.env.CREDENTIAL_ENCRYPTION_KEY as string,
+
   //env
   isProduction: process.env.NODE_ENV === "production",
 };

@@ -1,6 +1,7 @@
 import type { thttpError } from "../types/types.js";
 import type { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES } from "../constants/messages.ts";
+import logger from "../utils/logger.ts";
 
 const isHttpError = (err: unknown): err is thttpError => {
   return (
@@ -23,21 +24,28 @@ export const globalErrorHandler = (
     return next(err);
   }
 
-  if (isHttpError(err)) {
-    return res.status(err.status).json(err);
-  }
+  const status = isHttpError(err) ? err.status : 500;
+  const message = isHttpError(err)
+    ? err.message
+    : err instanceof Error
+      ? err.message
+      : ERROR_MESSAGES.INTERNAL_SERVER_ERROR;
 
-  const response: thttpError = {
-    success: false,
-    status: 500,
-    message: err instanceof Error ? err.message : ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
+  logger.error(message, {
+    status,
     request: {
       ip: req.ip || "",
       method: req.method || "",
       url: req.url || "",
     },
-    trace: err instanceof Error ? { stack: err.stack } : null,
+    trace: err instanceof Error ? { stack: err.stack } : isHttpError(err) ? err.trace : null,
+  });
+
+  const response = {
+    success: false,
+    status,
+    message,
   };
 
-  return res.status(500).json(response);
+  return res.status(status).json(response);
 };

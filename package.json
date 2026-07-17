@@ -12,11 +12,14 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "eslint": "^9",
     "@eslint/js": "^9",
-    "typescript-eslint": "^8",
-    "prettier": "^3",
+    "eslint": "^9",
     "eslint-config-prettier": "^10",
-    "globals": "^15"
+    "globals": "^15",
+    "prettier": "^3",
+    "typescript-eslint": "^8"
+  },
+  "dependencies": {
+    "@types/node": "^26.1.1"
   }
 }

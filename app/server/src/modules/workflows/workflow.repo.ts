@@ -5,6 +5,7 @@ import { triggers } from "../../db/schemas/triggers.schema.ts";
 import { integrations } from "../../db/schemas/integrations.schema.ts";
 import { execution, nodeExecution, executionLogs } from "../../db/schemas/execution.schema.ts";
 import { eq, and, isNull, notInArray, inArray } from "drizzle-orm";
+import { encryptCredentials } from "../../utils/credentialCrypto.ts";
 
 function generateWebhookToken() {
   return crypto.randomBytes(24).toString("hex");
@@ -151,19 +152,20 @@ export const saveWorkflowGraph = async (
       }
 
       for (const i of integrationRows) {
+        const encryptedCredentials = encryptCredentials(i.credentialsJson);
         await tx
           .insert(integrations)
           .values({
             workflowId,
             nodeId: i.nodeId,
             provider: i.provider,
-            credentialsJson: i.credentialsJson,
+            credentialsJson: encryptedCredentials,
           })
           .onConflictDoUpdate({
             target: [integrations.workflowId, integrations.nodeId],
             set: {
               provider: i.provider,
-              credentialsJson: i.credentialsJson,
+              credentialsJson: encryptedCredentials,
               updatedAt: new Date(),
             },
           });

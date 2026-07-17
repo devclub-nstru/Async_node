@@ -6,14 +6,14 @@ A self-hostable workflow automation platform. Design workflows visually as a gra
 
 ## What it actually does
 
-* **Visual workflow builder** — a node-based canvas (React Flow) for wiring up trigger → action graphs.
-* **Node types**: `trigger`, `ai` (OpenAI / Anthropic / Groq), `http` (HTTP request), `email` (SMTP via Nodemailer), `slack` (Slack message).
-* **Triggers**: manual run, webhook (unique per-workflow token URL), and interval-based scheduling (repeatable BullMQ jobs).
-* **Execution engine** — resolves node dependencies from the saved graph with a topological sort and runs them in order, persisting status/input/output per node.
-* **Execution history** — every run and every node run is stored in Postgres (`execution`, `node_execution`, `execution_logs`), queryable via the API.
-* **Live updates** — execution/node status is pushed to the frontend over Socket.IO as it happens.
-* **Auth** — email/password signup+signin with JWT access/refresh tokens in httpOnly cookies, plus email verification.
-* **Rate limiting** — global API limiter, a stricter limiter on auth endpoints, and a dedicated limiter on manual workflow runs.
+- **Visual workflow builder** — a node-based canvas (React Flow) for wiring up trigger → action graphs.
+- **Node types**: `trigger`, `ai` (OpenAI / Anthropic / Groq), `http` (HTTP request), `email` (SMTP via Nodemailer), `slack` (Slack message).
+- **Triggers**: manual run, webhook (unique per-workflow token URL), and interval-based scheduling (repeatable BullMQ jobs).
+- **Execution engine** — resolves node dependencies from the saved graph with a topological sort and runs them in order, persisting status/input/output per node.
+- **Execution history** — every run and every node run is stored in Postgres (`execution`, `node_execution`, `execution_logs`), queryable via the API.
+- **Live updates** — execution/node status is pushed to the frontend over Socket.IO as it happens.
+- **Auth** — email/password signup+signin with JWT access/refresh tokens in httpOnly cookies, plus email verification.
+- **Rate limiting** — global API limiter, a stricter limiter on auth endpoints, and a dedicated limiter on manual workflow runs.
 
 This is a modular monolith: one Express API process plus BullMQ workers running in the same codebase (currently in-process), backed by Postgres and Redis. There are no separate "scheduler service" or "webhook service" deployables — those are just modules inside the same app.
 
@@ -22,25 +22,28 @@ This is a modular monolith: one Express API process plus BullMQ workers running 
 ## Tech stack
 
 **Frontend** (`app/web`)
-* Next.js 16 (App Router), React 19, TypeScript
-* React Flow for the workflow canvas
-* Tailwind CSS 4 + shadcn/ui (Radix primitives)
-* Socket.IO client for live execution updates
+
+- Next.js 16 (App Router), React 19, TypeScript
+- React Flow for the workflow canvas
+- Tailwind CSS 4 + shadcn/ui (Radix primitives)
+- Socket.IO client for live execution updates
 
 **Backend** (`app/server`)
-* Node.js, TypeScript, Express 5
-* Drizzle ORM + PostgreSQL (targets Neon's serverless driver)
-* BullMQ + Redis for job queues (workflow execution, verification emails)
-* Socket.IO for realtime execution events
-* JWT auth (access + refresh tokens), bcrypt password hashing
-* Nodemailer (SMTP) for transactional email
-* Winston for server-side logging
-* Swagger/OpenAPI docs generated from JSDoc annotations
-* AI provider SDKs: `@anthropic-ai/sdk`, `openai`, `groq-sdk`
+
+- Node.js, TypeScript, Express 5
+- Drizzle ORM + PostgreSQL (targets Neon's serverless driver)
+- BullMQ + Redis for job queues (workflow execution, verification emails)
+- Socket.IO for realtime execution events
+- JWT auth (access + refresh tokens), bcrypt password hashing
+- Nodemailer (SMTP) for transactional email
+- Winston for server-side logging
+- Swagger/OpenAPI docs generated from JSDoc annotations
+- AI provider SDKs: `@anthropic-ai/sdk`, `openai`, `groq-sdk`
 
 **Infrastructure**
-* Docker Compose (web, server, redis — Postgres is external, e.g. Neon)
-* Nginx reverse proxy config (for production deployment)
+
+- Docker Compose (web, server, redis — Postgres is external, e.g. Neon)
+- Nginx reverse proxy config (for production deployment)
 
 ---
 
@@ -114,23 +117,23 @@ See [.env.example](.env.example) for the full list of required environment varia
 
 ## Documentation
 
-| Document | Purpose |
-|---|---|
-| [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | How the pieces fit together |
-| [docs/api/API.md](docs/api/API.md) | REST API reference |
-| [docs/database/DATABASE.md](docs/database/DATABASE.md) | Database schema |
-| [docs/decisions/DECISIONS.md](docs/decisions/DECISIONS.md) | Architectural decision records |
-| [PRODUCT_BREAKDOWN.md](PRODUCT_BREAKDOWN.md) | Product scope and use cases |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
+| Document                                                               | Purpose                        |
+| ---------------------------------------------------------------------- | ------------------------------ |
+| [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | How the pieces fit together    |
+| [docs/api/API.md](docs/api/API.md)                                     | REST API reference             |
+| [docs/database/DATABASE.md](docs/database/DATABASE.md)                 | Database schema                |
+| [docs/decisions/DECISIONS.md](docs/decisions/DECISIONS.md)             | Architectural decision records |
+| [PRODUCT_BREAKDOWN.md](PRODUCT_BREAKDOWN.md)                           | Product scope and use cases    |
+| [CONTRIBUTING.md](CONTRIBUTING.md)                                     | How to contribute              |
 
 ---
 
 ## Known limitations
 
-* Node execution within a workflow run is sequential (in topological order), not parallelized.
-* No conditional/branching/data-transform node types — only `trigger`, `ai`, `http`, `email`, `slack`.
-* Only Slack is implemented as a third-party integration node; there is no Gmail, Google Sheets, or Telegram support.
-* No automated test suite yet.
+- Node execution within a workflow run is sequential (in topological order), not parallelized.
+- No conditional/branching/data-transform node types — only `trigger`, `ai`, `http`, `email`, `slack`.
+- Only Slack is implemented as a third-party integration node; there is no Gmail, Google Sheets, or Telegram support.
+- No automated test suite yet.
 
 ## License
 

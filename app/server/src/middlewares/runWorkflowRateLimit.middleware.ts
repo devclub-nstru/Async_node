@@ -1,6 +1,7 @@
 import { ipKeyGenerator, rateLimit } from "express-rate-limit";
 import { ERROR_MESSAGES } from "../constants/messages.ts";
 import type { thttpError } from "../types/types.ts";
+import logger from "../utils/logger.ts";
 
 export const runWorkflowRateLimit = rateLimit({
   windowMs: 60 * 1000, // 1 minute
@@ -10,16 +11,19 @@ export const runWorkflowRateLimit = rateLimit({
   keyGenerator: (req) =>
     req.user?.userId?.toString() ?? (req.ip ? ipKeyGenerator(req.ip) : "unknown"),
   handler: (req, res) => {
-    const response: thttpError = {
-      success: false,
+    logger.warn(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED, {
       status: 429,
-      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
       request: {
         ip: req.ip || "",
         method: req.method || "",
         url: req.url || "",
       },
-      trace: null,
+    });
+
+    const response: thttpError = {
+      success: false,
+      status: 429,
+      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
     };
     res.status(429).json(response);
   },

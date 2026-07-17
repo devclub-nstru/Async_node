@@ -13,11 +13,11 @@ Build and automate personal workflows without writing custom backend systems.
 
 **Needs:**
 
-* Create workflows quickly using a visual builder
-* Test workflows safely
-* Connect APIs and external services
-* Debug workflow failures
-* Monitor execution results
+- Create workflows quickly using a visual builder
+- Test workflows safely
+- Connect APIs and external services
+- Debug workflow failures
+- Monitor execution results
 
 ---
 
@@ -28,9 +28,9 @@ Create AI-powered workflows using one or more AI provider nodes.
 
 **Needs:**
 
-* Use different AI providers (OpenAI, Anthropic, Groq) as workflow nodes
-* Chain AI nodes together in a graph, passing output from one to the next
-* Debug what each node actually received and returned
+- Use different AI providers (OpenAI, Anthropic, Groq) as workflow nodes
+- Chain AI nodes together in a graph, passing output from one to the next
+- Debug what each node actually received and returned
 
 Note: there is no dedicated "agent" abstraction, shared context object, or structured-output enforcement today — an AI node is a graph node like any other, wired up via edges.
 
@@ -43,9 +43,9 @@ Automate business processes.
 
 **Needs:**
 
-* Reliable workflow execution
-* Visibility into workflow activity
-* Execution history
+- Reliable workflow execution
+- Visibility into workflow activity
+- Execution history
 
 Note: there is currently no multi-user workspace, sharing, or role-based access model — each workflow belongs to a single owning user.
 
@@ -160,9 +160,9 @@ Node outputs are passed to downstream nodes as JSON along graph edges. There is 
 
 Three trigger types are supported:
 
-* Manual triggers
-* Scheduled (interval-based) triggers, backed by BullMQ repeatable jobs
-* Webhook triggers, identified by a unique per-trigger token
+- Manual triggers
+- Scheduled (interval-based) triggers, backed by BullMQ repeatable jobs
+- Webhook triggers, identified by a unique per-trigger token
 
 There is no generic "external event" trigger beyond webhooks, and no built-in duplicate-delivery protection on webhook calls.
 
@@ -172,9 +172,9 @@ There is no generic "external event" trigger beyond webhooks, and no built-in du
 
 Requirements met today:
 
-* Preserve execution state on failure (via `node_execution`/`execution` status)
-* Store completed node outputs even if a later node fails
-* Surface errors per node (stored in `node_execution.output_json`)
+- Preserve execution state on failure (via `node_execution`/`execution` status)
+- Store completed node outputs even if a later node fails
+- Surface errors per node (stored in `node_execution.output_json`)
 
 Not implemented: automatic retry of a failed workflow run.
 
@@ -184,10 +184,10 @@ Not implemented: automatic retry of a failed workflow run.
 
 Available today:
 
-* Execution history (list + detail endpoints)
-* Node inputs/outputs per run
-* Execution status and timestamps
-* Real-time status via Socket.IO
+- Execution history (list + detail endpoints)
+- Node inputs/outputs per run
+- Execution status and timestamps
+- Real-time status via Socket.IO
 
 ---
 
