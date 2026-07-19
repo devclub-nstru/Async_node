@@ -88,6 +88,8 @@ jobs:
             -u "${{ secrets.DOCKER_USERNAME }}" \
             --password-stdin
 
+          cd docker
+          
           docker compose pull
 
           docker compose up -d --remove-orphans
