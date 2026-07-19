@@ -21,9 +21,7 @@ services:
     restart: unless-stopped
 
   web:
-    build:
-      context: ../app/web
-      dockerfile: docker/Dockerfile
+    image: amaan1114/asyncnode-web:latest
 
     expose:
       - "3000"
@@ -34,14 +32,12 @@ services:
 
     environment:
       WATCHPACK_POLLING: "true"
-      BACKEND_URI: ${BACKEND_URI}
+      backend_URI: ${backend_URI}
 
     restart: unless-stopped
 
   server:
-    build:
-      context: ../app/server
-      dockerfile: docker/Dockerfile
+    image: amaan1114/asyncnode-server:latest
 
     expose:
       - "8080"
