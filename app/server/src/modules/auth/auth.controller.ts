@@ -12,11 +12,28 @@ import type { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages.ts";
 import { verifyRefreshToken } from "../../utils/tokens.ts";
 import { config } from "../../config/config.ts";
+import crypto from "crypto";
 
 const cookieBase = {
   httpOnly: true,
   secure: config.isProduction,
   sameSite: (config.isProduction ? "strict" : "lax") as "strict" | "lax",
+};
+
+const COOKIE_ENCRYPTION_SECRET = process.env.COOKIE_ENCRYPTION_SECRET ?? "";
+
+const encryptCookieValue = (value: string): string => {
+  if (!COOKIE_ENCRYPTION_SECRET) {
+    throw new Error("COOKIE_ENCRYPTION_SECRET is not configured");
+  }
+
+  const key = crypto.createHash("sha256").update(COOKIE_ENCRYPTION_SECRET).digest();
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv("aes-256-gcm", key, iv);
+  const encrypted = Buffer.concat([cipher.update(value, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
+
+  return `${iv.toString("base64url")}:${tag.toString("base64url")}:${encrypted.toString("base64url")}`;
 };
 
 export const creatUserController = async (req: Request, res: Response, next: NextFunction) => {
@@ -47,9 +64,11 @@ export const signInUserController = async (req: Request, res: Response, next: Ne
     }
 
     const tokens = result as { accessToken: string; refreshToken: string; isVerified: boolean };
+    const encryptedAccessToken = encryptCookieValue(tokens.accessToken);
+    const encryptedRefreshToken = encryptCookieValue(tokens.refreshToken);
 
-    res.cookie("accessToken", tokens.accessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
-    res.cookie("refreshToken", tokens.refreshToken, {
+    res.cookie("accessToken", encryptedAccessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
+    res.cookie("refreshToken", encryptedRefreshToken, {
       ...cookieBase,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
