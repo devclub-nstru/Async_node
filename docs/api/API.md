@@ -39,6 +39,27 @@ Rate limits: a global limiter of 100 requests / 15 minutes per IP applies to all
 
 ---
 
+## CSRF protection
+
+Every non-safe request (`POST`, `PUT`, `PATCH`, `DELETE`) to `/api/v1/workflows/*` must include an `x-xsrf-token` header matching the `XSRF-TOKEN` cookie value (double-submit cookie pattern, `src/middlewares/csrf.middleware.ts`). `GET`/`HEAD`/`OPTIONS` requests are exempt and, if no `XSRF-TOKEN` cookie exists yet, the server issues one (readable, non-httpOnly) on the response.
+
+- `/api/v1/auth/*` and `/api/v1/webhooks/*` are **exempt** — auth routes are protected by credentials rather than an ambient session cookie, and webhooks are called by external services with no cookies at all.
+- Browser clients: fetch/issue the cookie first via any `GET` request (e.g. loading the dashboard), then send it back as the `x-xsrf-token` header on subsequent mutations. Axios does this automatically when configured with `xsrfCookieName: "XSRF-TOKEN"` and `xsrfHeaderName: "x-xsrf-token"` (see `app/web/lib/api.ts`).
+- A missing or mismatched token returns:
+
+```json
+{
+  "success": false,
+  "status": 403,
+  "message": "Invalid or missing CSRF token",
+  "data": null,
+  "trace": null,
+  "request": { "ip": "...", "method": "POST", "url": "..." }
+}
+```
+
+---
+
 ## Auth (`/auth`)
 
 ### POST /auth/signup
@@ -49,20 +70,22 @@ Register a new user.
 
 ```json
 {
-  "name": "John Doe",
+  "username": "johndoe",
   "email": "john@example.com",
-  "password": "secret123"
+  "password": "Secret123!"
 }
 ```
 
+`password` must be 8-30 characters and contain at least one uppercase letter, one number, and one symbol.
+
 **Responses**
 
-| Status | Description                                            |
-| ------ | ------------------------------------------------------ |
-| 201    | User created successfully                              |
-| 400    | Missing name, email, or password / user already exists |
-| 429    | Rate limit exceeded                                    |
-| 500    | Internal server error                                  |
+| Status | Description                                                   |
+| ------ | ------------------------------------------------------------- |
+| 201    | User created successfully                                     |
+| 400    | Missing/invalid fields, weak password, or user already exists |
+| 429    | Rate limit exceeded                                           |
+| 500    | Internal server error                                         |
 
 ---
 
@@ -75,7 +98,7 @@ Sign in and receive httpOnly cookies.
 ```json
 {
   "email": "john@example.com",
-  "password": "secret123"
+  "password": "Secret123!"
 }
 ```
 
@@ -203,7 +226,7 @@ Get a single workflow by ID.
 
 ### POST /workflows/workflows
 
-Create a new workflow.
+Create a new workflow. Requires the CSRF header (see [CSRF protection](#csrf-protection)).
 
 **Body**
 
@@ -219,28 +242,29 @@ Create a new workflow.
 | 201    | Workflow created — returns the new workflow object |
 | 400    | Missing name or description                        |
 | 401    | Unauthorized                                       |
+| 403    | Missing or invalid CSRF token                      |
 | 500    | Internal server error                              |
 
 ---
 
 ### DELETE /workflows/workflows/:workflowId
 
-Delete a workflow owned by the authenticated user.
+Delete a workflow owned by the authenticated user. Requires the CSRF header (see [CSRF protection](#csrf-protection)).
 
-| Status | Description            |
-| ------ | ---------------------- |
-| 200    | Workflow deleted       |
-| 400    | Invalid workflow ID    |
-| 401    | Unauthorized           |
-| 403    | Not the workflow owner |
-| 404    | Workflow not found     |
-| 500    | Internal server error  |
+| Status | Description                                 |
+| ------ | ------------------------------------------- |
+| 200    | Workflow deleted                            |
+| 400    | Invalid workflow ID                         |
+| 401    | Unauthorized                                |
+| 403    | Not the workflow owner / missing CSRF token |
+| 404    | Workflow not found                          |
+| 500    | Internal server error                       |
 
 ---
 
 ### PUT /workflows/workflows/:workflowId
 
-Save a workflow's graph (nodes and edges). Syncs the `triggers` and `integrations` tables to match the trigger/integration nodes present in the graph.
+Save a workflow's graph (nodes and edges). Syncs the `triggers` and `integrations` tables to match the trigger/integration nodes present in the graph. Requires the CSRF header (see [CSRF protection](#csrf-protection)).
 
 **Body**
 
@@ -253,56 +277,68 @@ Save a workflow's graph (nodes and edges). Syncs the `triggers` and `integration
 }
 ```
 
-| Status | Description                          |
-| ------ | ------------------------------------ |
-| 200    | Workflow saved                       |
-| 400    | Invalid workflow ID or graph payload |
-| 401    | Unauthorized                         |
-| 403    | Not the workflow owner               |
-| 404    | Workflow not found                   |
-| 500    | Internal server error                |
+| Status | Description                                 |
+| ------ | ------------------------------------------- |
+| 200    | Workflow saved                              |
+| 400    | Invalid workflow ID or graph payload        |
+| 401    | Unauthorized                                |
+| 403    | Not the workflow owner / missing CSRF token |
+| 404    | Workflow not found                          |
+| 500    | Internal server error                       |
 
 ---
 
 ### POST /workflows/workflows/:workflowId/run
 
-Manually run a workflow. Builds the executable node graph from `graphJson` plus each node's trigger/integration config, then queues it via BullMQ. Subject to a dedicated rate limiter.
+Manually run a workflow. Builds the executable node graph from `graphJson` plus each node's trigger/integration config, then queues it via BullMQ. Requires the CSRF header (see [CSRF protection](#csrf-protection)). Subject to a dedicated rate limiter.
 
-| Status | Description                                              |
-| ------ | -------------------------------------------------------- |
-| 200    | Run started — returns the built `{ nodes, edges }` graph |
-| 400    | Invalid workflow ID                                      |
-| 401    | Unauthorized                                             |
-| 403    | Not the workflow owner                                   |
-| 404    | Workflow not found                                       |
-| 429    | Rate limit exceeded                                      |
-| 500    | Internal server error                                    |
+| Status | Description                                       |
+| ------ | ------------------------------------------------- |
+| 202    | Run queued — returns `{ "status": "queued" }`     |
+| 400    | Invalid workflow ID, or the graph failed to build |
+| 401    | Unauthorized                                      |
+| 403    | Not the workflow owner / missing CSRF token       |
+| 404    | Workflow not found                                |
+| 429    | Rate limit exceeded                               |
+| 500    | Internal server error                             |
 
 ---
 
 ### POST /workflows/workflows/:workflowId/schedule/start
 
-Enable the workflow's interval schedule (`scheduleEnabled = true`) and register a repeatable BullMQ job at `scheduleIntervalSeconds`.
+Enable the workflow's interval schedule (`scheduleEnabled = true`) and register a repeatable BullMQ job at `scheduleIntervalSeconds`. Requires the CSRF header (see [CSRF protection](#csrf-protection)).
 
-| Status | Description           |
-| ------ | --------------------- |
-| 200    | Schedule started      |
-| 401    | Unauthorized          |
-| 404    | Workflow not found    |
-| 500    | Internal server error |
+**Body**
+
+```json
+{
+  "intervalSeconds": 120
+}
+```
+
+| Status | Description                                        |
+| ------ | -------------------------------------------------- |
+| 200    | Schedule started                                   |
+| 400    | Invalid workflow ID, or interval too short (< 60s) |
+| 401    | Unauthorized                                       |
+| 403    | Not the workflow owner / missing CSRF token        |
+| 404    | Workflow not found                                 |
+| 500    | Internal server error                              |
 
 ---
 
 ### POST /workflows/workflows/:workflowId/schedule/stop
 
-Disable the workflow's interval schedule and remove its repeatable BullMQ job.
+Disable the workflow's interval schedule and remove its repeatable BullMQ job. Requires the CSRF header (see [CSRF protection](#csrf-protection)).
 
-| Status | Description           |
-| ------ | --------------------- |
-| 200    | Schedule stopped      |
-| 401    | Unauthorized          |
-| 404    | Workflow not found    |
-| 500    | Internal server error |
+| Status | Description                                 |
+| ------ | ------------------------------------------- |
+| 200    | Schedule stopped                            |
+| 400    | Invalid workflow ID                         |
+| 401    | Unauthorized                                |
+| 403    | Not the workflow owner / missing CSRF token |
+| 404    | Workflow not found                          |
+| 500    | Internal server error                       |
 
 ---
 

@@ -5,10 +5,12 @@ Thanks for your interest in contributing. This is a young project — expect rou
 ## Project layout
 
 ```
-app/server/   Express API + BullMQ workers (Node.js, TypeScript, Drizzle ORM)
-app/web/      Next.js frontend (React Flow workflow builder)
-docs/         Architecture, API, database, and decision docs
-docker/       docker-compose for local dev
+app/server/           Express API + BullMQ workers (Node.js, TypeScript, Drizzle ORM)
+app/web/              Next.js frontend (React Flow workflow builder)
+docs/                 Architecture, API, database, and decision docs
+docker/               docker-compose.yml — local dev and production
+nginx/                Reverse proxy + TLS config, mounted into the nginx container
+.github/workflows/    CI/CD (deploy.yml — build, push, deploy to EC2)
 ```
 
 See the [README](README.md) for what's actually implemented, and [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) for how the pieces fit together.
@@ -28,8 +30,17 @@ Follow the "Running locally" section of the [README](README.md#running-locally).
    ```
 4. If you add or change an API route, keep the Swagger JSDoc annotations (see existing routes in `app/server/src/modules/*/*.route.ts`) and update [docs/api/API.md](docs/api/API.md) to match.
 5. If you change a Drizzle schema file, update [docs/database/DATABASE.md](docs/database/DATABASE.md) to match — it should always reflect what's actually in `app/server/src/db/schemas/`.
+6. If you add a non-GET route under `/api/v1/workflows`, it goes through CSRF protection automatically (see `src/middlewares/csrf.middleware.ts` and `docs/api/API.md#csrf-protection`) — no extra wiring needed, but note it in the route's docs table.
+7. If you change `docker/docker-compose.yml`, `.github/workflows/deploy.yml`, or the `nginx/` configs, update the [README's Deployment section](README.md#deployment) and [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md#deployment-topology) to match.
 
-There is currently no automated test suite. Manually verify your change against the running app (both `app/server` and `app/web`) before opening a PR, and describe how you tested it in the PR description.
+Run the backend test suite before opening a PR:
+
+```bash
+cd app/server
+npm test
+```
+
+`app/server/tests/` (Jest + supertest, mocked service layer) covers auth and workflow/execution routes. `app/web` has no automated tests yet — manually verify frontend changes against the running app and describe how you tested it in the PR description.
 
 ## Commit / PR conventions
 

@@ -442,3 +442,70 @@ The worker (`src/workers/WorkflowExecutionWorker.ts`) currently runs in the same
 - Execution status is only as fresh as the last DB write + Socket.IO emit, not truly synchronous
 
 Accepted because decoupling now avoids a harder migration later if/when the worker needs to scale independently.
+
+---
+
+# ADR-010: Double-Submit Cookie CSRF Protection
+
+## Decision
+
+Protect all state-changing requests to `/api/v1/workflows/*` with a double-submit cookie: the server issues a readable `XSRF-TOKEN` cookie, and the client must echo its value back as an `x-xsrf-token` header on every `POST`/`PUT`/`PATCH`/`DELETE`. `/api/v1/auth/*` and `/api/v1/webhooks/*` are exempt.
+
+## Context
+
+Session auth uses httpOnly `accessToken`/`refreshToken` cookies sent automatically by the browser on every request to the API's origin. Without CSRF protection, a malicious page could trigger state-changing requests (create/delete/run a workflow) using the victim's ambient session cookie, since the browser attaches cookies regardless of which site initiated the request.
+
+## Alternatives Considered
+
+### Synchronizer Token Pattern (server-side session-stored token)
+
+Rejected because it requires server-side session storage keyed per user/session, adding infrastructure the app doesn't otherwise need (auth is already stateless JWT).
+
+### Custom header-only check (e.g. requiring `X-Requested-With`)
+
+Rejected because it is weaker — some legacy browser/proxy configurations still allow simple cross-origin requests to carry arbitrary headers in certain cases, and it provides no cryptographic binding between the request and a value only the same-origin JS could have read.
+
+## Reason Chosen
+
+The double-submit cookie pattern needs no server-side session state: a cross-site page can cause the cookie to be sent, but cannot read its value (cookies aren't readable cross-origin) to also set the matching header. It composes cleanly with the existing stateless JWT auth model.
+
+## Trade-offs Accepted
+
+- The frontend's HTTP client must be configured to read the cookie and set the header (axios does this out of the box via `xsrfCookieName`/`xsrfHeaderName`; see `app/web/lib/api.ts`) — any new client (mobile app, CLI, script) must replicate this manually.
+- The `XSRF-TOKEN` cookie is only issued in response to a safe (`GET`/`HEAD`/`OPTIONS`) request, so a client that only ever sends mutating requests without a prior `GET` will not have a token yet.
+
+Accepted because it protects the highest-value routes (workflow CRUD, run, schedule) without adding session storage.
+
+---
+
+# ADR-011: Docker Compose + Nginx + Single EC2 Host for Deployment
+
+## Decision
+
+Deploy `web`, `server`, `redis`, and an `nginx` reverse proxy as Docker Compose services on a single EC2 host, with GitHub Actions building/pushing images and driving the deploy over SSH.
+
+## Context
+
+The project needed a production deployment path that's simple to operate for a small team, without committing to a specific PaaS or container orchestrator up front. Postgres is already externalized (Neon), so the remaining pieces (web, server, redis) needed a place to run together behind TLS.
+
+## Alternatives Considered
+
+### Managed PaaS (e.g. Render, Railway, Vercel + separate API host)
+
+Rejected for now because it would split the frontend and backend across different deployment models/providers for no immediate benefit, and the team already has EC2 access.
+
+### Kubernetes
+
+Rejected as excessive operational complexity for a single-region, low-traffic deployment; Compose is sufficient at current scale.
+
+## Reason Chosen
+
+Docker Compose on one EC2 instance, fronted by an `nginx` container doing TLS termination (Let's Encrypt certs from the host) and routing `/api/` to `server` and everything else to `web`, keeps the whole stack (excluding Postgres) reproducible from one `docker-compose.yml` and deployable with a single SSH session.
+
+## Trade-offs Accepted
+
+- Single point of failure — one EC2 host, no redundancy or auto-scaling.
+- `redis` has no persistence volume; a `docker compose down` loses in-flight BullMQ job state.
+- Deploys are a rolling `docker compose pull && up -d`, not a zero-downtime blue/green rollout.
+
+Revisit if/when traffic or reliability requirements outgrow a single host.

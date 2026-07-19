@@ -5,6 +5,8 @@ import refreshToken from "@/services/auth/refreshToken";
 const api = axios.create({
   baseURL: config.backend_URI,
   withCredentials: true,
+  xsrfCookieName: "XSRF-TOKEN",
+  xsrfHeaderName: "x-xsrf-token",
 });
 
 api.interceptors.response.use(

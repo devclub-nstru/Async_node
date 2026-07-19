@@ -44,6 +44,7 @@ State is held in local component state and small custom hooks (`useWorkflow`, `u
 **Responsibilities**
 
 - Authentication & authorization (JWT access/refresh tokens in httpOnly cookies)
+- CSRF protection on state-changing requests (double-submit cookie, `src/middlewares/csrf.middleware.ts`)
 - Workflow CRUD and graph persistence
 - Trigger and integration config sync (derived from the saved graph)
 - Triggering executions (manual, webhook, scheduled)
@@ -51,6 +52,10 @@ State is held in local component state and small custom hooks (`useWorkflow`, `u
 - Realtime event broadcasting (via the same process's Socket.IO server)
 
 Organized as modules under `src/modules/` (`auth`, `workflows`, `executions`), each with its own controller/service/repo files.
+
+Middleware order in `src/app.ts`: rate limiter → CORS → helmet → body/cookie parsing → `/api/docs` (Swagger) → `/api/v1/webhooks` (CSRF-exempt) → `/api/v1/auth` (CSRF-exempt) → `csrfProtection` → `/api/v1/workflows` (authenticated, CSRF-protected) → global error handler. Auth and webhook routes sit _before_ `csrfProtection` in the middleware chain, so they never go through it; every workflow/execution route does.
+
+`app/server/tests/` has a Jest suite covering the auth and workflow/execution routes against a mocked service layer (`supertest` + manual module mocks) — see [CONTRIBUTING.md](../../CONTRIBUTING.md) for how to run it.
 
 ---
 
@@ -192,6 +197,25 @@ Manual runs, webhook-triggered runs, and scheduled runs all become BullMQ jobs, 
 5. Execution-level logs are written to `execution_logs`.
 6. Once all nodes have run, the `execution` row is marked `completed` or `failed` and `execution:finished` is emitted.
 7. The frontend, subscribed via Socket.IO, updates the UI live; execution history remains queryable afterward via the `/executions` endpoints.
+
+---
+
+# Deployment Topology
+
+Production runs as four Docker containers on a single EC2 host, orchestrated by `docker/docker-compose.yml`:
+
+```
+Internet → nginx (80/443, TLS termination) → web (Next.js, :3000)
+                                            → server (Express API, :8080)
+server → redis (BullMQ) ; server → Postgres (external, e.g. Neon)
+```
+
+- **nginx** terminates TLS (Let's Encrypt certs mounted from `/etc/letsencrypt` on the host) and reverse-proxies `/api/` to `server` and everything else to `web` (`nginx/https.config`, `nginx/http.config` for the plain-HTTP → HTTPS redirect).
+- **web** and **server** run the same images pushed by CI, not a local build, in production.
+- **redis** is compose-local (not managed) — no persistence volume is configured, so BullMQ state does not survive a `docker compose down`.
+- Postgres is not containerized; `DATABASE_URL` points at an external instance.
+
+Deploys are pushed by [.github/workflows/deploy.yml](../../.github/workflows/deploy.yml): CI builds/tests both apps, builds and pushes their Docker images, then SSHes into the EC2 host to `git pull`, refresh `docker/.env`, and run `docker compose pull && docker compose up -d --remove-orphans`. See the root [README's Deployment section](../../README.md#deployment) for the required secrets.
 
 ---
 
