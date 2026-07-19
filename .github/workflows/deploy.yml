@@ -79,12 +79,9 @@ jobs:
 
       # Deploy
       - name: Deploy to EC2
-        env:
-          ENV_FILE: ${{ secrets.ENV }}
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cat > /opt/Async_node/docker/.env" <<< "$ENV_FILE"
-
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+
           cd /opt/Async_node
 
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login \
@@ -92,5 +89,9 @@ jobs:
             --password-stdin
 
           docker compose pull
+
           docker compose up -d --remove-orphans
+
+          docker image prune -af
+
           EOF
