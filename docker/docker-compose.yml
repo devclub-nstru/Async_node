@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   web:
-    build: 
+    build:
       context: ../app/web
       dockerfile: docker/Dockerfile
 
@@ -39,7 +39,7 @@ services:
     restart: unless-stopped
 
   server:
-    build: 
+    build:
       context: ../app/server
       dockerfile: docker/Dockerfile
 
