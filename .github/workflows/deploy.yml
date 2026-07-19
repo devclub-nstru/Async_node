@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Server
         working-directory: app/server
-        run: npm install --omit=dev
+        run: npm install
 
       - name: Test Server
         working-directory: app/server
@@ -35,7 +35,7 @@ jobs:
 
       - name: Install Web
         working-directory: app/web
-        run: npm install --omit=dev
+        run: npm install
 
       - name: Build Web
         working-directory: app/web
