@@ -14,8 +14,8 @@ services:
       - "443:443"
 
     volumes:
-      - ./nginx/http.config:/etc/nginx/conf.d/http.conf:ro
-      - ./nginx/https.config:/etc/nginx/conf.d/https.conf:ro
+      - ../nginx/http.config:/etc/nginx/conf.d/http.conf:ro
+      - ../nginx/https.config:/etc/nginx/conf.d/https.conf:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
 
     restart: unless-stopped
