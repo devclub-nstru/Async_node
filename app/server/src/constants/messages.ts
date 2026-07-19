@@ -36,6 +36,9 @@ export const ERROR_MESSAGES = {
 
   // Webhook
   WEBHOOK_NOT_FOUND: "Webhook not found",
+
+  // CSRF
+  CSRF_TOKEN_INVALID: "Invalid or missing CSRF token",
 } as const;
 
 export const SUCCESS_MESSAGES = {

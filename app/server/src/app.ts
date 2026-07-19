@@ -9,6 +9,7 @@ import { workflowRouter } from "./modules/workflows/workflow.route.ts";
 import { executionRouter } from "./modules/executions/execution.route.ts";
 import { webhookRouter } from "./modules/executions/webhook.route.ts";
 import { authenticate } from "./middlewares/auth.middleware.ts";
+import { csrfProtection } from "./middlewares/csrf.middleware.ts";
 import cookieParser from "cookie-parser"; // Import cookie-parser
 
 import { rateLimit } from "express-rate-limit";
@@ -64,10 +65,18 @@ app.get("/api/docs.json", (_req, res) => {
   res.send(swaggerSpec);
 });
 
+// Webhooks are called by external services (no browser/cookies involved), so CSRF doesn't apply.
+app.use("/api/v1/webhooks", webhookRouter);
+
+// Auth routes are exempt: signup/signin/token-refresh happen before any CSRF
+// cookie exists, and they're protected by credentials (password/refresh token)
+// rather than an ambient session cookie.
 app.use("/api/v1/auth", authRouter);
+
+app.use(csrfProtection);
+
 app.use("/api/v1/workflows", authenticate, workflowRouter);
 app.use("/api/v1/workflows", authenticate, executionRouter);
-app.use("/api/v1/webhooks", webhookRouter);
 
 // Global error handler
 app.use(globalErrorHandler);

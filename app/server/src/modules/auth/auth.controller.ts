@@ -12,6 +12,7 @@ import type { Request, Response, NextFunction } from "express";
 import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "../../constants/messages.ts";
 import { verifyRefreshToken } from "../../utils/tokens.ts";
 import { config } from "../../config/config.ts";
+import { issueCsrfCookie } from "../../middlewares/csrf.middleware.ts";
 
 const cookieBase = {
   httpOnly: true,
@@ -53,6 +54,7 @@ export const signInUserController = async (req: Request, res: Response, next: Ne
       ...cookieBase,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    issueCsrfCookie(res);
 
     return httpResponse(res, req, 200, SUCCESS_MESSAGES.USER_SIGNED_IN, {
       isVerified: tokens.isVerified,
@@ -135,6 +137,7 @@ export const refreshAccessTokenController = async (
     const { accessToken } = result as { accessToken: string };
 
     res.cookie("accessToken", accessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
+    issueCsrfCookie(res);
 
     return httpResponse(res, req, 200, SUCCESS_MESSAGES.USER_SIGNED_IN);
   } catch (err: Error | unknown) {
@@ -165,6 +168,7 @@ export const verifyEmailController = async (req: Request, res: Response, next: N
 
     const { accessToken } = result as { accessToken: string };
     res.cookie("accessToken", accessToken, { ...cookieBase, maxAge: 15 * 60 * 1000 });
+    issueCsrfCookie(res);
 
     return httpResponse(res, req, 200, "Email verified successfully");
   } catch (err: Error | unknown) {
