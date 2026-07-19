@@ -82,7 +82,7 @@ jobs:
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
 
-          cd /opt/asyncnode
+          cd /opt/Async_node
 
           git pull origin main
 
