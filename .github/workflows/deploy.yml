@@ -21,8 +21,7 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Install Server
-        working-directory: app/server
+      - name: Install Dependencies
         run: npm install
 
       - name: Test Server
@@ -32,10 +31,6 @@ jobs:
       - name: Build Server
         working-directory: app/server
         run: npm run build
-
-      - name: Install Web
-        working-directory: app/web
-        run: npm install
 
       - name: Build Web
         working-directory: app/web
