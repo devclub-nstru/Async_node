@@ -81,31 +81,6 @@ export function FinalCTA() {
               Start Building Free
               <span style={{ fontSize: 16 }}>→</span>
             </motion.a>
-
-            <motion.a
-              whileHover={{
-                color: "rgba(255,255,255,1)",
-                border: "1px solid rgba(255,255,255,0.9)",
-                backgroundColor: "rgba(255,255,255,0.2)",
-              }}
-              href="#"
-              className="w-full sm:w-auto justify-center"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "16px 28px",
-                color: "rgba(255,255,255,0.65)",
-                fontFamily: "var(--font-body)",
-                fontWeight: 400,
-                fontSize: "0.88rem",
-                border: "1px solid rgba(255,255,255,0.4)",
-                transition: "color 0.25s ease",
-                backgroundColor: "rgba(255,255,255,0.1)",
-              }}
-            >
-              Watch Demo
-            </motion.a>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto">

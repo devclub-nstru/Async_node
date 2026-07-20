@@ -1,6 +1,5 @@
 import DocsSection from "../DocsSection";
 import CodeBlock from "../CodeBlock";
-import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function TriggersSection() {
   return (
@@ -51,11 +50,6 @@ export default function TriggersSection() {
           </p>
         </div>
       </div>
-
-      <ImagePlaceholder
-        label="Screenshot: trigger config panel showing Manual / Webhook / Schedule options"
-        aspect="video"
-      />
     </DocsSection>
   );
 }

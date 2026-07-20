@@ -1,5 +1,4 @@
 import DocsSection from "../DocsSection";
-import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function OverviewSection() {
   return (
@@ -20,11 +19,6 @@ export default function OverviewSection() {
           Watch execution status and output live in the log panel at the bottom of the builder.
         </li>
       </ul>
-
-      <ImagePlaceholder
-        label="Screenshot: full builder screen with a small example workflow"
-        aspect="wide"
-      />
     </DocsSection>
   );
 }

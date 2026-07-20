@@ -1,9 +1,12 @@
 import LeftPanel from "@/components/signin/LeftPanel";
 import AuthCard from "@/components/signin/AuthCard";
 
-export const metadata = {
-  title: "Sign In — AsyncNode",
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign In",
   description: "Sign in to your AsyncNode account.",
+  alternates: { canonical: "/signin" },
 };
 
 export default function SignInPage() {

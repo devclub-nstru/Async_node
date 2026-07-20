@@ -203,7 +203,7 @@ export function WorkflowBuilder() {
   };
 
   return (
-    <section className="relative pt-20 pb-24 overflow-hidden bg-transparent">
+    <section id="features" className="relative pt-20 pb-24 overflow-hidden bg-transparent">
       {/* ── Background Glow Orb ── */}
       <div
         style={{

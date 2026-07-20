@@ -1,7 +1,6 @@
 import { Bot, Globe, Mail, MessageSquare, Zap } from "lucide-react";
 import DocsSection from "../DocsSection";
 import NodeTypeCard from "../NodeTypeCard";
-import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function NodesSection() {
   return (
@@ -75,8 +74,6 @@ export default function NodesSection() {
           ]}
         />
       </div>
-
-      <ImagePlaceholder label="Screenshot: node config panel for each node type" aspect="video" />
     </DocsSection>
   );
 }

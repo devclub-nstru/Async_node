@@ -3,20 +3,15 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 import Logo from "./Logo";
 
 const NAV_LINKS: { label: string; href: string }[] = [
-  { label: "Features", href: "#" },
-  { label: "Integrations", href: "#" },
-  { label: "AI", href: "#" },
-  { label: "Enterprise", href: "#" },
+  { label: "Features", href: "/#features" },
+  { label: "Integrations", href: "/#integrations" },
   { label: "Docs", href: "/docs" },
-  { label: "Pricing", href: "#" },
 ];
 
 export function Navbar() {
-  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -76,7 +71,7 @@ export function Navbar() {
         {/* CTAs */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="#"
+            href="/signin"
             style={{
               color: "rgba(255,255,255,0.65)",
               fontFamily: "var(--font-body)",
@@ -94,10 +89,6 @@ export function Navbar() {
               (e.target as HTMLElement).style.color = "rgba(255,255,255,0.65)";
               (e.target as HTMLElement).style.backgroundColor = "transparent";
             }}
-
-            onClick={() => {
-              router.push("/signin");
-            }}
           >
             Sign in
           </a>
@@ -106,7 +97,7 @@ export function Navbar() {
               boxShadow: "0 0 0 1px rgba(217,119,6,0.6), 0 0 32px rgba(217,119,6,0.25)",
             }}
             whileTap={{ scale: 0.975 }}
-            href="#"
+            href="/signup"
             style={{
               display: "flex",
               alignItems: "center",
@@ -120,9 +111,6 @@ export function Navbar() {
               fontSize: "0.82rem",
               fontWeight: 500,
               letterSpacing: "0.02em",
-            }}
-            onClick={() => {
-              router.push("/signup");
             }}
           >
             Get Started Free
@@ -159,14 +147,14 @@ export function Navbar() {
                 style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}
               >
                 <a
-                  href="#"
+                  href="/signin"
                   className="text-sm text-center py-2 rounded-xl"
                   style={{ color: "#71717A", border: "1px solid rgba(255,255,255,0.08)" }}
                 >
                   Sign in
                 </a>
                 <a
-                  href="#"
+                  href="/signup"
                   className="text-sm text-center py-2 rounded-xl text-white font-medium"
                   style={{ background: "#D97706" }}
                 >
