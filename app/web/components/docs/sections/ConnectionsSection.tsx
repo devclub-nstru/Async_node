@@ -1,5 +1,4 @@
 import DocsSection from "../DocsSection";
-import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function ConnectionsSection() {
   return (
@@ -32,11 +31,6 @@ export default function ConnectionsSection() {
           connection line snap back.
         </p>
       </div>
-
-      <ImagePlaceholder
-        label="Screenshot: dragging a connection between two nodes"
-        aspect="video"
-      />
     </DocsSection>
   );
 }

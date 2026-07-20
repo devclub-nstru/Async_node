@@ -1,6 +1,5 @@
 import DocsSection from "../DocsSection";
 import CodeBlock from "../CodeBlock";
-import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function DataFlowSection() {
   return (
@@ -48,11 +47,6 @@ export default function DataFlowSection() {
           it&apos;s inserted as text.
         </p>
       </div>
-
-      <ImagePlaceholder
-        label="Screenshot: a node config field using a {{nodeId.field}} reference"
-        aspect="video"
-      />
     </DocsSection>
   );
 }

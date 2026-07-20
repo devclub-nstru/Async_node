@@ -54,11 +54,13 @@ export default function BuilderPage() {
 
     setSaving(true);
     try {
-      const response = await api.put(`/v1/workflows/workflows/${params.id}`, { graphJson: graph });
+      const response = await api.put<{
+        message?: string;
+        data?: { triggers?: { nodeId: string; webhookToken: string | null }[] };
+      }>(`/v1/workflows/workflows/${params.id}`, { graphJson: graph });
       toast.success(response.data?.message ?? "Workflow saved successfully");
 
-      const savedTriggers = response.data?.data?.triggers as
-        { nodeId: string; webhookToken: string | null }[] | undefined;
+      const savedTriggers = response.data?.data?.triggers;
       if (savedTriggers) {
         const tokens: Record<string, string> = {};
         for (const t of savedTriggers) {

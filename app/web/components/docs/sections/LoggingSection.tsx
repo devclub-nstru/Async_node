@@ -1,6 +1,5 @@
 import { Check, Loader2, X } from "lucide-react";
 import DocsSection from "../DocsSection";
-import ImagePlaceholder from "../ImagePlaceholder";
 
 export default function LoggingSection() {
   return (
@@ -52,15 +51,6 @@ export default function LoggingSection() {
           leaving the page.
         </p>
       </div>
-
-      <ImagePlaceholder
-        label="Screenshot: Run Log tab with a mix of success and failed nodes, one row expanded"
-        aspect="video"
-      />
-      <ImagePlaceholder
-        label="Screenshot: Selected Node tab showing a node's raw output"
-        aspect="video"
-      />
     </DocsSection>
   );
 }

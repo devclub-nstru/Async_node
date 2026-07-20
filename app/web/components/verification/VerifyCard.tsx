@@ -5,19 +5,31 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import axios from "axios";
 import { useMe } from "@/hooks/useMe";
+import { sendVerificationEmail } from "@/services/auth/sendVerification";
 
 const CODE_LENGTH = 6;
+const RESEND_COOLDOWN = 60;
 
 export default function VerifyCard({ userId }: { userId: string }) {
   const router = useRouter();
   const [digits, setDigits] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [error, setError] = useState("");
   const [loadings, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
   const focus = (i: number) => inputs.current[i]?.focus();
 
   const { user, loading, route } = useMe();
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setInterval(() => {
+      setCooldown((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [cooldown]);
 
   useEffect(() => {
     if (user?.isVerified) {
@@ -76,6 +88,23 @@ export default function VerifyCard({ userId }: { userId: string }) {
       setError(message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (cooldown > 0 || resending) return;
+    setResending(true);
+    setError("");
+    try {
+      await sendVerificationEmail(userId);
+      setCooldown(RESEND_COOLDOWN);
+    } catch (err) {
+      const message = axios.isAxiosError(err)
+        ? (err.response?.data?.message ?? "Couldn't resend the code. Please try again.")
+        : "Something went wrong. Please try again.";
+      setError(message);
+    } finally {
+      setResending(false);
     }
   };
 
@@ -164,9 +193,11 @@ export default function VerifyCard({ userId }: { userId: string }) {
           Didn&apos;t receive a code?{" "}
           <button
             type="button"
-            className="font-normal text-amber-600 hover:underline bg-transparent border-none cursor-pointer"
+            onClick={handleResend}
+            disabled={cooldown > 0 || resending}
+            className="font-normal text-amber-600 hover:underline bg-transparent border-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline"
           >
-            Resend email
+            {resending ? "Sending…" : cooldown > 0 ? `Resend email (${cooldown}s)` : "Resend email"}
           </button>
         </p>
       </div>

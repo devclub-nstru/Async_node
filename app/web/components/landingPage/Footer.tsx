@@ -3,17 +3,24 @@
 import { motion } from "motion/react";
 import Logo from "@/components/layout/Logo";
 
-const LINKS = {
-  Product: ["Features", "Integrations", "Pricing", "Documentation", "Changelog"],
-  Resources: ["Blog", "Guides", "Community", "Templates", "API Reference"],
-  Company: ["About", "Careers", "Contact", "Press", "Legal"],
+const LINKS: Record<string, { label: string; href: string }[]> = {
+  Product: [
+    { label: "Features", href: "/#features" },
+    { label: "Integrations", href: "/#integrations" },
+    { label: "Documentation", href: "/docs" },
+  ],
+  Account: [
+    { label: "Sign in", href: "/signin" },
+    { label: "Get started", href: "/signup" },
+    { label: "Dashboard", href: "/dashboard" },
+  ],
 };
 
 export function Footer() {
   return (
     <footer className="relative bg-[#060608] border-t border-[rgba(255,255,255,0.05)] py-20 pb-10">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-10 mb-16">
           <div className="col-span-2">
             <div className="mb-5">
               <Logo size="sm" />
@@ -31,12 +38,12 @@ export function Footer() {
               </div>
               <ul className="space-y-2.5">
                 {links.map((link) => (
-                  <li key={link}>
+                  <li key={link.label}>
                     <a
-                      href="#"
+                      href={link.href}
                       className="font-body font-light text-[0.8rem] text-[rgba(255,255,255,0.18)] hover:text-[rgba(255,255,255,0.6)] transition-colors duration-200"
                     >
-                      {link}
+                      {link.label}
                     </a>
                   </li>
                 ))}
@@ -58,7 +65,7 @@ export function Footer() {
           </div>
 
           <span className="font-mono text-[0.6rem] text-[rgba(255,255,255,0.1)]">
-            © 2025 AsyncNode, Inc.
+            © 2026 AsyncNode, Inc.
           </span>
         </div>
       </div>

@@ -25,7 +25,7 @@ describe("POST /api/v1/auth/signup", () => {
     const res = await request(app).post("/api/v1/auth/signup").send({
       username: "johndoe",
       email: "john@example.com",
-      password: "secret123",
+      password: "Secret123!",
     });
 
     expect(res.status).toBe(201);
@@ -33,7 +33,7 @@ describe("POST /api/v1/auth/signup", () => {
     expect(authServicesMock.createUser).toHaveBeenCalledWith(
       "johndoe",
       "john@example.com",
-      "secret123",
+      "Secret123!",
     );
   });
 
@@ -43,7 +43,7 @@ describe("POST /api/v1/auth/signup", () => {
     const res = await request(app).post("/api/v1/auth/signup").send({
       username: "johndoe",
       email: "john@example.com",
-      password: "secret123",
+      password: "Secret123!",
     });
 
     expect(res.status).toBe(400);
@@ -56,7 +56,7 @@ describe("POST /api/v1/auth/signup", () => {
     const res = await request(app).post("/api/v1/auth/signup").send({
       username: "johndoe",
       email: "john@example.com",
-      password: "secret123",
+      password: "Secret123!",
     });
 
     expect(res.status).toBe(500);

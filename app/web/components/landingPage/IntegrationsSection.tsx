@@ -10,19 +10,23 @@ const integrations = [
         <g clipRule="evenodd" fillRule="evenodd">
           <path
             d="m897.4 0c-135.3.1-244.8 109.9-244.7 245.2-.1 135.3 109.5 245.1 244.8 245.2h244.8v-245.1c.1-135.3-109.5-245.1-244.9-245.3.1 0 .1 0 0 0m0 654h-652.6c-135.3.1-244.9 109.9-244.8 245.2-.2 135.3 109.4 245.1 244.7 245.3h652.7c135.3-.1 244.9-109.9 244.8-245.2.1-135.4-109.5-245.2-244.8-245.3z"
-            fill="#36c5f0"
+            fill="#FFFFFF"
+            className="transition-colors duration-300 group-hover:fill-[#36c5f0]"
           />
           <path
             d="m2447.6 899.2c.1-135.3-109.5-245.1-244.8-245.2-135.3.1-244.9 109.9-244.8 245.2v245.3h244.8c135.3-.1 244.9-109.9 244.8-245.3zm-652.7 0v-654c.1-135.2-109.4-245-244.7-245.2-135.3.1-244.9 109.9-244.8 245.2v654c-.2 135.3 109.4 245.1 244.7 245.3 135.3-.1 244.9-109.9 244.8-245.3z"
-            fill="#2eb67d"
+            fill="#FFFFFF"
+            className="transition-colors duration-300 group-hover:fill-[#2eb67d]"
           />
           <path
             d="m1550.1 2452.5c135.3-.1 244.9-109.9 244.8-245.2.1-135.3-109.5-245.1-244.8-245.2h-244.8v245.2c-.1 135.2 109.5 245 244.8 245.2zm0-654.1h652.7c135.3-.1 244.9-109.9 244.8-245.2.2-135.3-109.4-245.1-244.7-245.3h-652.7c-135.3.1-244.9 109.9-244.8 245.2-.1 135.4 109.4 245.2 244.7 245.3z"
-            fill="#ecb22e"
+            fill="#FFFFFF"
+            className="transition-colors duration-300 group-hover:fill-[#ecb22e]"
           />
           <path
             d="m0 1553.2c-.1 135.3 109.5 245.1 244.8 245.2 135.3-.1 244.9-109.9 244.8-245.2v-245.2h-244.8c-135.3.1-244.9 109.9-244.8 245.2zm652.7 0v654c-.2 135.3 109.4 245.1 244.7 245.3 135.3-.1 244.9-109.9 244.8-245.2v-653.9c.2-135.3-109.4-245.1-244.7-245.3-135.4 0-244.9 109.8-244.8 245.1 0 0 0 .1 0 0"
-            fill="#e01e5a"
+            fill="#FFFFFF"
+            className="transition-colors duration-300 group-hover:fill-[#e01e5a]"
           />
         </g>
       </svg>
@@ -62,20 +66,24 @@ const integrations = [
       <svg viewBox="0 0 32 32" className="h-14 w-14 object-contain">
         <path
           d="M16.58,19.1068l-12.69-8.0757A3,3,0,0,1,7.1109,5.97l9.31,5.9243L24.78,6.0428A3,3,0,0,1,28.22,10.9579Z"
-          fill="#ea4435"
+          fill="#FFFFFF"
+          className="transition-colors duration-300 group-hover:fill-[#ea4435]"
         />
         <path
           d="M25.5,5.5h4a0,0,0,0,1,0,0v18a3,3,0,0,1-3,3h0a3,3,0,0,1-3-3V7.5a2,2,0,0,1,2-2Z"
-          fill="#00ac47"
+          fill="#FFFFFF"
+          className="transition-colors duration-300 group-hover:fill-[#00ac47]"
           transform="translate(53.0001 32.0007) rotate(180)"
         />
         <path
           d="M29.4562,8.0656c-.0088-.06-.0081-.1213-.0206-.1812-.0192-.0918-.0549-.1766-.0823-.2652a2.9312,2.9312,0,0,0-.0958-.2993c-.02-.0475-.0508-.0892-.0735-.1354A2.9838,2.9838,0,0,0,28.9686,6.8c-.04-.0581-.09-.1076-.1342-.1626a3.0282,3.0282,0,0,0-.2455-.2849c-.0665-.0647-.1423-.1188-.2146-.1771a3.02,3.02,0,0,0-.24-.1857c-.0793-.0518-.1661-.0917-.25-.1359-.0884-.0461-.175-.0963-.267-.1331-.0889-.0358-.1837-.0586-.2766-.0859s-.1853-.06-.2807-.0777a3.0543,3.0543,0,0,0-.357-.036c-.0759-.0053-.1511-.0186-.2273-.018a2.9778,2.9778,0,0,0-.4219.0425c-.0563.0084-.113.0077-.1689.0193a33.211,33.211,0,0,0-.5645.178c-.0515.022-.0966.0547-.1465.0795A2.901,2.901,0,0,0,23.5,8.5v5.762l4.72-3.3043a2.8878,2.8878,0,0,0,1.2359-2.8923Z"
-          fill="#ffba00"
+          fill="#FFFFFF"
+          className="transition-colors duration-300 group-hover:fill-[#ffba00]"
         />
         <path
           d="M5.5,5.5h0a3,3,0,0,1,3,3v18a0,0,0,0,1,0,0h-4a2,2,0,0,1-2-2V8.5a3,3,0,0,1,3-3Z"
-          fill="#4285f4"
+          fill="#FFFFFF"
+          className="transition-colors duration-300 group-hover:fill-[#4285f4]"
         />
       </svg>
     ),
@@ -84,7 +92,7 @@ const integrations = [
 
 export function IntegrationsSection() {
   return (
-    <section className="relative pt-36 pb-12 overflow-hidden">
+    <section id="integrations" className="relative pt-36 pb-12 overflow-hidden">
       {/* Amber radial background — no Tailwind equivalent */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -159,38 +167,6 @@ export function IntegrationsSection() {
         </div>
 
         {/* CTA */}
-        <div className="flex justify-center mt-16">
-          <a
-            href="#"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "12px 22px",
-              borderRadius: 40,
-              background: "linear-gradient(135deg, #D97706 0%, #FCD34D 100%)",
-              border: "none",
-              color: "#060608",
-              fontFamily: "var(--font-body)",
-              fontWeight: 800,
-              fontSize: "0.85rem",
-              letterSpacing: "0.01em",
-              textDecoration: "none",
-              transition: "all 0.25s ease",
-              boxShadow: "0 4px 24px rgba(217,119,6,0.2)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background =
-                "linear-gradient(135deg, #F59E0B 0%, #FDE047 100%)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background =
-                "linear-gradient(135deg, #D97706 0%, #FCD34D 100%)";
-            }}
-          >
-            Browse integrations
-          </a>
-        </div>
       </div>
     </section>
   );

@@ -399,36 +399,6 @@ export function HeroSection() {
               Start Building Free
               <span style={{ fontSize: 16 }}>→</span>
             </motion.a>
-
-            <motion.a
-              whileHover={{
-                color: "rgba(255,255,255,1)",
-                border: "1px solid rgba(255,255,255,0.9)",
-                backgroundColor: "rgba(255,255,255,0.15)",
-                scale: 1.025,
-                boxShadow: "0 10px 25px -10px rgba(0, 0, 0, 0.5)",
-              }}
-              whileTap={{ scale: 0.97 }}
-              href="#"
-              className="w-full sm:w-auto justify-center"
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                padding: "16px 28px",
-                color: "rgba(255,255,255,0.65)",
-                fontFamily: "var(--font-body)",
-                fontWeight: 400,
-                fontSize: "0.88rem",
-                border: "1px solid rgba(255,255,255,0.3)",
-                transition:
-                  "color 0.25s ease, background-color 0.25s, border-color 0.25s, box-shadow 0.25s",
-                backgroundColor: "rgba(255,255,255,0.06)",
-                backdropFilter: "blur(4px)",
-              }}
-            >
-              Watch Demo
-            </motion.a>
           </div>
 
           {/* Mini stats */}

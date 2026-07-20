@@ -2,6 +2,7 @@ import request from "supertest";
 import type { Express } from "express";
 import { registerServiceMocks, workflowServicesMock } from "../helpers/mockModules.ts";
 import { authCookie } from "../helpers/authToken.ts";
+import { csrfCookie, csrfHeader } from "../helpers/csrfToken.ts";
 
 registerServiceMocks();
 
@@ -70,7 +71,8 @@ describe("POST /api/v1/workflows/workflows", () => {
   it("returns 400 when required fields are missing", async () => {
     const res = await request(app)
       .post("/api/v1/workflows/workflows")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ name: "Only name" });
 
     expect(res.status).toBe(400);
@@ -81,7 +83,8 @@ describe("POST /api/v1/workflows/workflows", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ name: "My Workflow", description: "Automates data processing" });
 
     expect(res.status).toBe(201);
@@ -93,7 +96,8 @@ describe("DELETE /api/v1/workflows/workflows/:workflowId", () => {
   it("returns 400 for a non-numeric workflow id", async () => {
     const res = await request(app)
       .delete("/api/v1/workflows/workflows/abc")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(400);
   });
@@ -103,7 +107,8 @@ describe("DELETE /api/v1/workflows/workflows/:workflowId", () => {
 
     const res = await request(app)
       .delete("/api/v1/workflows/workflows/1")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(200);
   });
@@ -113,7 +118,8 @@ describe("DELETE /api/v1/workflows/workflows/:workflowId", () => {
 
     const res = await request(app)
       .delete("/api/v1/workflows/workflows/1")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(404);
   });
@@ -123,7 +129,8 @@ describe("PUT /api/v1/workflows/workflows/:workflowId", () => {
   it("returns 400 when graphJson is invalid", async () => {
     const res = await request(app)
       .put("/api/v1/workflows/workflows/1")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ graphJson: { nodes: "not-an-array", edges: [] } });
 
     expect(res.status).toBe(400);
@@ -134,7 +141,8 @@ describe("PUT /api/v1/workflows/workflows/:workflowId", () => {
 
     const res = await request(app)
       .put("/api/v1/workflows/workflows/1")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ graphJson: { nodes: [], edges: [] } });
 
     expect(res.status).toBe(200);
@@ -147,7 +155,8 @@ describe("PUT /api/v1/workflows/workflows/:workflowId", () => {
 
     const res = await request(app)
       .put("/api/v1/workflows/workflows/1")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ graphJson: { nodes: [], edges: [] } });
 
     expect(res.status).toBe(403);

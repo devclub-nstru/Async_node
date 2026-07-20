@@ -13,6 +13,7 @@ A self-hostable workflow automation platform. Design workflows visually as a gra
 - **Execution history** — every run and every node run is stored in Postgres (`execution`, `node_execution`, `execution_logs`), queryable via the API.
 - **Live updates** — execution/node status is pushed to the frontend over Socket.IO as it happens.
 - **Auth** — email/password signup+signin with JWT access/refresh tokens in httpOnly cookies, plus email verification.
+- **CSRF protection** — double-submit cookie pattern on all state-changing requests to `/api/v1/workflows/*` (see [docs/api/API.md](docs/api/API.md#csrf-protection)).
 - **Rate limiting** — global API limiter, a stricter limiter on auth endpoints, and a dedicated limiter on manual workflow runs.
 
 This is a modular monolith: one Express API process plus BullMQ workers running in the same codebase (currently in-process), backed by Postgres and Redis. There are no separate "scheduler service" or "webhook service" deployables — those are just modules inside the same app.
@@ -42,8 +43,9 @@ This is a modular monolith: one Express API process plus BullMQ workers running 
 
 **Infrastructure**
 
-- Docker Compose (web, server, redis — Postgres is external, e.g. Neon)
-- Nginx reverse proxy config (for production deployment)
+- Docker Compose (nginx, web, server, redis — Postgres is external, e.g. Neon)
+- Nginx reverse proxy with TLS termination (Let's Encrypt) for production deployment
+- GitHub Actions CI/CD — builds and pushes Docker images, then deploys to an EC2 host over SSH (see [Deployment](#deployment) below)
 
 ---
 
@@ -71,7 +73,8 @@ AsyncNode/
 │       ├── components/builder/    # the node-based workflow editor
 │       └── hooks/, services/
 ├── docker/                 # docker-compose.yml
-├── nginx/                  # reverse proxy config
+├── nginx/                  # reverse proxy + TLS config (http.config, https.config)
+├── .github/workflows/      # deploy.yml — build, push, and deploy CI/CD pipeline
 └── docs/                   # architecture, API, database, decisions
 ```
 
@@ -109,9 +112,32 @@ The app runs on `http://localhost:3000` and expects the backend at the URL confi
 docker compose -f docker/docker-compose.yml up redis
 ```
 
-Or run all three services (web, server, redis) together with `docker compose -f docker/docker-compose.yml up --build`. Postgres is not included in the compose file — point `DATABASE_URL` at an external instance.
+Or run everything (nginx, web, server, redis) together with `docker compose -f docker/docker-compose.yml up --build`. Postgres is not included in the compose file — point `DATABASE_URL` at an external instance. The `nginx` service is only useful with TLS certs present on the host (see [Deployment](#deployment)); for local dev, running just `web`, `server`, and `redis` (or `npm run dev` in each app) is simpler.
 
 See [.env.example](.env.example) for the full list of required environment variables.
+
+### 4. Tests
+
+```bash
+cd app/server
+npm test
+```
+
+Runs the Jest suite (`app/server/tests/`) against a mocked service layer — no live database or Redis required.
+
+---
+
+## Deployment
+
+Production deploys run via [.github/workflows/deploy.yml](.github/workflows/deploy.yml) on every push to `main`:
+
+1. Install, test, and build both `app/server` and `app/web`.
+2. Build and push Docker images (`docker/Dockerfile` in each app) to Docker Hub.
+3. SSH into the EC2 host, `git pull`, write the `docker/.env` file from the `ENV` secret, `docker compose pull`, then `docker compose up -d --remove-orphans`.
+
+On the host, `docker compose -f docker/docker-compose.yml up -d` runs four containers: `nginx` (TLS termination, reverse-proxying `/api/` to `server` and everything else to `web`), `web`, `server`, and `redis`. TLS certs are expected at `/etc/letsencrypt` on the host (Let's Encrypt, via `nginx/https.config`, currently configured for `asyncnode.builder-net.tech`).
+
+Required GitHub Actions secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `SSH_HOST`, `SSH_USER`, `SSH_KEY`, `ENV` (the full contents of the server's `docker/.env`).
 
 ---
 
@@ -133,7 +159,7 @@ See [.env.example](.env.example) for the full list of required environment varia
 - Node execution within a workflow run is sequential (in topological order), not parallelized.
 - No conditional/branching/data-transform node types — only `trigger`, `ai`, `http`, `email`, `slack`.
 - Only Slack is implemented as a third-party integration node; there is no Gmail, Google Sheets, or Telegram support.
-- No automated test suite yet.
+- Test coverage is limited to `app/server` (Jest, mocked service layer) — `app/web` has no automated tests yet.
 
 ## License
 

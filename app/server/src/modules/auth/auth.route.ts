@@ -13,34 +13,82 @@ import { rateLimit } from "express-rate-limit";
 import { ERROR_MESSAGES } from "../../constants/messages.ts";
 import type { thttpError } from "../../types/types.ts";
 import logger from "../../utils/logger.ts";
+import { getRetryAfterSeconds } from "../../utils/rateLimitRetryAfter.ts";
 import { validate } from "../../middlewares/validate.middleware.ts";
 import { signupSchema, signinSchema } from "./auth.schema.ts";
 
 export const authRouter = router.Router();
 
-const authLimiter = rateLimit({
+const rateLimitHandler: NonNullable<Parameters<typeof rateLimit>[0]>["handler"] = (req, res) => {
+  logger.warn(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED, {
+    status: 429,
+    request: {
+      ip: req.ip || "",
+      method: req.method || "",
+      url: req.url || "",
+    },
+  });
+
+  const retryAfter = getRetryAfterSeconds(req);
+
+  const response: thttpError = {
+    success: false,
+    status: 429,
+    message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
+    retryAfter,
+  };
+  res.set("Retry-After", String(retryAfter));
+  res.status(429).json(response);
+};
+
+// Signup: high abuse/spam risk (account + downstream email costs) — keep tight.
+const signupLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  limit: 10, // Limit each IP to 10 requests per window on sensitive auth endpoints
+  limit: 10,
   standardHeaders: "draft-8",
   legacyHeaders: false,
   ipv6Subnet: 56,
-  handler: (req, res) => {
-    logger.warn(ERROR_MESSAGES.RATE_LIMIT_EXCEEDED, {
-      status: 429,
-      request: {
-        ip: req.ip || "",
-        method: req.method || "",
-        url: req.url || "",
-      },
-    });
+  handler: rateLimitHandler,
+});
 
-    const response: thttpError = {
-      success: false,
-      status: 429,
-      message: ERROR_MESSAGES.RATE_LIMIT_EXCEEDED,
-    };
-    res.status(429).json(response);
-  },
+// Signin: legitimate users retry (typos, multiple devices/tabs) far more than 10 times/15min.
+const signinLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 30,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+  handler: rateLimitHandler,
+});
+
+// Verification code send: triggers an email/SMS send, so keep strict to control cost/spam.
+const verifySendLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 5,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+  handler: rateLimitHandler,
+});
+
+// Verification code confirm: users may mistype the code a few times before it expires.
+const verifyConfirmLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 20,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+  handler: rateLimitHandler,
+});
+
+// Token refresh: called silently/frequently by clients to keep sessions alive, low abuse risk.
+const tokenRefreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 60,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  ipv6Subnet: 56,
+  handler: rateLimitHandler,
 });
 
 /**
@@ -76,7 +124,7 @@ const authLimiter = rateLimit({
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signup", authLimiter, validate(signupSchema), creatUserController);
+authRouter.post("/signup", signupLimiter, validate(signupSchema), creatUserController);
 
 /**
  * @openapi
@@ -117,7 +165,7 @@ authRouter.post("/signup", authLimiter, validate(signupSchema), creatUserControl
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-authRouter.post("/signin", authLimiter, validate(signinSchema), signInUserController);
+authRouter.post("/signin", signinLimiter, validate(signinSchema), signInUserController);
 
 /**
  * @openapi
@@ -142,8 +190,8 @@ authRouter.post("/signin", authLimiter, validate(signinSchema), signInUserContro
  */
 authRouter.post("/signout", signOutUserController);
 
-authRouter.post("/token/refresh", refreshAccessTokenController);
-authRouter.post("/verify/send", authenticate, authLimiter, sendVerificationCodeController);
-authRouter.post("/verify/confirm", authenticate, authLimiter, verifyEmailController);
+authRouter.post("/token/refresh", tokenRefreshLimiter, refreshAccessTokenController);
+authRouter.post("/verify/send", authenticate, verifySendLimiter, sendVerificationCodeController);
+authRouter.post("/verify/confirm", authenticate, verifyConfirmLimiter, verifyEmailController);
 
 authRouter.get("/me", authenticate, getMeController);

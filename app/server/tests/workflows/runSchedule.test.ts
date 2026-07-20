@@ -6,6 +6,7 @@ import {
   workflowExecutionJobMock,
 } from "../helpers/mockModules.ts";
 import { authCookie } from "../helpers/authToken.ts";
+import { csrfCookie, csrfHeader } from "../helpers/csrfToken.ts";
 
 registerServiceMocks();
 
@@ -20,7 +21,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/run", () => {
   it("returns 400 for a non-numeric workflow id", async () => {
     const res = await request(app)
       .post("/api/v1/workflows/workflows/abc/run")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(400);
   });
@@ -31,7 +33,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/run", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows/1/run")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(202);
     expect(res.body.data.status).toBe("queued");
@@ -46,7 +49,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/run", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows/1/run")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(404);
   });
@@ -61,7 +65,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/schedule/start", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows/1/schedule/start")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ intervalSeconds: 120 });
 
     expect(res.status).toBe(200);
@@ -74,7 +79,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/schedule/start", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows/1/schedule/start")
-      .set("Cookie", authCookie())
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader())
       .send({ intervalSeconds: 5 });
 
     expect(res.status).toBe(400);
@@ -89,7 +95,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/schedule/stop", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows/1/schedule/stop")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(200);
   });
@@ -101,7 +108,8 @@ describe("POST /api/v1/workflows/workflows/:workflowId/schedule/stop", () => {
 
     const res = await request(app)
       .post("/api/v1/workflows/workflows/1/schedule/stop")
-      .set("Cookie", authCookie());
+      .set("Cookie", [authCookie(), csrfCookie()])
+      .set(csrfHeader());
 
     expect(res.status).toBe(403);
   });

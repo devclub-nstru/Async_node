@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import DocsClient from "@/components/docs/DocsClient";
 
 export const metadata: Metadata = {
-  title: "Documentation — AsyncNode",
+  title: "Documentation",
   description: "How to build, connect, and debug workflows in AsyncNode.",
+  alternates: { canonical: "/docs" },
 };
 
 export default function DocsPage() {

@@ -1,9 +1,12 @@
 import LeftPanel from "@/components/signin/LeftPanel";
 import SignUpCard from "@/components/signup/SignUpCard";
 
-export const metadata = {
-  title: "Sign Up — AsyncNode",
-  description: "Create your AsyncNode workspace.",
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sign Up",
+  description: "Create your AsyncNode workspace and start building AI workflows for free.",
+  alternates: { canonical: "/signup" },
 };
 
 export default function SignUpPage() {

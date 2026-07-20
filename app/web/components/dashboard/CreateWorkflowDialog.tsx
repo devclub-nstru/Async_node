@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
 import { Loader2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -36,7 +36,7 @@ export default function CreateWorkflowDialog({
     setDescription("");
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim() || !description.trim() || submitting) return;
 
@@ -57,7 +57,7 @@ export default function CreateWorkflowDialog({
   return (
     <DialogPrimitive.Root
       open={open}
-      onOpenChange={(next) => {
+      onOpenChange={(next: boolean) => {
         if (!submitting) {
           onOpenChange(next);
           if (!next) reset();
@@ -68,8 +68,8 @@ export default function CreateWorkflowDialog({
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=closed]:animate-out data-[state=closed]:fade-out-0" />
         <DialogPrimitive.Content
           className="fixed top-1/2 left-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border border-white/[0.08] bg-[#0a0a0d] p-6 shadow-2xl outline-none data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95"
-          onEscapeKeyDown={(e) => submitting && e.preventDefault()}
-          onPointerDownOutside={(e) => submitting && e.preventDefault()}
+          onEscapeKeyDown={(e: Event) => submitting && e.preventDefault()}
+          onPointerDownOutside={(e: Event) => submitting && e.preventDefault()}
         >
           <div className="mb-5 flex items-center justify-between">
             <DialogPrimitive.Title className="font-display text-[17px] font-bold tracking-[-0.02em] text-[#f0eee9]">
