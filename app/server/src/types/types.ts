@@ -20,6 +20,7 @@ export type thttpError = {
   status: number;
   message: string;
   trace?: object | null;
+  retryAfter?: number;
 };
 
 export const NodeType = {
