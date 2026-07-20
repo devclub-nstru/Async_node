@@ -34,6 +34,10 @@ export const metadata: Metadata = {
     default: "AsyncNode — AI Workflow Automation Platform",
     template: "%s | AsyncNode",
   },
+
+  verification: {
+    google: "m2bbBas5nyrYzaOFn9QwmClnXyOIdx6RsVXfFQ8hq4Q",
+  },
   description: SITE_DESCRIPTION,
   applicationName: "AsyncNode",
   keywords: [
