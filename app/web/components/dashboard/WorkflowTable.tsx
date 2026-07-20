@@ -72,7 +72,7 @@ function WorkflowRow({
         <DropdownMenu.Trigger asChild>
           <button
             disabled={deleting}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
             className="flex items-center justify-center rounded p-1 text-white/25 transition-colors hover:bg-white/10 hover:text-white/60 disabled:pointer-events-none"
           >
             {deleting ? (
@@ -87,7 +87,7 @@ function WorkflowRow({
           <DropdownMenu.Content
             align="end"
             sideOffset={4}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
             className="z-50 min-w-[140px] rounded-lg border border-white/[0.08] bg-[#0a0a0d] p-1 shadow-2xl outline-none"
           >
             <DropdownMenu.Item

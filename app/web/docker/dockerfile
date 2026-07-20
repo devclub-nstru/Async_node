@@ -8,11 +8,7 @@ RUN npm i
 
 COPY . .
 
-RUN node -v
-RUN npm -v
-RUN npm ls typescript
-RUN sha256sum components/dashboard/CreateWorkflowDialog.tsx
-RUN sed -n '50,65p' components/dashboard/CreateWorkflowDialog.tsx
+
 RUN npm run build
 
 CMD ["npm", "run", "start"]
