@@ -35,7 +35,7 @@ All responses follow a consistent envelope:
 
 Authentication uses **httpOnly cookies** (`accessToken`, `refreshToken`). Protected routes require a valid `accessToken` cookie — no Authorization header.
 
-Rate limits: a global limiter of 100 requests / 15 minutes per IP applies to all `/api` routes; auth endpoints (`signup`, `signin`, `verify/send`, `verify/confirm`) are additionally limited to 10 requests / 15 minutes per IP; `POST /workflows/:workflowId/run` has its own dedicated rate limiter.
+Rate limits: a global limiter of 3000 requests / 15 minutes per IP applies to all `/api` routes; auth endpoints (`signup`, `signin`, `verify/send`, `verify/confirm`) are additionally limited to 10 requests / 15 minutes per IP; `POST /workflows/:workflowId/run` has its own dedicated rate limiter.
 
 ---
 

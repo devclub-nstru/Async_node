@@ -43,9 +43,9 @@ This is a modular monolith: one Express API process plus BullMQ workers running 
 
 **Infrastructure**
 
-- Docker Compose (nginx, web, server, redis — Postgres is external, e.g. Neon)
+- Docker Compose (nginx, web, server, redis — Postgres is external in production, e.g. Neon)
 - Nginx reverse proxy with TLS termination (Let's Encrypt) for production deployment
-- GitHub Actions CI/CD — builds and pushes Docker images, then deploys to an EC2 host over SSH (see [Deployment](#deployment) below)
+- GitHub Actions CI/CD — builds and pushes Docker images, then deploys to an EC2 host over SSH
 
 ---
 
@@ -72,7 +72,7 @@ AsyncNode/
 │       ├── app/                   # routes: /, /signin, /signup, /dashboard, /builder/[id]
 │       ├── components/builder/    # the node-based workflow editor
 │       └── hooks/, services/
-├── docker/                 # docker-compose.yml
+├── docker/                 # docker-compose.yml (prod) + docker-compose.dev.yml (local db/redis)
 ├── nginx/                  # reverse proxy + TLS config (http.config, https.config)
 ├── .github/workflows/      # deploy.yml — build, push, and deploy CI/CD pipeline
 └── docs/                   # architecture, API, database, decisions
@@ -80,87 +80,70 @@ AsyncNode/
 
 ---
 
-## Running locally
+## Installation
 
-You need a PostgreSQL database (e.g. a free [Neon](https://neon.tech) instance) and Redis.
+### Prerequisites
 
-### 1. Backend
+- Node.js (LTS) and npm
+- Docker and Docker Compose
+
+### Get the code
+
+```bash
+git clone <repo-url>
+cd AsyncNode
+```
+
+---
+
+## Local setup guide
+
+AsyncNode's local Postgres and Redis are provided by `docker/docker-compose.dev.yml`, so you don't need to install or run these separately.
+
+### 1. Start local Postgres and Redis
+
+```bash
+cd docker
+cp .env.example .env   # fill in the values needed by docker-compose.dev.yml
+docker compose -f docker-compose.dev.yml up
+```
+
+Leave this running — it provides the local database and Redis instance the backend connects to.
+
+### 2. Backend setup
+
+In a new terminal:
 
 ```bash
 cd app/server
-npm install
-cp ../../.env.example .env   # fill in DATABASE_URL, REDIS_URL, JWT secrets, SMTP creds
-npm run db:migrate
+cp .env.example .env   # fill in DATABASE_URL, REDIS_URL, JWT secrets, SMTP creds, etc.
+npm i
 npm run dev
 ```
 
 The API runs on `http://localhost:8080` (see `PORT` in `.env`). Swagger UI is available at `/api/docs`.
 
-### 2. Frontend
+### 3. Frontend setup
+
+In another terminal:
 
 ```bash
 cd app/web
-npm install
+cp .env.example .env   # fill in backend_URI and any other required values
+npm i
 npm run dev
 ```
 
 The app runs on `http://localhost:3000` and expects the backend at the URL configured via `backend_URI` in its environment.
 
-### 3. Redis (if not already running)
+### Summary of what's running
 
-```bash
-docker compose -f docker/docker-compose.yml up redis
-```
-
-Or run everything (nginx, web, server, redis) together with `docker compose -f docker/docker-compose.yml up --build`. Postgres is not included in the compose file — point `DATABASE_URL` at an external instance. The `nginx` service is only useful with TLS certs present on the host (see [Deployment](#deployment)); for local dev, running just `web`, `server`, and `redis` (or `npm run dev` in each app) is simpler.
-
-See [.env.example](.env.example) for the full list of required environment variables.
-
-### 4. Tests
-
-```bash
-cd app/server
-npm test
-```
-
-Runs the Jest suite (`app/server/tests/`) against a mocked service layer — no live database or Redis required.
-
----
-
-## Deployment
-
-Production deploys run via [.github/workflows/deploy.yml](.github/workflows/deploy.yml) on every push to `main`:
-
-1. Install, test, and build both `app/server` and `app/web`.
-2. Build and push Docker images (`docker/Dockerfile` in each app) to Docker Hub.
-3. SSH into the EC2 host, `git pull`, write the `docker/.env` file from the `ENV` secret, `docker compose pull`, then `docker compose up -d --remove-orphans`.
-
-On the host, `docker compose -f docker/docker-compose.yml up -d` runs four containers: `nginx` (TLS termination, reverse-proxying `/api/` to `server` and everything else to `web`), `web`, `server`, and `redis`. TLS certs are expected at `/etc/letsencrypt` on the host (Let's Encrypt, via `nginx/https.config`, currently configured for `asyncnode.builder-net.tech`).
-
-Required GitHub Actions secrets: `DOCKER_USERNAME`, `DOCKER_PASSWORD`, `SSH_HOST`, `SSH_USER`, `SSH_KEY`, `ENV` (the full contents of the server's `docker/.env`).
-
----
-
-## Documentation
-
-| Document                                                               | Purpose                        |
-| ---------------------------------------------------------------------- | ------------------------------ |
-| [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | How the pieces fit together    |
-| [docs/api/API.md](docs/api/API.md)                                     | REST API reference             |
-| [docs/database/DATABASE.md](docs/database/DATABASE.md)                 | Database schema                |
-| [docs/decisions/DECISIONS.md](docs/decisions/DECISIONS.md)             | Architectural decision records |
-| [PRODUCT_BREAKDOWN.md](PRODUCT_BREAKDOWN.md)                           | Product scope and use cases    |
-| [CONTRIBUTING.md](CONTRIBUTING.md)                                     | How to contribute              |
-
----
-
-## Known limitations
-
-- Node execution within a workflow run is sequential (in topological order), not parallelized.
-- No conditional/branching/data-transform node types — only `trigger`, `ai`, `http`, `email`, `slack`.
-- Only Slack is implemented as a third-party integration node; there is no Gmail, Google Sheets, or Telegram support.
-- Test coverage is limited to `app/server` (Jest, mocked service layer) — `app/web` has no automated tests yet.
+| Service          | How it's started                                             | Port |
+| ---------------- | ------------------------------------------------------------ | ---- |
+| Postgres + Redis | `docker compose -f docker-compose.dev.yml up` (in `docker/`) | —    |
+| Backend API      | `npm run dev` (in `app/server`)                              | 8080 |
+| Frontend         | `npm run dev` (in `app/web`)                                 | 3000 |
 
 ## License
 
-No license has been chosen yet — treat this repository as all-rights-reserved until a LICENSE file is added.
+MIT
