@@ -94,6 +94,8 @@ jobs:
 
           docker compose up -d --remove-orphans
 
+          docker compose exec server npm run db:migrate
+
           docker compose restart nginx
 
           docker image prune -af
