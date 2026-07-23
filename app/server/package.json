@@ -50,6 +50,7 @@
     "typescript": "^6.0.3",
     "winston": "^3.19.0",
     "ws": "^8.21.0",
+    "drizzle-kit": "^0.31.10",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -66,7 +67,6 @@
     "@types/swagger-ui-express": "^4.1.8",
     "@types/winston": "^2.4.4",
     "@types/ws": "^8.18.1",
-    "drizzle-kit": "^0.31.10",
     "jest": "^30.4.2",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.11"
