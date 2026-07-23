@@ -17,6 +17,8 @@ COPY package*.json ./
 RUN npm i --omit=dev
 
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/migrations ./migrations
 
 USER node
 
