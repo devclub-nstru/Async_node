@@ -1,5 +1,5 @@
 {
-  "id": "3d23145e-b116-4c00-b595-7b5193586eb6",
+  "id": "2085f98e-e33f-4cf6-a004-ab83e2eae507",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -16,13 +16,13 @@
         },
         "workflow_id": {
           "name": "workflow_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
         "trigger_id": {
           "name": "trigger_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -46,18 +46,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "input_json": {
-          "name": "input_json",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "output_json": {
-          "name": "output_json",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -73,7 +61,59 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "execution_workflow_id_idx": {
+          "name": "execution_workflow_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "execution_trigger_id_idx": {
+          "name": "execution_trigger_id_idx",
+          "columns": [
+            {
+              "expression": "trigger_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "execution_workflow_id_status_idx": {
+          "name": "execution_workflow_id_status_idx",
+          "columns": [
+            {
+              "expression": "workflow_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "execution_workflow_id_workflows_id_fk": {
           "name": "execution_workflow_id_workflows_id_fk",
@@ -112,13 +152,13 @@
         },
         "execution_id": {
           "name": "execution_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "node_id": {
-          "name": "node_id",
-          "type": "varchar(255)",
+        "node_execution_id": {
+          "name": "node_execution_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -149,7 +189,38 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "execution_logs_execution_id_idx": {
+          "name": "execution_logs_execution_id_idx",
+          "columns": [
+            {
+              "expression": "execution_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "execution_logs_node_execution_id_idx": {
+          "name": "execution_logs_node_execution_id_idx",
+          "columns": [
+            {
+              "expression": "node_execution_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "execution_logs_execution_id_execution_id_fk": {
           "name": "execution_logs_execution_id_execution_id_fk",
@@ -160,12 +231,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "execution_logs_node_id_node_execution_node_id_fk": {
-          "name": "execution_logs_node_id_node_execution_node_id_fk",
+        "execution_logs_node_execution_id_node_execution_id_fk": {
+          "name": "execution_logs_node_execution_id_node_execution_id_fk",
           "tableFrom": "execution_logs",
           "tableTo": "node_execution",
-          "columnsFrom": ["node_id"],
-          "columnsTo": ["node_id"],
+          "columnsFrom": ["node_execution_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -188,7 +259,7 @@
         },
         "execution_id": {
           "name": "execution_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -224,12 +295,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "error_message": {
-          "name": "error_message",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "started_at": {
           "name": "started_at",
           "type": "timestamp",
@@ -257,7 +322,44 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "node_execution_execution_id_idx": {
+          "name": "node_execution_execution_id_idx",
+          "columns": [
+            {
+              "expression": "execution_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "node_execution_execution_id_status_idx": {
+          "name": "node_execution_execution_id_status_idx",
+          "columns": [
+            {
+              "expression": "execution_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "node_execution_execution_id_execution_id_fk": {
           "name": "node_execution_execution_id_execution_id_fk",
@@ -287,7 +389,13 @@
         },
         "workflow_id": {
           "name": "workflow_id",
-          "type": "serial",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "node_id": {
+          "name": "node_id",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -331,7 +439,13 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "integrations_workflow_id_node_id_unique": {
+          "name": "integrations_workflow_id_node_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["workflow_id", "node_id"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -348,7 +462,13 @@
         },
         "workflow_id": {
           "name": "workflow_id",
-          "type": "serial",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "node_id": {
+          "name": "node_id",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -371,6 +491,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'true'"
+        },
+        "webhook_token": {
+          "name": "webhook_token",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -400,7 +526,18 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "triggers_workflow_id_node_id_unique": {
+          "name": "triggers_workflow_id_node_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["workflow_id", "node_id"]
+        },
+        "triggers_webhook_token_unique": {
+          "name": "triggers_webhook_token_unique",
+          "nullsNotDistinct": false,
+          "columns": ["webhook_token"]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -433,19 +570,32 @@
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
+        "refresh_token": {
+          "name": "refresh_token",
           "type": "text",
           "primaryKey": false,
+          "notNull": false
+        },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
+          "primaryKey": false,
           "notNull": true,
-          "default": "'2026-06-19T16:38:04.076Z'"
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
         },
         "updated_at": {
           "name": "updated_at",
-          "type": "text",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
-          "default": "'2026-06-19T16:38:04.076Z'"
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -474,7 +624,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "serial",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
@@ -494,7 +644,7 @@
           "name": "graph_json",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "status": {
           "name": "status",
@@ -503,6 +653,19 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
+        },
+        "schedule_enabled": {
+          "name": "schedule_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "schedule_interval_seconds": {
+          "name": "schedule_interval_seconds",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -519,7 +682,23 @@
           "default": "now()"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "workflows_user_id_idx": {
+          "name": "workflows_user_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "workflows_user_id_users_id_fk": {
           "name": "workflows_user_id_users_id_fk",
