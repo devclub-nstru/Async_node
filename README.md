@@ -1,45 +1,25 @@
 # AsyncNode
 
-```{=html}
 <p align="center">
-```
-
-`<img src="./docs/assets/banner.png" alt="AsyncNode Banner" width="100%">`{=html}
-
-```{=html}
-</p>B
-```
-
-```{=html}
-<p align="center">
-```
-
-`<strong>`{=html}Build, connect, and automate workflows
-visually.`</strong>`{=html}`<br>`{=html} A self-hostable workflow
-automation platform powered by AI, HTTP APIs, webhooks, scheduled jobs,
-and real-time execution.
-
-```{=html}
+  <img src="./docs/assets/banner.png" alt="AsyncNode Banner" width="100%">
 </p>
-```
 
-```{=html}
 <p align="center">
-```
-
-`<img src="https://img.shields.io/badge/TypeScript-5.x-blue" />`{=html}
-`<img src="https://img.shields.io/badge/Next.js-16-black" />`{=html}
-`<img src="https://img.shields.io/badge/Express-5-green" />`{=html}
-`<img src="https://img.shields.io/badge/Docker-Ready-blue" />`{=html}
-`<img src="https://img.shields.io/badge/License-MIT-yellow" />`{=html}
-
-```{=html}
+  <strong>Build, connect, and automate workflows visually.</strong><br>
+  A self-hostable workflow automation platform powered by AI, HTTP APIs, webhooks, scheduled jobs, and real-time execution.
 </p>
-```
+
+<p align="center">
+  <img src="https://img.shields.io/badge/TypeScript-5.x-blue" />
+  <img src="https://img.shields.io/badge/Next.js-16-black" />
+  <img src="https://img.shields.io/badge/Express-5-green" />
+  <img src="https://img.shields.io/badge/Docker-Ready-blue" />
+  <img src="https://img.shields.io/badge/License-MIT-yellow" />
+</p>
 
 ---
 
-## ✨ Features
+## Features
 
 - Visual drag-and-drop workflow builder
 - AI integrations (OpenAI, Anthropic & Groq)
@@ -55,12 +35,12 @@ and real-time execution.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Clone the repository
 
 ```bash
-git clone https://github.com/<your-org>/AsyncNode.git
+git clone https://github.com/<ORG_NAME>/AsyncNode.git
 cd AsyncNode
 ```
 
@@ -90,28 +70,13 @@ npm install
 npm run dev
 ```
 
-Open:
+Open your browser:
 
 - **Frontend:** http://localhost:3000
 - **Backend API:** http://localhost:8080
 - **Swagger Docs:** http://localhost:8080/api/docs
 
----
-
-## 📖 Documentation
-
-Detailed documentation is available inside the `docs/` directory.
-
-- Architecture
-- API Reference
-- Database Design
-- Deployment Guide
-- Security
-- Development Guide
-
----
-
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -143,33 +108,37 @@ Detailed documentation is available inside the `docs/` directory.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
-We love contributions! To keep development organized, please follow this workflow:
+We love contributions! To keep development organized, please follow this workflow.
 
 1. Pick an open issue.
 2. Request to be assigned to the issue.
-3. Wait for a maintainer to assign it to you.
+3. Wait until a maintainer assigns the issue to you.
 4. Fork the repository.
 5. Create a feature branch.
-6. Make your changes.
-7. Open a Pull Request linked to the assigned issue.
+6. Implement your changes.
+7. Commit your changes with clear commit messages.
+8. Open a Pull Request linked to the assigned issue.
 
 > **Note**
+>
 > We only accept Pull Requests for **assigned issues**. This helps prevent duplicate work and ensures contributors aren't working on the same feature simultaneously.
 
 ---
 
-## ❤️ Contributors
+## Contributors
 
 Thanks to everyone who contributes to AsyncNode.
 
-`<a href="../../graphs/contributors">`{=html}
-`<img src="https://contrib.rocks/image?repo=<your-org>`{=html}/AsyncNode"
-/\> `</a>`{=html}
+<p align="center">
+  <a href="https://github.com/<ORG_NAME>/AsyncNode/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=<ORG_NAME>/AsyncNode" />
+  </a>
+</p>
 
 ---
 
-## 📜 License
+## License
 
 This project is licensed under the **MIT License**.
