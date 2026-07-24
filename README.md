@@ -133,7 +133,7 @@ Thanks to everyone who contributes to AsyncNode.
 
 <p align="center">
   <a href="https://github.com/devclub-nstru/AsyncNode/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=<ORG_NAME>/AsyncNode" />
+    <img src="https://contrib.rocks/image?repo=devclub-nstru/AsyncNode" />
   </a>
 </p>
 
