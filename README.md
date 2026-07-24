@@ -132,8 +132,8 @@ We love contributions! To keep development organized, please follow this workflo
 Thanks to everyone who contributes to AsyncNode.
 
 <p align="center">
-  <a href="https://github.com/devclub-nstru/AsyncNode/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=devclub-nstru/AsyncNode" />
+  <a href="https://github.com/devclub-nstru/Async_node/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=devclub-nstru/Async_node" />
   </a>
 </p>
 
