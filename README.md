@@ -1,149 +1,175 @@
 # AsyncNode
 
-A self-hostable workflow automation platform. Design workflows visually as a graph of nodes, then run them manually, on a webhook, or on a schedule — with execution history, per-node logs, and live status over WebSockets.
+```{=html}
+<p align="center">
+```
 
----
+`<img src="./docs/assets/banner.png" alt="AsyncNode Banner" width="100%">`{=html}
 
-## What it actually does
+```{=html}
+</p>B
+```
 
-- **Visual workflow builder** — a node-based canvas (React Flow) for wiring up trigger → action graphs.
-- **Node types**: `trigger`, `ai` (OpenAI / Anthropic / Groq), `http` (HTTP request), `email` (SMTP via Nodemailer), `slack` (Slack message).
-- **Triggers**: manual run, webhook (unique per-workflow token URL), and interval-based scheduling (repeatable BullMQ jobs).
-- **Execution engine** — resolves node dependencies from the saved graph with a topological sort and runs them in order, persisting status/input/output per node.
-- **Execution history** — every run and every node run is stored in Postgres (`execution`, `node_execution`, `execution_logs`), queryable via the API.
-- **Live updates** — execution/node status is pushed to the frontend over Socket.IO as it happens.
-- **Auth** — email/password signup+signin with JWT access/refresh tokens in httpOnly cookies, plus email verification.
-- **CSRF protection** — double-submit cookie pattern on all state-changing requests to `/api/v1/workflows/*` (see [docs/api/API.md](docs/api/API.md#csrf-protection)).
-- **Rate limiting** — global API limiter, a stricter limiter on auth endpoints, and a dedicated limiter on manual workflow runs.
+```{=html}
+<p align="center">
+```
 
-This is a modular monolith: one Express API process plus BullMQ workers running in the same codebase (currently in-process), backed by Postgres and Redis. There are no separate "scheduler service" or "webhook service" deployables — those are just modules inside the same app.
+`<strong>`{=html}Build, connect, and automate workflows
+visually.`</strong>`{=html}`<br>`{=html} A self-hostable workflow
+automation platform powered by AI, HTTP APIs, webhooks, scheduled jobs,
+and real-time execution.
 
----
+```{=html}
+</p>
+```
 
-## Tech stack
+```{=html}
+<p align="center">
+```
 
-**Frontend** (`app/web`)
+`<img src="https://img.shields.io/badge/TypeScript-5.x-blue" />`{=html}
+`<img src="https://img.shields.io/badge/Next.js-16-black" />`{=html}
+`<img src="https://img.shields.io/badge/Express-5-green" />`{=html}
+`<img src="https://img.shields.io/badge/Docker-Ready-blue" />`{=html}
+`<img src="https://img.shields.io/badge/License-MIT-yellow" />`{=html}
 
-- Next.js 16 (App Router), React 19, TypeScript
-- React Flow for the workflow canvas
-- Tailwind CSS 4 + shadcn/ui (Radix primitives)
-- Socket.IO client for live execution updates
-
-**Backend** (`app/server`)
-
-- Node.js, TypeScript, Express 5
-- Drizzle ORM + PostgreSQL (targets Neon's serverless driver)
-- BullMQ + Redis for job queues (workflow execution, verification emails)
-- Socket.IO for realtime execution events
-- JWT auth (access + refresh tokens), bcrypt password hashing
-- Nodemailer (SMTP) for transactional email
-- Winston for server-side logging
-- Swagger/OpenAPI docs generated from JSDoc annotations
-- AI provider SDKs: `@anthropic-ai/sdk`, `openai`, `groq-sdk`
-
-**Infrastructure**
-
-- Docker Compose (nginx, web, server, redis — Postgres is external in production, e.g. Neon)
-- Nginx reverse proxy with TLS termination (Let's Encrypt) for production deployment
-- GitHub Actions CI/CD — builds and pushes Docker images, then deploys to an EC2 host over SSH
-
----
-
-## Project structure
-
-```text
-AsyncNode/
-├── app/
-│   ├── server/            # Express API + BullMQ workers
-│   │   └── src/
-│   │       ├── config/            # env, db, redis, swagger, queue setup
-│   │       ├── db/schemas/        # Drizzle table definitions
-│   │       ├── executors/         # per-node-type execution logic
-│   │       ├── integrations/      # AI / email / slack / http clients
-│   │       ├── jobs/               # BullMQ job definitions
-│   │       ├── middlewares/       # auth, rate limiting, error handling
-│   │       ├── modules/
-│   │       │   ├── auth/
-│   │       │   ├── workflows/
-│   │       │   └── executions/    # includes webhook trigger endpoint
-│   │       ├── workers/           # BullMQ worker processes
-│   │       └── ws/                # Socket.IO server
-│   └── web/                # Next.js frontend
-│       ├── app/                   # routes: /, /signin, /signup, /dashboard, /builder/[id]
-│       ├── components/builder/    # the node-based workflow editor
-│       └── hooks/, services/
-├── docker/                 # docker-compose.yml (prod) + docker-compose.dev.yml (local db/redis)
-├── nginx/                  # reverse proxy + TLS config (http.config, https.config)
-├── .github/workflows/      # deploy.yml — build, push, and deploy CI/CD pipeline
-└── docs/                   # architecture, API, database, decisions
+```{=html}
+</p>
 ```
 
 ---
 
-## Installation
+## ✨ Features
 
-### Prerequisites
+- Visual drag-and-drop workflow builder
+- AI integrations (OpenAI, Anthropic & Groq)
+- HTTP Request node
+- Email automation
+- Slack integration
+- Webhook triggers
+- Scheduled workflows with BullMQ
+- Execution history & per-node logs
+- Live execution updates via WebSockets
+- Secure authentication with email verification
+- Self-hostable using Docker
 
-- Node.js (LTS) and npm
-- Docker and Docker Compose
+---
 
-### Get the code
+## 🚀 Quick Start
+
+### Clone the repository
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/<your-org>/AsyncNode.git
 cd AsyncNode
 ```
 
----
-
-## Local setup guide
-
-AsyncNode's local Postgres and Redis are provided by `docker/docker-compose.dev.yml`, so you don't need to install or run these separately.
-
-### 1. Start local Postgres and Redis
+### Start local services
 
 ```bash
 cd docker
-cp .env.example .env   # fill in the values needed by docker-compose.dev.yml
+cp .env.example .env
 docker compose -f docker-compose.dev.yml up
 ```
 
-Leave this running — it provides the local database and Redis instance the backend connects to.
-
-### 2. Backend setup
-
-In a new terminal:
+### Backend
 
 ```bash
 cd app/server
-cp .env.example .env   # fill in DATABASE_URL, REDIS_URL, JWT secrets, SMTP creds, etc.
-npm i
+cp .env.example .env
+npm install
 npm run dev
 ```
 
-The API runs on `http://localhost:8080` (see `PORT` in `.env`). Swagger UI is available at `/api/docs`.
-
-### 3. Frontend setup
-
-In another terminal:
+### Frontend
 
 ```bash
 cd app/web
-cp .env.example .env   # fill in backend_URI and any other required values
-npm i
+cp .env.example .env
+npm install
 npm run dev
 ```
 
-The app runs on `http://localhost:3000` and expects the backend at the URL configured via `backend_URI` in its environment.
+Open:
 
-### Summary of what's running
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:8080
+- **Swagger Docs:** http://localhost:8080/api/docs
 
-| Service          | How it's started                                             | Port |
-| ---------------- | ------------------------------------------------------------ | ---- |
-| Postgres + Redis | `docker compose -f docker-compose.dev.yml up` (in `docker/`) | —    |
-| Backend API      | `npm run dev` (in `app/server`)                              | 8080 |
-| Frontend         | `npm run dev` (in `app/web`)                                 | 3000 |
+---
 
-## License
+## 📖 Documentation
 
-MIT
+Detailed documentation is available inside the `docs/` directory.
+
+- Architecture
+- API Reference
+- Database Design
+- Deployment Guide
+- Security
+- Development Guide
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+
+- Next.js
+- React
+- TypeScript
+- React Flow
+- Tailwind CSS
+- shadcn/ui
+
+### Backend
+
+- Node.js
+- Express
+- PostgreSQL
+- Drizzle ORM
+- BullMQ
+- Redis
+- Socket.IO
+- Nodemailer
+- JWT Authentication
+
+### Infrastructure
+
+- Docker
+- Nginx
+- GitHub Actions
+- AWS EC2
+
+---
+
+## 🤝 Contributing
+
+We love contributions! To keep development organized, please follow this workflow:
+
+1. Pick an open issue.
+2. Request to be assigned to the issue.
+3. Wait for a maintainer to assign it to you.
+4. Fork the repository.
+5. Create a feature branch.
+6. Make your changes.
+7. Open a Pull Request linked to the assigned issue.
+
+> **Note**
+> We only accept Pull Requests for **assigned issues**. This helps prevent duplicate work and ensures contributors aren't working on the same feature simultaneously.
+
+---
+
+## ❤️ Contributors
+
+Thanks to everyone who contributes to AsyncNode.
+
+`<a href="../../graphs/contributors">`{=html}
+`<img src="https://contrib.rocks/image?repo=<your-org>`{=html}/AsyncNode"
+/\> `</a>`{=html}
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
