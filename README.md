@@ -41,7 +41,7 @@
 
 ```bash
 git clone https://github.com/devclub-nstru/Async_node.git
-cd AsyncNode
+cd Async_node
 ```
 
 ### Start local services
