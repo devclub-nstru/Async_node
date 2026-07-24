@@ -40,7 +40,7 @@
 ### Clone the repository
 
 ```bash
-git clone https://github.com/devclub-nstru/AsyncNode.git
+git clone https://github.com/devclub-nstru/Async_node.git
 cd AsyncNode
 ```
 
